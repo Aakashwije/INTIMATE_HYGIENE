@@ -1,4 +1,6 @@
-/* Global Styles with Hygiene Theme */
+/* ======================
+   Global Styles with Hygiene Theme
+   ====================== */
 * {
   margin: 0;
   padding: 0;
@@ -25,7 +27,9 @@ a:hover {
   color: #218838; /* Darker green hover */
 }
 
-/* Navbar */
+/* ======================
+   Navbar
+   ====================== */
 header {
   background: #fff;
   border-bottom: 1px solid #ddd;
@@ -45,7 +49,7 @@ header {
 
 /* Logo image */
 .logo img {
-  height: 60px; /* adjust as needed */
+  height: 60px;
   width: auto;
 }
 
@@ -54,6 +58,11 @@ header {
   list-style: none;
   display: flex;
   gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.nav-links li {
+  display: flex;
 }
 
 .nav-links a {
@@ -64,18 +73,23 @@ header {
   transition: background 0.3s, color 0.3s, transform 0.2s;
 }
 
+.nav-links li i {
+  margin-right: 8px; /* adjust the gap size */
+}
+
 .nav-links a.active,
 .nav-links a:hover {
   background: #28a745; /* green highlight */
   color: #fff;
-  transform: scale(1.05); /* subtle hover scale */
+  transform: scale(1.05);
 }
 
-/* Responsive Navbar */
+/* Hamburger menu */
 .hamburger {
   display: none;
   flex-direction: column;
   cursor: pointer;
+  z-index: 2000;
 }
 
 .hamburger span {
@@ -86,29 +100,196 @@ header {
   border-radius: 5px;
 }
 
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    right: 1rem;
-    top: 80px; /* below taller navbar */
-    background: white;
-    padding: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border-radius: 12px;
-  }
-  .nav-links.show {
-    display: flex;
-  }
-  .hamburger {
-    display: flex;
-  }
+/* ======================
+   Hero Section
+   ====================== */
+.hero {
+  background: url('../images/hero.jpg') no-repeat center center/cover;
+  color: #fff;
+  text-align: center;
+  padding: 120px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-/* Buttons (consistent CTA) */
-button,
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+}
+
+.hero-content {
+  position: relative;
+  max-width: 800px;
+  z-index: 2;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+  color: #f0f0f0;
+}
+
+/* ======================
+   Features Section
+   ====================== */
+.features {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.features h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.feature-card h3 {
+  margin-bottom: 15px;
+  color: #28a745;
+}
+
+/* ======================
+   Products Section
+   ====================== */
+.products-highlight {
+  padding: 80px 20px;
+  background: #f9f9f9;
+  text-align: center;
+}
+
+.products-highlight h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+.product-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.product-card {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.product-card h3 {
+  margin-bottom: 15px;
+  color: #28a745;
+}
+
+/* ======================
+   Testimonials Section
+   ====================== */
+.testimonials {
+  padding: 80px 20px;
+  background: #fff;
+  text-align: center;
+}
+
+.testimonials h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.testimonial {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 12px;
+  font-style: italic;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.testimonial span {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #28a745;
+}
+
+/* ======================
+   CTA Section
+   ====================== */
 .cta {
+  background: #28a745;
+  color: #fff;
+  text-align: center;
+  padding: 80px 20px;
+  border-radius: 12px;
+}
+
+.cta h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.cta p {
+  margin-bottom: 30px;
+  font-size: 1.2rem;
+}
+
+/* ======================
+   Footer
+   ====================== */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #222;
+  color: #fff;
+  margin-top: 2rem;
+}
+
+/* ======================
+   Buttons
+   ====================== */
+button,
+.cta a.btn-primary {
   padding: 10px 20px;
   border: none;
   background: #28a745;
@@ -119,15 +300,46 @@ button,
 }
 
 button:hover,
-.cta:hover {
+.cta a.btn-primary:hover {
   background: #218838;
 }
 
-/* Footer */
-footer {
-  text-align: center;
-  padding: 1rem;
-  background: #222; /* Dark grey footer */
-  color: #fff;
-  margin-top: 2rem;
+/* ======================
+   Responsive Styles
+   ====================== */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    right: 1rem;
+    top: 80px;
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    width: 200px;
+  }
+
+  .nav-links.show {
+    display: flex;
+    animation: slideDown 0.3s ease forwards;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  @keyframes slideDown {
+    0% { opacity: 0; transform: translateY(-10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
 }
