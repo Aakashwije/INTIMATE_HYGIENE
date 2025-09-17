@@ -1,0 +1,82 @@
+/* ======================
+   FAQ Section Styling (Flat Version)
+   ====================== */
+
+/* Main container for FAQ */
+main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: 'Poppins', Arial, sans-serif;
+  background: #ebf4f7; /* light background matching hero */
+  border-radius: 0; /* remove rounded corners */
+}
+
+/* FAQ items */
+.faq-item {
+  border-bottom: 1px solid #dfe6ea;
+  padding: 1rem 0;
+  transition: none; /* remove hover animation */
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-item:hover {
+  background: transparent; /* no hover color */
+  border-radius: 0; /* remove hover rounding */
+}
+
+/* FAQ question styles */
+.faq-question {
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.15rem;
+  color: #28a745; /* green from theme */
+  transition: color 0.3s ease;
+}
+
+.faq-question:hover {
+  color: #81a42f; /* subtle hover color */
+  transform: none; /* remove hover shift */
+}
+
+/* Icons (+ / -) */
+.faq-question::after {
+  content: "+";
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #28a745;
+}
+
+.faq-item.active .faq-question::after {
+  content: "−";
+  color: #218838; /* darker green for active */
+}
+
+/* FAQ answer styles */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, padding 0.3s ease, opacity 0.4s ease;
+  color: #444;
+  line-height: 1.6;
+  font-size: 1rem;
+  padding: 0;
+  opacity: 0;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 500px;
+  padding: 0.75rem 0;
+  opacity: 1;
+}
+
+/* Answer paragraph spacing */
+.faq-answer p {
+  margin: 0.5rem 0;
+}
