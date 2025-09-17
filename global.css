@@ -1,0 +1,133 @@
+/* Global Styles with Hygiene Theme */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  line-height: 1.6;
+  background: #f9f9f9; /* Light grey */
+  color: #222; /* Dark grey for readability */
+}
+
+h1, h2, h3 {
+  color: #222;
+}
+
+a {
+  text-decoration: none;
+  color: #28a745; /* Green links */
+}
+
+a:hover {
+  color: #218838; /* Darker green hover */
+}
+
+/* Navbar */
+header {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: auto;
+  padding: 1.5rem 2rem; /* taller navbar */
+}
+
+/* Logo image */
+.logo img {
+  height: 60px; /* adjust as needed */
+  width: auto;
+}
+
+/* Nav links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  padding: 0.7rem 1.5rem; /* slightly bigger for taller navbar */
+  color: #222;
+  font-weight: 500;
+  border-radius: 50px; /* oval/rounded effect */
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+  background: #28a745; /* green highlight */
+  color: #fff;
+  transform: scale(1.05); /* subtle hover scale */
+}
+
+/* Responsive Navbar */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.hamburger span {
+  height: 3px;
+  width: 25px;
+  background: #222;
+  margin: 4px 0;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    right: 1rem;
+    top: 80px; /* below taller navbar */
+    background: white;
+    padding: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 12px;
+  }
+  .nav-links.show {
+    display: flex;
+  }
+  .hamburger {
+    display: flex;
+  }
+}
+
+/* Buttons (consistent CTA) */
+button,
+.cta {
+  padding: 10px 20px;
+  border: none;
+  background: #28a745;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover,
+.cta:hover {
+  background: #218838;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #222; /* Dark grey footer */
+  color: #fff;
+  margin-top: 2rem;
+}
