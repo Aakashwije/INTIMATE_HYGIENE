@@ -4,34 +4,142 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hygenc Covers | Contact</title>
- <link rel="stylesheet" href="../Global /global.css">
+  <link rel="stylesheet" href="../Global /global.css">
+  <link rel="stylesheet" href="contact.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <!-- Navbar -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">Hygenc Covers</div>
-      <ul class="nav-links" id="navLinks">
+<header>
+  <nav class="navbar">
+  <a href="Home.html" class="logo">
+    <img src="../images/fulllogo.png" alt="Hygenc Covers Logo">
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a  href="Home.html" ><i class="fa-solid fa-house-chimney"></i> Home</a></li>
+    <li><a href="../About/about.html"><i class="fa-solid fa-address-card"></i> About</a></li>
+    <li><a href="../Products/products.html"> <i class="fa-brands fa-product-hunt"></i> Products</a></li>
+    <li><a href="../Benifits/benefits.html"> <i class="fa-solid fa-lightbulb"></i> Benifits</a></li>
+    <li><a href="../FAQ/faq.html"> <i class="fa-solid fa-question"></i> FAQ</a></li>
+    <li><a href="contact.html" class="active"> <i class="fa-brands fa-facebook-messenger"></i>Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+  </header>
+
+
+  <!-- Hero Section -->
+  <section class="contact-hero">
+    <h1>Contact Us</h1>
+    <p>We’d love to hear from you! Reach out with any questions, feedback, or partnership opportunities.</p>
+  </section>
+
+  <!-- Contact Info -->
+  <section class="contact-info">
+    <div class="info-card">
+      <i class="fas fa-envelope"></i>
+      <h3>Email</h3>
+      <p><a href="mailto:info@hygenc.com">info@hygenc.com</a></p>
+    </div>
+    <div class="info-card">
+      <i class="fas fa-phone-alt"></i>
+      <h3>Phone</h3>
+      <p><a href="tel:+94771234567">+94 77 123 4567</a></p>
+    </div>
+    <div class="info-card">
+      <i class="fas fa-map-marker-alt"></i>
+      <h3>Address</h3>
+      <p>123 Clean Street, Colombo, Sri Lanka</p>
+    </div>
+    <div class="info-card">
+      <i class="fas fa-clock"></i>
+      <h3>Business Hours</h3>
+      <p>Mon - Fri: 9AM - 6PM</p>
+    </div>
+  </section>
+
+  <!-- Contact Form -->
+  <section class="contact-form">
+    <h2>Send Us a Message</h2>
+    <form>
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <input type="text" name="subject" placeholder="Subject" required>
+      <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+
+  <!-- Google Map -->
+  <section class="map">
+    <h2>Find Us Here</h2>
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63315.2224!2d79.8380!3d6.9271!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2590d7b2e47a9%3A0x8b5d67f5e69a90f6!2sColombo!5e0!3m2!1sen!2slk!4v1234567890" 
+      width="100%" 
+      height="400" 
+      style="border:0;" 
+      allowfullscreen="" 
+      loading="lazy">
+    </iframe>
+  </section>
+
+  <!-- Footer -->
+<footer class="footer">
+  <div class="footer-container">
+    <!-- Brand & About -->
+    <div class="footer-section about">
+      <a href="Home.html" class="footer-logo">
+        <img src="../images/fulllogo.png" alt="Hygenc Covers Logo">
+      </a>
+      <p>Hygenc Covers provides premium hygienic toilet seat covers, designed for comfort, safety, and eco-friendliness. Protect yourself and the environment wherever you go.</p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-section links">
+      <h3>Quick Links</h3>
+      <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="products.html">Products</a></li>
-        <li><a href="benifits.html">Benifits</a></li>
+        <li><a href="benefits.html">Benefits</a></li>
         <li><a href="faq.html">FAQ</a></li>
-        <li><a href="contact.html" class="active">Contact</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
-      <div class="hamburger" id="hamburger">
-        <span></span><span></span><span></span>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="footer-section contact">
+      <h3>Contact Us</h3>
+      <p>Email: <a href="mailto:support@hygenccovers.com">support@hygenccovers.com</a></p>
+      <p>Phone: <a href="tel:+94112345678">+94 11 234 5678</a></p>
+      <p>Address: 123 Clean Street, Colombo, Sri Lanka</p>
+    </div>
+
+    <!-- Social Media -->
+     <div class="footer-section social">
+      <h3>Follow Us</h3>
+      <div class="social-icons">
+        <a href="#" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+        <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="#" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+        <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
       </div>
-    </nav>
-  </header>
+    </div>
 
-  <main>
-    <h1>Contact Us</h1>
-    <p>Email: info@hygenc.com</p>
-    <p>Phone: +94 77 123 4567</p>
-  </main>
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+  <p>&copy; 2025 Hygenc Covers. All Rights Reserved.</p>
+  <div class="footer-legal">
+    <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
+  </div>
+</div>
 
-  <script src="../Global /script.js"></script>
+  </footer>
+  <!-- JS -->
+  <script src="../Global/script.js"></script>
 </body>
 </html>
