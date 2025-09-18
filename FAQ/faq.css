@@ -1,31 +1,41 @@
 /* ======================
-   FAQ Section Styling (Flat Version)
+   FAQ Section Styling (Professional)
    ====================== */
 
-/* Main container for FAQ */
+/* Main container */
 main {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 2rem 1.5rem;
   font-family: 'Poppins', Arial, sans-serif;
-  background: #ebf4f7; /* light background matching hero */
-  border-radius: 0; /* remove rounded corners */
+  background: #f5f8fa; /* softer light background */
+  border-radius: 15px; /* subtle rounded corners */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08); /* soft shadow for card feel */
+  transition: all 0.3s ease;
 }
 
-/* FAQ items */
+/* Section title */
+main h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #28a745;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+/* FAQ item cards */
 .faq-item {
-  border-bottom: 1px solid #dfe6ea;
-  padding: 1rem 0;
-  transition: none; /* remove hover animation */
-}
-
-.faq-item:last-child {
-  border-bottom: none;
+  background: #fff;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  border-left: 4px solid #28a745;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .faq-item:hover {
-  background: transparent; /* no hover color */
-  border-radius: 0; /* remove hover rounding */
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 /* FAQ question styles */
@@ -35,27 +45,28 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.15rem;
-  color: #28a745; /* green from theme */
+  font-size: 1.2rem;
+  color: #08661e;
   transition: color 0.3s ease;
 }
 
 .faq-question:hover {
-  color: #81a42f; /* subtle hover color */
-  transform: none; /* remove hover shift */
+  color: #1e7e34; /* darker green on hover */
 }
 
-/* Icons (+ / -) */
+/* Icons (+ / -) with animation */
 .faq-question::after {
   content: "+";
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #28a745;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .faq-item.active .faq-question::after {
   content: "−";
-  color: #218838; /* darker green for active */
+  color: #1e7e34;
+  transform: rotate(180deg);
 }
 
 /* FAQ answer styles */
@@ -64,19 +75,53 @@ main {
   overflow: hidden;
   transition: max-height 0.5s ease, padding 0.3s ease, opacity 0.4s ease;
   color: #444;
-  line-height: 1.6;
+  line-height: 1.7;
   font-size: 1rem;
   padding: 0;
   opacity: 0;
 }
 
 .faq-item.active .faq-answer {
-  max-height: 500px;
-  padding: 0.75rem 0;
+  max-height: 1000px; /* enough for longer content */
+  padding: 1rem 0;
   opacity: 1;
 }
 
 /* Answer paragraph spacing */
 .faq-answer p {
   margin: 0.5rem 0;
+}
+
+/* Add subtle icon before question for professional look */
+.faq-question::before {
+  content: "\f059"; /* Font Awesome info-circle */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-right: 10px;
+  color: #28a745;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  main {
+    padding: 1.5rem 1rem;
+  }
+
+  .faq-question {
+    font-size: 1.1rem;
+  }
+
+  .faq-question::after {
+    font-size: 1.3rem;
+  }
+
+  .faq-answer {
+    font-size: 0.95rem;
+  }
+}
+
+/* Extra polished touch: smooth hover glow on card */
+.faq-item:hover {
+  border-left-color: #1e7e34;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
 }
