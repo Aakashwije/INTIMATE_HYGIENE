@@ -1,6 +1,121 @@
 /* ======================
    Benefits Page Styles
    ====================== */
+
+/* ======================
+   Hero Section
+   ====================== */
+.hero {
+    background: linear-gradient(rgba(40, 167, 69, 0.85), rgba(40, 167, 69, 0.85)),
+                url("../images/benefits-hero.jpg") no-repeat center/cover;
+    color: #fff;
+    text-align: center;
+    padding: 80px 20px;
+    position: relative;
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    animation: fadeInHero 1.2s ease-in-out;
+    overflow: hidden;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(40, 167, 69, 0.25);
+    border-radius: 0 0 40px 40px;
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    animation: slideInTop 1s ease forwards;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    color: #fff;
+    opacity: 0.95;
+    animation: fadeInText 1.5s ease forwards;
+}
+
+.hero .cta-btn {
+    display: inline-block;
+    padding: 14px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: #fff;
+    color: #28a745;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: fadeInButton 2s ease forwards;
+}
+
+.hero .cta-btn:hover {
+    background: #f1f1f1;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+/* ======================
+   Animations
+   ====================== */
+@keyframes fadeInHero {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInTop {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInText {
+    from { opacity: 0; }
+    to { opacity: 0.95; }
+}
+
+@keyframes fadeInButton {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    .hero p {
+        font-size: 1rem;
+    }
+    .hero {
+        padding: 60px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 1.8rem;
+    }
+    .hero p {
+        font-size: 0.95rem;
+    }
+}
+
+   
 .benefits-section {
   max-width: 1200px;
   margin: 80px auto;
@@ -28,40 +143,145 @@
 }
 
 /* Individual Benefit Cards */
+/* ======================
+   Advanced Benefit Cards - Text Enhancement (No Background)
+   ====================== */
 .benefit-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 25px 20px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: linear-gradient(145deg, #ffffff, #f7f9f7);
+  border-radius: 20px;
+  padding: 30px 25px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.05);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   text-align: left;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Radial hover effect */
+.benefit-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(40, 167, 69, 0.1), transparent 60%);
+  transform: rotate(25deg);
+  transition: all 0.6s ease;
+  z-index: 0;
+}
+
+.benefit-card:hover::before {
+  transform: rotate(0deg) scale(1.2);
+  opacity: 0.8;
+}
+
+/* Headings */
+.benefit-card h3 {
+  font-size: 1.5rem;
+  color: #1B5E20; /* Darker green for contrast */
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+}
+
+.benefit-card:hover h3 {
+  color: #33691E;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+}
+
+/* Paragraphs */
+.benefit-card p {
+  color: #2E2E2E; /* Dark gray for better readability */
+  line-height: 1.75;
+  font-size: 1.05rem;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.benefit-card:hover p {
+  color: #1B3B00;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+/* Icon */
+.benefit-card i {
+  font-size: 2rem;
+  color: #28a745;
+  transition: transform 0.5s ease, color 0.5s ease, text-shadow 0.3s ease;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.benefit-card:hover i {
+  transform: rotate(15deg) scale(1.2);
+  color: #33691E;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+}
+
+/* Glow Pulse on Hover */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(40,167,69,0.2); }
+  50% { box-shadow: 0 0 25px rgba(40,167,69,0.35); }
 }
 
 .benefit-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: glowPulse 1s ease-in-out infinite alternate;
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 10px 20px rgba(0,0,0,0.05);
 }
 
-.benefit-card h3 {
-  font-size: 1.4rem;
-  color: #28a745;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* Responsive */
+@media (max-width: 992px) {
+  .benefits-grid {
+    gap: 25px;
+  }
 }
 
-.benefit-card p {
-  color: #555;
-  line-height: 1.6;
-  font-size: 1rem;
+@media (max-width: 768px) {
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-card {
+    padding: 25px 20px;
+  }
+
+  .benefit-card h3 {
+    font-size: 1.4rem;
+    gap: 12px;
+  }
+
+  .benefit-card i {
+    font-size: 1.8rem;
+  }
 }
 
-/* Icon Style */
-.benefit-card i {
-  font-size: 1.5rem;
-  color: #28a745;
+@media (max-width: 480px) {
+  .benefit-card {
+    padding: 20px 15px;
+  }
+
+  .benefit-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .benefit-card i {
+    font-size: 1.6rem;
+  }
+
+  .benefit-card p {
+    font-size: 1rem;
+  }
 }
+
 
 /* Responsive */
 @media (max-width: 768px) {

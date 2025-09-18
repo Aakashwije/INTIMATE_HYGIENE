@@ -2,12 +2,11 @@
    Contact Page Styles (Pro+)
    ====================== */
 
-
-   /* ======================
+/* ======================
    Contact Hero Section
    ====================== */
 .contact-hero {
-  background:linear-gradient(rgba(40, 167, 69, 0.85), rgba(40, 167, 69, 0.85)),
+  background: linear-gradient(rgba(40, 167, 69, 0.85), rgba(40, 167, 69, 0.85)),
               url("../images/contact-bg.jpg") no-repeat center/cover;
   color: #fff;
   text-align: center;
@@ -55,6 +54,7 @@
   from { opacity: 0; transform: translateY(-30px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
 /* Page Wrapper */
 .contact-page {
   max-width: 1200px;
@@ -160,23 +160,28 @@
   background: linear-gradient(135deg, #23923e, #176428);
 }
 
-/* Contact Info Section */
+/* ======================
+   Contact Info Section (Centered)
+   ====================== */
 .contact-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 25px;
   margin-bottom: 40px;
+  justify-items: center; /* center cards horizontally */
+  text-align: center;    /* center text inside cards */
 }
 
-/* Info Cards */
 .info-card {
   background: #fff;
   padding: 25px 20px;
   border-radius: 16px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.06);
   display: flex;
-  align-items: flex-start;
-  gap: 18px;
+  flex-direction: column; /* stack icon above text */
+  align-items: center;    /* center all elements */
+  justify-content: center;
+  gap: 12px;              /* space between icon and text */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -191,7 +196,6 @@
   background: rgba(40,167,69,0.12);
   padding: 14px;
   border-radius: 50%;
-  flex-shrink: 0;
 }
 
 .info-card h3 {
@@ -201,16 +205,11 @@
   font-weight: 600;
 }
 
-.info-card p {
+.info-card p,
+.info-card a {
   margin: 4px 0 0;
   font-size: 0.95rem;
   color: #444;
-}
-
-.info-card a {
-  color: #444;
-  text-decoration: none;
-  transition: color 0.3s;
 }
 .info-card a:hover {
   color: #28a745;
@@ -248,7 +247,6 @@
   border-radius: 2px;
 }
 
-/* Map Container */
 .map iframe {
   width: 100%;
   height: 400px;
@@ -263,22 +261,55 @@
   box-shadow: 0 12px 25px rgba(0,0,0,0.15);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .contact-page h1 {
-    font-size: 2.2rem;
-  }
+/* Reset Button */
+.contact-form .reset-btn {
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #28a745;
+  background: #fff;
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.contact-form .reset-btn:hover {
+  background: #28a745;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+
+/* ======================
+   Mobile Responsiveness
+   ====================== */
+@media (max-width: 992px) {
   .contact-wrapper {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
-  .info-card {
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
+  .contact-form {
+    padding: 30px;
   }
-
   .contact-hero {
     padding: 80px 15px;
+  }
+  .contact-hero h1 {
+    font-size: 2.4rem;
+  }
+  .contact-hero p {
+    font-size: 1.05rem;
+  }
+  .map iframe {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-hero {
+    padding: 70px 15px;
   }
   .contact-hero h1 {
     font-size: 2.2rem;
@@ -286,15 +317,34 @@
   .contact-hero p {
     font-size: 1rem;
   }
-
   .map {
     padding: 50px 15px;
   }
   .map h2 {
     font-size: 1.6rem;
   }
-  .map iframe {
-    height: 300px;
-  }
+}
 
+@media (max-width: 480px) {
+  .contact-page h1 {
+    font-size: 2rem;
+  }
+  .contact-page p.sub-text {
+    font-size: 1rem;
+  }
+  .contact-form h2 {
+    font-size: 1.4rem;
+  }
+  .contact-form input,
+  .contact-form textarea {
+    padding: 12px 14px;
+  }
+  .contact-form button {
+    width: 100%;
+    padding: 12px 0;
+  }
+  .info-card {
+    gap: 10px;
+    padding: 18px 12px;
+  }
 }
