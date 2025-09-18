@@ -3,28 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <title>Hygenc Covers | Products</title>
-  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="../Global /global.css">
   <link rel="stylesheet" href="product.css">
 </head>
 <body>
 
   <!-- Navbar -->
-  <header>
-    <nav class="navbar">
-      <div class="logo">Hygenc Covers</div>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="products.html" class="active">Products</a></li>
-        <li><a href="benifits.html">Benifits</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-      <div class="hamburger" id="hamburger">
-        <span></span><span></span><span></span>
-      </div>
-    </nav>
+    <header>
+  <nav class="navbar">
+  <a href="Home.html" class="logo">
+    <img src="../images/fulllogo.png" alt="Hygenc Covers Logo">
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a  href="../Home/Home.html" ><i class="fa-solid fa-house-chimney"></i> Home</a></li>
+    <li><a href="../About/about.html"><i class="fa-solid fa-address-card"></i> About</a></li>
+    <li><a href="products.html" class="active"> <i class="fa-brands fa-product-hunt"></i> Products</a></li>
+    <li><a href="../Benifits/benefits.html"> <i class="fa-solid fa-lightbulb"></i> Benifits</a></li>
+    <li><a href="../FAQ/faq.html"> <i class="fa-solid fa-question"></i> FAQ</a></li>
+    <li><a href="../Contact/contact.html"> <i class="fa-brands fa-facebook-messenger"></i>Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
   </header>
 
   <main>
@@ -34,21 +38,21 @@
     <!-- Product Section -->
     <section class="products">
       <div class="product-card">
-        <img src="images/single-use.jpg" alt="Single Use Covers">
+        <img src="../images/normal.png" alt="Single Use Covers">
         <h2>Single Use Pack</h2>
         <p>Perfect for individuals on the go. Hygienic, eco-friendly, and convenient for daily travel.</p>
         <a href="#" class="btn">Learn More</a>
       </div>
 
       <div class="product-card">
-        <img src="images/family-pack.jpg" alt="Family Pack Covers">
+        <img src="../images/travel.png" alt="Family Pack Covers">
         <h2>Family Pack</h2>
         <p>Designed for families. Larger packs with extra covers to ensure safety for everyone.</p>
         <a href="#" class="btn">Learn More</a>
       </div>
 
       <div class="product-card">
-        <img src="images/enterprise-pack.jpg" alt="Enterprise Level Covers">
+        <img src="../images/interprise.png" alt="Enterprise Level Covers">
         <h2>Enterprise Level</h2>
         <p>Bulk packs for offices, hotels, and businesses. Promote hygiene at scale efficiently.</p>
         <a href="#" class="btn">Learn More</a>
@@ -56,6 +60,57 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <footer class="footer">
+  <div class="footer-container">
+    <!-- Brand & About -->
+    <div class="footer-section about">
+      <a href="../Home/Home.html" class="footer-logo">
+        <img src="../images/fulllogo.png" alt="Hygenc Covers Logo">
+      </a>
+      <p>Hygenc Covers provides premium hygienic toilet seat covers, designed for comfort, safety, and eco-friendliness. Protect yourself and the environment wherever you go.</p>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="footer-section links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="benefits.html">Benefits</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="footer-section contact">
+      <h3>Contact Us</h3>
+      <p>Email: <a href="mailto:support@hygenccovers.com">support@hygenccovers.com</a></p>
+      <p>Phone: <a href="tel:+94112345678">+94 11 234 5678</a></p>
+      <p>Address: 123 Clean Street, Colombo, Sri Lanka</p>
+    </div>
+
+    <!-- Social Media -->
+     <div class="footer-section social">
+      <h3>Follow Us</h3>
+      <div class="social-icons">
+        <a href="#" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+        <a href="#" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+        <a href="#" target="_blank"><i class="fab fa-twitter"></i> Twitter</a>
+        <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+      </div>
+    </div>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+  <p>&copy; 2025 Hygenc Covers. All Rights Reserved.</p>
+  <div class="footer-legal">
+    <a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a>
+  </div>
+</div>
+
+
+  <script src="../Global /script.js"></script>
 </body>
 </html>
