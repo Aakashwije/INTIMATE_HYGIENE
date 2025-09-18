@@ -5,7 +5,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-   font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
@@ -118,7 +118,7 @@ header {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .hero-content {
@@ -351,7 +351,7 @@ header {
   width: 100%; /* take full width */
   display: flex;
   flex-direction: column; /* stack vertically */
-  align-items: center;    /* center horizontally */
+  align-items: center; /* center horizontally */
   justify-content: center; /* center vertically if needed */
   text-align: center;
   border-top: 1px solid #444;
@@ -375,20 +375,6 @@ header {
   color: #28a745;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .footer-container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .footer-section {
-    margin-bottom: 30px;
-  }
-  .social-icons a {
-    margin: 0 5px;
-  }
-}
 /* ======================
    Buttons
    ====================== */
@@ -406,6 +392,20 @@ button,
 button:hover,
 .cta a.btn-primary:hover {
   background: #218838;
+}
+
+/* ======================
+   Keyframes (for dropdown)
+   ====================== */
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ======================
@@ -434,16 +434,25 @@ button:hover,
     display: flex;
   }
 
-  @keyframes slideDown {
-    0% { opacity: 0; transform: translateY(-10px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
   .hero h1 {
     font-size: 2rem;
   }
 
   .hero p {
     font-size: 1rem;
+  }
+
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-section {
+    margin-bottom: 30px;
+  }
+
+  .social-icons a {
+    margin: 0 5px;
   }
 }
