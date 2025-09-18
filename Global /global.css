@@ -394,6 +394,40 @@ button:hover,
   background: #218838;
 }
 
+#goTopBtn {
+  display: block;       /* always visible */
+  position: fixed;      /* stays in place */
+  bottom: 30px;         /* distance from bottom */
+  right: 30px;          /* distance from right */
+  width: 50px;          /* adjust size */
+  height: 50px;         /* adjust size */
+  cursor: pointer;
+  z-index: 1000;        /* above other elements */
+  transition: transform 0.3s ease;
+}
+
+#goTopBtn:hover {
+  transform: scale(1.2); /* hover effect */
+}
+
+@media (max-width: 768px) {
+  #goTopBtn {
+    width: 40px;       /* smaller size on mobile */
+    height: 40px;
+    bottom: 20px;      /* closer to bottom for smaller screens */
+    right: 20px;       /* adjust spacing from edge */
+  }
+}
+
+@media (max-width: 480px) {
+  #goTopBtn {
+    width: 35px;       /* even smaller for tiny phones */
+    height: 35px;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
 /* ======================
    Keyframes (for dropdown)
    ====================== */
