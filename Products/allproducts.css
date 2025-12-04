@@ -190,6 +190,24 @@
 .section-block ul li {
   margin-bottom: 10px;
 }
+.price {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #28a745;
+  background: rgba(40,167,69,0.1);
+  padding: 6px 14px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+  animation: popPrice 0.6s ease-out;
+}
+
+@keyframes popPrice {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 
 /* ======================
    Responsive Styles
