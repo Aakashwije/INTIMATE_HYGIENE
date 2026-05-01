@@ -4,15 +4,18 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import {
     faAddressCard,
+    faBalanceScale,
     faBuilding,
     faHouseChimney,
     faLightbulb,
     faNewspaper,
-    faQuestion
+    faQuestion,
+    faTruck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import LangToggle from "./LangToggle";
 
 const navItems = [
   { to: "/home", label: "Home", icon: faHouseChimney },
@@ -22,6 +25,8 @@ const navItems = [
   { to: "/blog", label: "Blog", icon: faNewspaper },
   { to: "/b2b", label: "B2B", icon: faBuilding },
   { to: "/faq", label: "FAQ", icon: faQuestion },
+  { to: "/compare", label: "Compare", icon: faBalanceScale },
+  { to: "/delivery", label: "Delivery", icon: faTruck },
   { to: "/contact", label: "Contact", icon: faFacebookMessenger },
 ];
 
@@ -62,6 +67,11 @@ export default function Navbar() {
             );
           })}
         </ul>
+
+        {/* Lang toggle — desktop */}
+        <div className="hidden md:block">
+          <LangToggle />
+        </div>
 
         {/* Hamburger */}
         <button

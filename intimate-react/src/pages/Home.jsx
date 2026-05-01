@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
+import { useLang } from "../context/LangContext";
 
 /* ---- Data ---- */
 const stats = [
@@ -98,6 +99,7 @@ const certs = [
 ];
 
 export default function Home() {
+  const { t } = useLang();
   return (
     <>
       <Navbar />
@@ -114,12 +116,25 @@ export default function Home() {
         <div className="absolute inset-0 bg-[rgba(40,167,69,0.25)] rounded-b-[40px]" />
         <div className="relative z-10 max-w-3xl">
           <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md italic">
-            Your Protection is Our Priority!
+            {t.heroTitle}
           </h1>
           <p className="text-lg md:text-xl leading-relaxed opacity-95">
-            Premium hygienic toilet seat covers designed for your comfort,
-            health, and safety.
+            {t.heroSubtitle}
           </p>
+          <div className="mt-6 flex gap-3 justify-center flex-wrap">
+            <Link
+              to="/products"
+              className="px-7 py-3 bg-white text-[#28a745] font-bold rounded-full hover:bg-green-50 transition-colors shadow-md"
+            >
+              {t.shopNow}
+            </Link>
+            <Link
+              to="/about"
+              className="px-7 py-3 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#28a745] transition-colors"
+            >
+              {t.learnMore}
+            </Link>
+          </div>
         </div>
       </section>
       {/* Hygiene Stats Strip */}

@@ -1,9 +1,30 @@
 import ProductDetailLayout from "../components/ProductDetailLayout";
 
 const reviews = [
-  { author: "Priya D.", location: "Colombo 7", rating: 5, comment: "The waterproof layer makes all the difference! Used these on a 10-day trip across Europe — never worried once about public restrooms.", avatar: "PD" },
-  { author: "Amani K.", location: "Negombo", rating: 5, comment: "Bought for the whole family. Even my kids can use them easily. The anti-slip feature is a game changer.", avatar: "AK" },
-  { author: "Hasitha R.", location: "Matara", rating: 4, comment: "Really good product. Would prefer if it were also flushable like the enterprise version, but overall very happy.", avatar: "HR" },
+  {
+    author: "Priya D.",
+    location: "Colombo 7",
+    rating: 5,
+    comment:
+      "The waterproof layer makes all the difference! Used these on a 10-day trip across Europe — never worried once about public restrooms.",
+    avatar: "PD",
+  },
+  {
+    author: "Amani K.",
+    location: "Negombo",
+    rating: 5,
+    comment:
+      "Bought for the whole family. Even my kids can use them easily. The anti-slip feature is a game changer.",
+    avatar: "AK",
+  },
+  {
+    author: "Hasitha R.",
+    location: "Matara",
+    rating: 4,
+    comment:
+      "Really good product. Would prefer if it were also flushable like the enterprise version, but overall very happy.",
+    avatar: "HR",
+  },
 ];
 
 export default function Product2() {

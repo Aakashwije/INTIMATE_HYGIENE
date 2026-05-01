@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import DeliveryProgressBar from "../components/DeliveryProgressBar";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
@@ -9,6 +10,7 @@ const productList = [
     title: "Single Use Pack",
     desc: "Perfect for individuals on the go. Hygienic, eco-friendly, and convenient for daily travel.",
     badge: "Single Use",
+    urgency: "🔴 Low Stock · Order Now",
     price: "LKR 150",
     priceNote: "per pack · min 10 packs",
     whatsappMsg:
@@ -20,6 +22,7 @@ const productList = [
     title: "Travel Pack",
     desc: "Waterproof and anti-slip, ideal for families and frequent travelers.",
     badge: "Budget Friendly",
+    urgency: "🟡 Selling Fast",
     price: "LKR 300",
     priceNote: "per 10-pack · min 5 packs",
     whatsappMsg:
@@ -31,6 +34,7 @@ const productList = [
     title: "Enterprise Level",
     desc: "Bulk packs for offices, hotels, and businesses. Promote hygiene at scale efficiently.",
     badge: "Best Seller",
+    urgency: null,
     price: "LKR 120",
     priceNote: "per pack · bulk rate · min 100 packs",
     whatsappMsg:
@@ -67,10 +71,15 @@ export default function Products() {
       {/* Product Grid */}
       <main className="max-w-6xl mx-auto py-16 px-5 text-center">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Our Products</h1>
-        <p className="text-gray-500 text-lg mb-10">
+        <p className="text-gray-500 text-lg mb-6">
           Explore our range of eco-friendly, disposable toilet seat covers
           designed for maximum safety.
         </p>
+
+        {/* Free delivery bar */}
+        <div className="max-w-lg mx-auto mb-10">
+          <DeliveryProgressBar orderTotal={0} />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {productList.map(
@@ -79,6 +88,7 @@ export default function Products() {
               title,
               desc,
               badge,
+              urgency,
               price,
               priceNote,
               whatsappMsg,
@@ -95,6 +105,13 @@ export default function Products() {
                 <span className="absolute top-4 right-4 bg-[#7CB342] text-white text-sm font-semibold px-3 py-1 rounded-full shadow-md animate-floatBadge z-10">
                   {badge}
                 </span>
+
+                {/* Urgency */}
+                {urgency && (
+                  <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full z-10 animate-pulse">
+                    {urgency}
+                  </div>
+                )}
 
                 {/* Image */}
                 <img
@@ -141,6 +158,17 @@ export default function Products() {
               </div>
             ),
           )}
+        </div>
+
+        {/* Compare banner */}
+        <div className="mt-8 flex items-center justify-center gap-3 text-sm text-gray-500">
+          <span>Not sure which to pick?</span>
+          <Link
+            to="/compare"
+            className="text-[#28a745] font-bold hover:underline"
+          >
+            Compare all products side-by-side →
+          </Link>
         </div>
 
         {/* B2B Banner */}

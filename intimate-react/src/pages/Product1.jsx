@@ -1,9 +1,30 @@
 import ProductDetailLayout from "../components/ProductDetailLayout";
 
 const reviews = [
-  { author: "Dilshan P.", location: "Colombo", rating: 5, comment: "Excellent quality! I carry these whenever I travel. Easy to use and eco-friendly. Very happy with the product.", avatar: "DP" },
-  { author: "Nimasha S.", location: "Kandy", rating: 5, comment: "Perfect for daily commuters. My office keeps a stock and everyone loves them. Great anti-bacterial protection.", avatar: "NS" },
-  { author: "Rukshan F.", location: "Galle", rating: 4, comment: "Good value for money. Packaging is compact. Would love to see even smaller pocket packs for solo travel.", avatar: "RF" },
+  {
+    author: "Dilshan P.",
+    location: "Colombo",
+    rating: 5,
+    comment:
+      "Excellent quality! I carry these whenever I travel. Easy to use and eco-friendly. Very happy with the product.",
+    avatar: "DP",
+  },
+  {
+    author: "Nimasha S.",
+    location: "Kandy",
+    rating: 5,
+    comment:
+      "Perfect for daily commuters. My office keeps a stock and everyone loves them. Great anti-bacterial protection.",
+    avatar: "NS",
+  },
+  {
+    author: "Rukshan F.",
+    location: "Galle",
+    rating: 4,
+    comment:
+      "Good value for money. Packaging is compact. Would love to see even smaller pocket packs for solo travel.",
+    avatar: "RF",
+  },
 ];
 
 export default function Product1() {
