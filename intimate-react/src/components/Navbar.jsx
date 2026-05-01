@@ -15,24 +15,27 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useLang } from "../context/LangContext";
 import LangToggle from "./LangToggle";
 
-const navItems = [
-  { to: "/home", label: "Home", icon: faHouseChimney },
-  { to: "/about", label: "About", icon: faAddressCard },
-  { to: "/products", label: "Products", icon: faProductHunt },
-  { to: "/benefits", label: "Benefits", icon: faLightbulb },
-  { to: "/blog", label: "Blog", icon: faNewspaper },
-  { to: "/b2b", label: "B2B", icon: faBuilding },
-  { to: "/faq", label: "FAQ", icon: faQuestion },
-  { to: "/compare", label: "Compare", icon: faBalanceScale },
-  { to: "/delivery", label: "Delivery", icon: faTruck },
-  { to: "/contact", label: "Contact", icon: faFacebookMessenger },
+const navItemDefs = [
+  { to: "/home", key: "navHome", icon: faHouseChimney },
+  { to: "/about", key: "navAbout", icon: faAddressCard },
+  { to: "/products", key: "navProducts", icon: faProductHunt },
+  { to: "/benefits", key: "navBenefits", icon: faLightbulb },
+  { to: "/blog", key: "navBlog", icon: faNewspaper },
+  { to: "/b2b", key: "navB2B", icon: faBuilding },
+  { to: "/faq", key: "navFaq", icon: faQuestion },
+  { to: "/compare", key: "navCompare", icon: faBalanceScale },
+  { to: "/delivery", key: "navDelivery", icon: faTruck },
+  { to: "/contact", key: "navContact", icon: faFacebookMessenger },
 ];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLang();
+  const navItems = navItemDefs.map((item) => ({ ...item, label: t[item.key] }));
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">

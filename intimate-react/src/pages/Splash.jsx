@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLang } from "../context/LangContext";
 
 export default function Splash() {
   const navigate = useNavigate();
+  const { t } = useLang();
 
   // Redirect to home after 5 seconds
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function Splash() {
 
         {/* Title */}
         <h1 className="text-3xl md:text-4xl font-semibold mb-10 tracking-wide drop-shadow-lg">
-          Welcome to Intimate Hygiene Enterprises
+          {t.splashWelcome}
         </h1>
 
         {/* Loader dots */}

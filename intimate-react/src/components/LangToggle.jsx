@@ -14,7 +14,9 @@ export default function LangToggle() {
         <button
           key={code}
           onClick={() => setLang(code)}
-          title={code === "en" ? "English" : code === "si" ? "Sinhala" : "Tamil"}
+          title={
+            code === "en" ? "English" : code === "si" ? "Sinhala" : "Tamil"
+          }
           className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
             lang === code
               ? "bg-[#28a745] text-white shadow-sm"

@@ -3,6 +3,7 @@ import DeliveryProgressBar from "../components/DeliveryProgressBar";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
+import { useLang } from "../context/LangContext";
 
 const certs = [
   { icon: "🌿", label: "Eco-Friendly" },
@@ -28,6 +29,7 @@ export default function ProductDetailLayout({
   whatsappMsg,
   reviews = [],
 }) {
+  const { t } = useLang();
   const [qty, setQty] = useState(1);
 
   const handleOrder = () => {
@@ -118,7 +120,7 @@ export default function ProductDetailLayout({
           <div className="mt-5 space-y-3">
             <div className="flex items-center gap-3">
               <label className="text-sm font-semibold text-gray-700">
-                Quantity (packs):
+                {t.quantityLabel}
               </label>
               <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
                 <button
@@ -149,7 +151,7 @@ export default function ProductDetailLayout({
               >
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
               </svg>
-              Order {qty} Pack{qty !== 1 ? "s" : ""} on WhatsApp
+              {t.orderOnWhatsApp} ({qty})
             </button>
           </div>
 
@@ -177,15 +179,18 @@ export default function ProductDetailLayout({
       {/* How To Use */}
       <section className="max-w-6xl mx-auto px-5 mb-14">
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
-          How To Use
+          {t.howToUse}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           {[
-            { n: "1", emoji: "📦", title: "Open the Pack", desc: "Remove one cover from the hygienic packaging. Each cover is individually sealed for freshness." },
-            { n: "2", emoji: "🪑", title: "Place on Seat", desc: "Unfold and lay the cover flat on the toilet seat. The natural fit ensures full coverage with no slipping." },
-            { n: "3", emoji: "✅", title: "Use & Dispose", desc: "After use, the cover can be flushed (Enterprise Pack) or disposed in the bin. No mess, no fuss." },
+            { n: "1", emoji: "📦", title: t.step1Title, desc: t.step1Desc },
+            { n: "2", emoji: "🪑", title: t.step2Title, desc: t.step2Desc },
+            { n: "3", emoji: "✅", title: t.step3Title, desc: t.step3Desc },
           ].map(({ n, emoji, title, desc }) => (
-            <div key={n} className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center gap-3">
+            <div
+              key={n}
+              className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center gap-3"
+            >
               <div className="w-12 h-12 rounded-full bg-[#28a745] text-white font-bold text-lg flex items-center justify-center">
                 {n}
               </div>
@@ -200,25 +205,31 @@ export default function ProductDetailLayout({
       {/* Before / After hygiene stats */}
       <section className="max-w-6xl mx-auto px-5 mb-14">
         <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
-          The Hygiene Difference
+          {t.hygieneDifference}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Without cover */}
           <div className="bg-red-50 border border-red-200 rounded-2xl p-7">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">😰</span>
-              <h3 className="text-lg font-bold text-red-700">Without a Cover</h3>
+              <h3 className="text-lg font-bold text-red-700">
+                {t.withoutCover}
+              </h3>
             </div>
             <ul className="space-y-3 text-sm text-red-800">
-              {[
-                "Up to 295 bacteria types on toilet seat surface",
-                "E. coli, Staphylococcus & Streptococcus present",
-                "Pathogens survive up to 48 hours on surfaces",
-                "Direct skin-to-surface contact with contamination",
-                "Risk of UTIs and skin infections",
-              ].map((item) => (
+              {(
+                t.withoutItems || [
+                  "Up to 295 bacteria types on toilet seat surface",
+                  "E. coli, Staphylococcus & Streptococcus present",
+                  "Pathogens survive up to 48 hours on surfaces",
+                  "Direct skin-to-surface contact with contamination",
+                  "Risk of UTIs and skin infections",
+                ]
+              ).map((item) => (
                 <li key={item} className="flex items-start gap-2">
-                  <span className="text-red-500 font-bold mt-0.5 flex-shrink-0">✗</span>
+                  <span className="text-red-500 font-bold mt-0.5 flex-shrink-0">
+                    ✗
+                  </span>
                   {item}
                 </li>
               ))}
@@ -228,18 +239,24 @@ export default function ProductDetailLayout({
           <div className="bg-green-50 border border-green-200 rounded-2xl p-7">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-3xl">😊</span>
-              <h3 className="text-lg font-bold text-[#28a745]">With Our Cover</h3>
+              <h3 className="text-lg font-bold text-[#28a745]">
+                {t.withCover}
+              </h3>
             </div>
             <ul className="space-y-3 text-sm text-green-900">
-              {[
-                "99% bacterial protection with anti-bacterial layer",
-                "Complete physical barrier between you and the seat",
-                "Eco-friendly, biodegradable material — zero guilt",
-                "Fits any standard toilet seat securely",
-                "Compact enough to carry everywhere you go",
-              ].map((item) => (
+              {(
+                t.withItems || [
+                  "99% bacterial protection with anti-bacterial layer",
+                  "Complete physical barrier between you and the seat",
+                  "Eco-friendly, biodegradable material — zero guilt",
+                  "Fits any standard toilet seat securely",
+                  "Compact enough to carry everywhere you go",
+                ]
+              ).map((item) => (
                 <li key={item} className="flex items-start gap-2">
-                  <span className="text-[#28a745] font-bold mt-0.5 flex-shrink-0">✔</span>
+                  <span className="text-[#28a745] font-bold mt-0.5 flex-shrink-0">
+                    ✔
+                  </span>
                   {item}
                 </li>
               ))}
@@ -276,7 +293,7 @@ export default function ProductDetailLayout({
       {reviews.length > 0 && (
         <section className="max-w-6xl mx-auto px-5 pb-16">
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Customer Reviews
+            {t.customerReviews}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map(({ author, location, rating, comment, avatar }) => (

@@ -2,6 +2,7 @@ import { useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
+import { useLang } from "../context/LangContext";
 
 const steps = [
   {
@@ -45,6 +46,7 @@ const perks = [
 ];
 
 export default function Referral() {
+  const { t } = useLang();
   const [name, setName] = useState("");
   const [shared, setShared] = useState(false);
 
@@ -83,11 +85,10 @@ export default function Referral() {
             Referral Programme
           </span>
           <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md">
-            Give 10%, Get 10% 🎁
+            {t.referralHeroTitle}
           </h1>
           <p className="text-lg md:text-xl leading-relaxed opacity-95">
-            Share Intimate Hygiene with a friend. When they order, you both save
-            10%.
+            {t.referralHeroSub}
           </p>
         </div>
       </section>
@@ -126,7 +127,7 @@ export default function Referral() {
             <form onSubmit={handleShare} className="flex gap-3">
               <input
                 type="text"
-                placeholder="Your name"
+                placeholder={t.yourNameLabel}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -136,7 +137,7 @@ export default function Referral() {
                 type="submit"
                 className="bg-gray-900 text-white font-bold px-6 py-3 rounded-xl hover:bg-gray-700 transition-colors text-sm whitespace-nowrap"
               >
-                Share on WhatsApp
+                {t.shareOnWhatsApp}
               </button>
             </form>
           )}

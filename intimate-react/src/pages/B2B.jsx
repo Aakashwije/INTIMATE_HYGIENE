@@ -2,6 +2,7 @@ import { useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
+import { useLang } from "../context/LangContext";
 
 const tiers = [
   {
@@ -101,6 +102,7 @@ const initForm = {
 };
 
 export default function B2B() {
+  const { t } = useLang();
   const [form, setForm] = useState(initForm);
   const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -137,11 +139,10 @@ export default function B2B() {
             Bulk & Business Orders
           </span>
           <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md">
-            B2B Solutions
+            {t.b2bHeroTitle}
           </h1>
           <p className="text-lg md:text-xl leading-relaxed opacity-95">
-            Volume pricing, custom branding, and dedicated support for hotels,
-            hospitals, offices & more.
+            {t.b2bHeroSub}
           </p>
         </div>
       </section>

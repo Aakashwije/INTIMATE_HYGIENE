@@ -96,6 +96,7 @@ const categoryColors = {
 };
 
 export default function Blog() {
+  const { t } = useLang();
   const [expanded, setExpanded] = useState(null);
 
   return (
@@ -105,85 +106,43 @@ export default function Blog() {
       {/* Hero */}
       <section
         className="relative flex items-center justify-center text-center text-white px-5 py-16 rounded-b-[40px] shadow-lg animate-fadeInHero overflow-hidden"
-        style={{
-          background:
-            'linear-gradient(rgba(40,167,69,0.85), rgba(40,167,69,0.85)), url("/hero.jpg") no-repeat center/cover',
-        }}
+        style={{ background: 'linear-gradient(rgba(40,167,69,0.85), rgba(40,167,69,0.85)), url("/hero.jpg") no-repeat center/cover' }}
       >
         <div className="absolute inset-0 bg-[rgba(40,167,69,0.25)] rounded-b-[40px]" />
         <div className="relative z-10 max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md">
-            Hygiene Insights
-          </h1>
-          <p className="text-lg md:text-xl leading-relaxed opacity-95">
-            Science-backed articles on hygiene, travel health, and why
-            protection matters every day.
-          </p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md">{t.blogHeroTitle}</h1>
+          <p className="text-lg md:text-xl leading-relaxed opacity-95">{t.blogHeroSub}</p>
         </div>
       </section>
 
       {/* Articles */}
       <main className="max-w-3xl mx-auto py-16 px-5 space-y-6">
-        {articles.map(
-          ({ id, category, readTime, date, title, excerpt, content }) => (
-            <article
-              key={id}
-              className="bg-white rounded-2xl shadow-md overflow-hidden"
-            >
-              <div className="p-7">
-                <div className="flex items-center gap-3 mb-4">
-                  <span
-                    className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[category]}`}
-                  >
-                    {category}
-                  </span>
-                  <span className="text-gray-400 text-xs">{date}</span>
-                  <span className="text-gray-400 text-xs">· {readTime}</span>
-                </div>
-                <h2 className="text-xl font-bold text-gray-800 mb-3">
-                  {title}
-                </h2>
-                <p className="text-gray-500 leading-relaxed mb-4">{excerpt}</p>
-
-                {expanded === id && (
-                  <div className="mt-4 space-y-3 border-t border-gray-100 pt-4">
-                    {content.map((para, i) => (
-                      <p
-                        key={i}
-                        className="text-gray-600 leading-relaxed text-sm"
-                      >
-                        {para}
-                      </p>
-                    ))}
-                  </div>
-                )}
-
-                <button
-                  onClick={() => setExpanded(expanded === id ? null : id)}
-                  className="mt-4 text-[#28a745] font-semibold hover:underline text-sm"
-                >
-                  {expanded === id ? "← Show Less" : "Read Full Article →"}
-                </button>
+        {articles.map(({ id, category, readTime, date, title, excerpt, content }) => (
+          <article key={id} className="bg-white rounded-2xl shadow-md overflow-hidden">
+            <div className="p-7">
+              <div className="flex items-center gap-3 mb-4">
+                <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[category]}`}>{category}</span>
+                <span className="text-gray-400 text-xs">{date}</span>
+                <span className="text-gray-400 text-xs">· {readTime}</span>
               </div>
-            </article>
-          ),
-        )}
-      </main>
+              <h2 className="text-xl font-bold text-gray-800 mb-3">{title}</h2>
+              <p className="text-gray-500 leading-relaxed mb-4">{excerpt}</p>
 
-      {/* CTA */}
-      <section className="bg-[#28a745] text-white text-center py-16 px-5">
-        <h2 className="text-2xl font-bold mb-4">Ready to Protect Yourself?</h2>
-        <p className="text-lg mb-6 opacity-95">
-          Start with our eco-friendly disposable toilet seat covers — available
-          in single, travel, and enterprise packs.
-        </p>
-        <a
-          href="/products"
-          className="inline-block px-8 py-3 font-bold bg-white text-[#28a745] rounded-lg hover:bg-gray-100 hover:-translate-y-1 hover:shadow-lg transition-all duration-300"
-        >
-          Shop Now
-        </a>
-      </section>
+              {expanded === id && (
+                <div className="mt-4 space-y-3 border-t border-gray-100 pt-4">
+                  {content.map((para, i) => (
+                    <p key={i} className="text-gray-600 leading-relaxed text-sm">{para}</p>
+                  ))}
+                </div>
+              )}
+
+              <button onClick={() => setExpanded(expanded === id ? null : id)} className="mt-4 text-[#28a745] font-semibold hover:underline text-sm">
+                {expanded === id ? `← ${t.showLess}` : `${t.readMore} →`}
+              </button>
+            </div>
+          </article>
+        ))}
+      </main>
 
       <Footer />
       <ScrollToTop />
