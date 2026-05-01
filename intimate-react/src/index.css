@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --font-poppins: 'Poppins', sans-serif;
+  --color-green-primary: #28a745;
+  --color-green-dark: #1d7a34;
+  --color-green-light: #5cd65c;
+}
+
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Custom animations not expressible in Tailwind */
+@keyframes loaderBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+@keyframes bounceLogo {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+@keyframes fadeInScreen {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInHero {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes floatBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes slideDown {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-loaderBounce { animation: loaderBounce 1.2s infinite ease-in-out; }
+.animate-bounceLogo { animation: bounceLogo 2s infinite; }
+.animate-fadeInScreen { animation: fadeInScreen 1s ease forwards; }
+.animate-slideUp { animation: slideUp 1.2s ease forwards; }
+.animate-fadeInHero { animation: fadeInHero 1.2s ease-in-out; }
+.animate-floatBadge { animation: floatBadge 2.5s ease-in-out infinite; }
+.animate-slideDown { animation: slideDown 0.3s ease forwards; }
+
+.loader-dot-1 { animation-delay: 0s; }
+.loader-dot-2 { animation-delay: 0.2s; }
+.loader-dot-3 { animation-delay: 0.4s; }
+.loader-dot-4 { animation-delay: 0.6s; }
