@@ -4,9 +4,11 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import {
     faAddressCard,
+    faBuilding,
     faHouseChimney,
     faLightbulb,
-    faQuestion,
+    faNewspaper,
+    faQuestion
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
@@ -17,6 +19,8 @@ const navItems = [
   { to: "/about", label: "About", icon: faAddressCard },
   { to: "/products", label: "Products", icon: faProductHunt },
   { to: "/benefits", label: "Benefits", icon: faLightbulb },
+  { to: "/blog", label: "Blog", icon: faNewspaper },
+  { to: "/b2b", label: "B2B", icon: faBuilding },
   { to: "/faq", label: "FAQ", icon: faQuestion },
   { to: "/contact", label: "Contact", icon: faFacebookMessenger },
 ];
@@ -38,14 +42,14 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <ul className="hidden md:flex gap-5 list-none">
+        <ul className="hidden md:flex gap-1 list-none">
           {navItems.map(({ to, label, icon }) => {
             const isActive = location.pathname === to;
             return (
               <li key={to}>
                 <Link
                   to={to}
-                  className={`flex items-center gap-2 px-5 py-2 font-medium rounded-full transition-all duration-300 ${
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                     isActive
                       ? "bg-[#28a745] text-white scale-105"
                       : "text-gray-800 hover:bg-[#28a745] hover:text-white hover:scale-105"

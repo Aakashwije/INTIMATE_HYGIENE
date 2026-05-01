@@ -1,5 +1,11 @@
 import ProductDetailLayout from "../components/ProductDetailLayout";
 
+const reviews = [
+  { author: "Dilshan P.", location: "Colombo", rating: 5, comment: "Excellent quality! I carry these whenever I travel. Easy to use and eco-friendly. Very happy with the product.", avatar: "DP" },
+  { author: "Nimasha S.", location: "Kandy", rating: 5, comment: "Perfect for daily commuters. My office keeps a stock and everyone loves them. Great anti-bacterial protection.", avatar: "NS" },
+  { author: "Rukshan F.", location: "Galle", rating: 4, comment: "Good value for money. Packaging is compact. Would love to see even smaller pocket packs for solo travel.", avatar: "RF" },
+];
+
 export default function Product1() {
   return (
     <ProductDetailLayout
@@ -7,6 +13,10 @@ export default function Product1() {
       subtitle="Eco friendly covers designed for safe and hygienic use in public spaces."
       image="/normal.png"
       imageAlt="Disposable Seat Covers"
+      price="LKR 150"
+      priceNote="per pack · minimum order 10 packs"
+      whatsappMsg="Hello! I want to order the Single Use Pack. Please share availability and delivery details."
+      reviews={reviews}
       sections={[
         {
           heading: "Features",

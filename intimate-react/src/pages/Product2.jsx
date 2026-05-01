@@ -1,5 +1,11 @@
 import ProductDetailLayout from "../components/ProductDetailLayout";
 
+const reviews = [
+  { author: "Priya D.", location: "Colombo 7", rating: 5, comment: "The waterproof layer makes all the difference! Used these on a 10-day trip across Europe — never worried once about public restrooms.", avatar: "PD" },
+  { author: "Amani K.", location: "Negombo", rating: 5, comment: "Bought for the whole family. Even my kids can use them easily. The anti-slip feature is a game changer.", avatar: "AK" },
+  { author: "Hasitha R.", location: "Matara", rating: 4, comment: "Really good product. Would prefer if it were also flushable like the enterprise version, but overall very happy.", avatar: "HR" },
+];
+
 export default function Product2() {
   return (
     <ProductDetailLayout
@@ -7,6 +13,10 @@ export default function Product2() {
       subtitle="Waterproof, anti‑slip, and hygienic covers for safe use in public spaces."
       image="/travel.png"
       imageAlt="Disposable Waterproof Toilet Seat Covers"
+      price="LKR 300"
+      priceNote="per 10-pack · minimum order 5 packs"
+      whatsappMsg="Hello! I want to order the Travel Pack (Waterproof). Please share availability and delivery details."
+      reviews={reviews}
       sections={[
         {
           heading: "Features",

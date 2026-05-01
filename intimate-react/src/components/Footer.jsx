@@ -38,6 +38,9 @@ export default function Footer() {
               ["About", "/about"],
               ["Products", "/products"],
               ["Benefits", "/benefits"],
+              ["Blog", "/blog"],
+              ["B2B Orders", "/b2b"],
+              ["Referral", "/referral"],
               ["FAQ", "/faq"],
               ["Contact", "/contact"],
             ].map(([label, to]) => (

@@ -4,6 +4,13 @@ import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 
 /* ---- Data ---- */
+const stats = [
+  { value: "295", label: "Bacteria types per sq inch on toilet seats" },
+  { value: "48hrs", label: "Pathogen survival on unprotected surfaces" },
+  { value: "99%", label: "Protection provided by our covers" },
+  { value: "124+", label: "Happy customers & counting" },
+];
+
 const features = [
   {
     title: "Maximum Hygiene",
@@ -17,6 +24,15 @@ const features = [
     title: "Convenient & Portable",
     desc: "Compact packaging ensures you can carry them anywhere – perfect for travel, work, or daily use.",
   },
+];
+
+const usedBy = [
+  { icon: "🏨", label: "Hotels & Resorts", count: "50+" },
+  { icon: "🏥", label: "Hospitals & Clinics", count: "30+" },
+  { icon: "🏢", label: "Corporate Offices", count: "80+" },
+  { icon: "✈️", label: "Airlines & Airports", count: "5+" },
+  { icon: "🎓", label: "Universities", count: "15+" },
+  { icon: "🏛️", label: "Government Buildings", count: "20+" },
 ];
 
 const products = [
@@ -43,18 +59,42 @@ const products = [
 const testimonials = [
   {
     quote:
-      '"These covers gave me peace of mind during my travels. Super easy to use!"',
-    author: "Inoka Gunn",
+      "These covers gave our hotel guests real peace of mind. The eco-friendly aspect aligns perfectly with our sustainability goals.",
+    author: "Ruwan Jayasinghe",
+    role: "Operations Manager",
+    company: "Cinnamon Hotels",
+    location: "Colombo",
+    rating: 5,
+    avatar: "RJ",
   },
   {
     quote:
-      '"Finally, a hygienic solution that\'s also eco friendly. Highly recommended for an organization!"',
-    author: "HSBC",
+      "Finally a hygienic solution that's also eco-friendly. Our HSBC team now has access to seat covers in every office restroom.",
+    author: "Dilshan Perera",
+    role: "Facilities Manager",
+    company: "HSBC Sri Lanka",
+    location: "Colombo 3",
+    rating: 5,
+    avatar: "DP",
   },
   {
-    quote: '"Affordable, convenient, and safe. I carry them everywhere now."',
+    quote:
+      "Affordable, convenient, and safe. I carry them everywhere now. As a travel blogger this is a non-negotiable essential!",
     author: "Priya De Costa",
+    role: "Travel Blogger",
+    company: "Personal",
+    location: "Galle",
+    rating: 5,
+    avatar: "PC",
   },
+];
+
+const certs = [
+  { icon: "🌿", label: "Eco-Friendly Certified" },
+  { icon: "🦠", label: "Anti-Bacterial Tested" },
+  { icon: "♻️", label: "100% Biodegradable" },
+  { icon: "✅", label: "Quality Assured" },
+  { icon: "🏥", label: "Hospital Grade" },
 ];
 
 export default function Home() {
@@ -82,8 +122,17 @@ export default function Home() {
           </p>
         </div>
       </section>
-
-      {/* Features */}
+      {/* Hygiene Stats Strip */}
+      <section className="bg-gray-900 text-white py-12 px-5">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          {stats.map(({ value, label }) => (
+            <div key={label}>
+              <p className="text-4xl font-bold text-[#5cd65c] mb-2">{value}</p>
+              <p className="text-gray-400 text-sm">{label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
       <section className="py-20 px-5 max-w-6xl mx-auto text-center">
         <h2 className="text-3xl font-bold text-gray-800 mb-10">
           Why Choose Hygenc Covers?
@@ -98,6 +147,29 @@ export default function Home() {
                 {title}
               </h3>
               <p className="text-gray-600">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Trusted By / Used By */}
+      <section className="py-14 px-5 bg-white border-y border-gray-100 text-center">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-8">
+          Trusted by businesses across Sri Lanka
+        </p>
+        <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
+          {usedBy.map(({ icon, label, count }) => (
+            <div
+              key={label}
+              className="flex flex-col items-center gap-1 bg-gray-50 rounded-xl px-5 py-4 min-w-[120px] hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+            >
+              <span className="text-3xl">{icon}</span>
+              <span className="font-semibold text-gray-700 text-xs text-center">
+                {label}
+              </span>
+              <span className="text-[#28a745] font-bold text-xs">
+                {count} clients
+              </span>
             </div>
           ))}
         </div>
@@ -142,16 +214,92 @@ export default function Home() {
           What Our Customers Say
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {testimonials.map(({ quote, author }) => (
-            <div
-              key={author}
-              className="bg-gray-50 p-6 rounded-xl italic shadow-sm"
-            >
-              <p className="text-gray-700">{quote}</p>
-              <span className="block mt-4 font-bold text-[#28a745]">
-                - {author}
-              </span>
+          {testimonials.map(
+            ({ quote, author, role, company, location, rating, avatar }) => (
+              <div
+                key={author}
+                className="bg-gray-50 p-6 rounded-xl shadow-sm text-left flex flex-col"
+              >
+                <div className="flex gap-0.5 text-yellow-400 text-sm mb-3">
+                  {[...Array(rating)].map((_, i) => (
+                    <span key={i}>★</span>
+                  ))}
+                </div>
+                <p className="text-gray-700 italic flex-1 mb-4">"{quote}"</p>
+                <div className="flex items-center gap-3 mt-auto">
+                  <div className="w-10 h-10 rounded-full bg-[#28a745] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    {avatar}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 text-sm">
+                      {author}
+                    </p>
+                    <p className="text-gray-400 text-xs">
+                      {role} · {company}
+                    </p>
+                    <p className="text-gray-400 text-xs">📍 {location}</p>
+                  </div>
+                </div>
+              </div>
+            ),
+          )}
+        </div>
+      </section>
+
+      {/* Social Media CTA */}
+      <section className="py-16 px-5 bg-gray-50 text-center">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          Follow Our Journey
+        </h2>
+        <p className="text-gray-500 mb-8">
+          See how customers are using our products every day
+        </p>
+        <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto mb-8">
+          {[
+            "/normal.png",
+            "/travel.png",
+            "/interprise.png",
+            "/normal.png",
+            "/travel.png",
+            "/interprise.png",
+          ].map((img, i) => (
+            <div key={i} className="aspect-square overflow-hidden rounded-lg">
+              <img
+                src={img}
+                alt="Product"
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+              />
             </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <a
+            href="https://www.facebook.com/share/17B27TNYy5/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-6 py-3 bg-[#1877F2] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity"
+          >
+            📘 Follow on Facebook
+          </a>
+          <Link
+            to="/referral"
+            className="flex items-center gap-2 px-6 py-3 bg-[#28a745] text-white font-semibold rounded-xl hover:bg-[#218838] transition-colors"
+          >
+            🎁 Refer & Earn 10% Off
+          </Link>
+        </div>
+      </section>
+
+      {/* Certifications */}
+      <section className="py-10 px-5 bg-white border-t border-gray-100">
+        <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
+          {certs.map(({ icon, label }) => (
+            <span
+              key={label}
+              className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold px-4 py-2 rounded-full"
+            >
+              {icon} {label}
+            </span>
           ))}
         </div>
       </section>

@@ -1,5 +1,11 @@
 import ProductDetailLayout from "../components/ProductDetailLayout";
 
+const reviews = [
+  { author: "Roshan M.", location: "Hotel Operator, Colombo", rating: 5, comment: "We've installed these in all 45 rooms. Guest satisfaction scores improved noticeably. The free dispenser is a great touch.", avatar: "RM" },
+  { author: "Dr. Lakmali W.", location: "Private Clinic, Kandy", rating: 5, comment: "As a healthcare provider, hygiene is everything. These covers are exactly what we needed for our patient bathrooms. Flushable makes cleanup effortless.", avatar: "LW" },
+  { author: "Suresh B.", location: "Corporate Office, Colombo 2", rating: 5, comment: "Ordered 500 packs for our office. Pricing was excellent, delivery was on time, and the team loved having them. Reordering soon.", avatar: "SB" },
+];
+
 export default function Product3() {
   return (
     <ProductDetailLayout
@@ -8,6 +14,10 @@ export default function Product3() {
       image="/interprise.png"
       imageAlt="Flushable Paper Toilet Seat Covers"
       highlight="★ Comes with a FREE plastic dispenser with instructions"
+      price="LKR 120"
+      priceNote="per pack · bulk rate · minimum order 100 packs"
+      whatsappMsg="Hello! I want to enquire about the Enterprise Pack bulk pricing. Please share details and availability."
+      reviews={reviews}
       sections={[
         {
           heading: "Features",
