@@ -71,6 +71,28 @@ function CustomerApp() {
   );
 }
 
+function AdminRouter() {
+  return (
+    <AdminAuthProvider>
+      <Routes>
+        <Route index element={<AdminLogin />} />
+        <Route element={<AdminLayout />}>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route path="inquiries" element={<AdminInquiries />} />
+          <Route path="newsletter" element={<AdminNewsletter />} />
+          <Route path="quiz" element={<AdminQuiz />} />
+          <Route path="settings" element={<AdminSettings />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+        </Route>
+      </Routes>
+    </AdminAuthProvider>
+  );
+}
+
 function App() {
   return (
     <LangProvider>
@@ -78,33 +100,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* ── Admin routes (completely isolated, no customer overlays) ── */}
-            <Route
-              path="/admin"
-              element={
-                <AdminAuthProvider>
-                  <AdminLogin />
-                </AdminAuthProvider>
-              }
-            />
-            <Route
-              path="/admin/*"
-              element={
-                <AdminAuthProvider>
-                  <AdminLayout />
-                </AdminAuthProvider>
-              }
-            >
-              <Route path="dashboard" element={<AdminDashboard />} />
-              <Route path="analytics" element={<AdminAnalytics />} />
-              <Route path="orders" element={<AdminOrders />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="customers" element={<AdminCustomers />} />
-              <Route path="inquiries" element={<AdminInquiries />} />
-              <Route path="newsletter" element={<AdminNewsletter />} />
-              <Route path="quiz" element={<AdminQuiz />} />
-              <Route path="settings" element={<AdminSettings />} />
-              <Route index element={<Navigate to="dashboard" replace />} />
-            </Route>
+            <Route path="/admin/*" element={<AdminRouter />} />
 
             {/* ── Customer-facing routes ── */}
             <Route path="/*" element={<CustomerApp />} />
