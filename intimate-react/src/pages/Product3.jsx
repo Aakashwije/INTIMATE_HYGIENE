@@ -35,7 +35,7 @@ export default function Product3() {
       image="/interprise.png"
       imageAlt="Flushable Paper Toilet Seat Covers"
       highlight="★ Comes with a FREE plastic dispenser with instructions"
-      price="LKR 120"
+      price="LKR 750"
       priceNote="per pack · bulk rate · minimum order 100 packs"
       whatsappMsg="Hello! I want to enquire about the Enterprise Pack bulk pricing. Please share details and availability."
       reviews={reviews}

@@ -34,7 +34,7 @@ export default function Product2() {
       subtitle="Waterproof, anti‑slip, and hygienic covers for safe use in public spaces."
       image="/travel.png"
       imageAlt="Disposable Waterproof Toilet Seat Covers"
-      price="LKR 300"
+      price="LKR 350"
       priceNote="per 10-pack · minimum order 5 packs"
       whatsappMsg="Hello! I want to order the Travel Pack (Waterproof). Please share availability and delivery details."
       reviews={reviews}

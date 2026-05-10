@@ -34,7 +34,7 @@ export default function Product1() {
       subtitle="Eco friendly covers designed for safe and hygienic use in public spaces."
       image="/normal.png"
       imageAlt="Disposable Seat Covers"
-      price="LKR 150"
+      price="LKR 250"
       priceNote="per pack · minimum order 10 packs"
       whatsappMsg="Hello! I want to order the Single Use Pack. Please share availability and delivery details."
       reviews={reviews}

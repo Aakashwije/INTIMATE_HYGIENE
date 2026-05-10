@@ -1,4 +1,20 @@
-import { Backpack, Building2, CheckCircle, GraduationCap, HeartPulse, Hotel, Landmark, Leaf, MapPin, MessageCircle, Plane, Recycle, Shield, ShoppingCart, Star } from "lucide-react";
+import {
+    Backpack,
+    Building2,
+    CheckCircle,
+    GraduationCap,
+    HeartPulse,
+    Hotel,
+    Landmark,
+    Leaf,
+    MapPin,
+    MessageCircle,
+    Plane,
+    Recycle,
+    Shield,
+    ShoppingCart,
+    Star,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import BeforeAfterSlider from "../components/BeforeAfterSlider";
 import CountUp from "../components/CountUp";
@@ -12,17 +28,18 @@ import TrustBadges from "../components/TrustBadges";
 import { useLang } from "../context/LangContext";
 
 const usedBy = [
-  { icon: Hotel,        labelKey: "usedByHotels",       count: "50+" },
-  { icon: HeartPulse,   labelKey: "usedByHospitals",    count: "30+" },
-  { icon: Building2,    labelKey: "usedByOffices",       count: "80+" },
-  { icon: Plane,        labelKey: "usedByAirlines",      count: "5+"  },
-  { icon: GraduationCap,labelKey: "usedByUniversities",  count: "15+" },
-  { icon: Landmark,     labelKey: "usedByGovt",          count: "20+" },
+  { icon: Hotel, labelKey: "usedByHotels", count: "50+" },
+  { icon: HeartPulse, labelKey: "usedByHospitals", count: "30+" },
+  { icon: Building2, labelKey: "usedByOffices", count: "80+" },
+  { icon: Plane, labelKey: "usedByAirlines", count: "5+" },
+  { icon: GraduationCap, labelKey: "usedByUniversities", count: "15+" },
+  { icon: Landmark, labelKey: "usedByGovt", count: "20+" },
 ];
 
 const testimonials = [
   {
-    quote: "These covers gave our hotel guests real peace of mind. The eco-friendly aspect aligns perfectly with our sustainability goals.",
+    quote:
+      "These covers gave our hotel guests real peace of mind. The eco-friendly aspect aligns perfectly with our sustainability goals.",
     author: "Ruwan Jayasinghe",
     role: "Operations Manager",
     company: "Cinnamon Hotels",
@@ -31,7 +48,8 @@ const testimonials = [
     avatar: "RJ",
   },
   {
-    quote: "Finally a hygienic solution that's also eco-friendly. Our HSBC team now has access to seat covers in every office restroom.",
+    quote:
+      "Finally a hygienic solution that's also eco-friendly. Our HSBC team now has access to seat covers in every office restroom.",
     author: "Dilshan Perera",
     role: "Facilities Manager",
     company: "HSBC Sri Lanka",
@@ -40,7 +58,8 @@ const testimonials = [
     avatar: "DP",
   },
   {
-    quote: "Affordable, convenient, and safe. I carry them everywhere now. As a travel blogger this is a non-negotiable essential!",
+    quote:
+      "Affordable, convenient, and safe. I carry them everywhere now. As a travel blogger this is a non-negotiable essential!",
     author: "Priya De Costa",
     role: "Travel Blogger",
     company: "Personal",
@@ -50,31 +69,66 @@ const testimonials = [
   },
 ];
 
-const certKeys  = ["certEco", "certBacterial", "certBio", "certQuality", "certHospital"];
+const certKeys = [
+  "certEco",
+  "certBacterial",
+  "certBio",
+  "certQuality",
+  "certHospital",
+];
 const certIcons = [Leaf, Shield, Recycle, CheckCircle, HeartPulse];
 
-const pressLogos = ["Cinnamon", "HSBC", "SriLankan Airlines", "Hilton", "MAS Holdings", "Dialog"];
+const pressLogos = [
+  "Cinnamon",
+  "HSBC",
+  "SriLankan Airlines",
+  "Hilton",
+  "MAS Holdings",
+  "Dialog",
+];
 
 export default function Home() {
   const { t } = useLang();
 
   const stats = [
-    { value: 295,  suffix: "",    label: t.statsLabel1 },
-    { value: 48,   suffix: "hrs", label: t.statsLabel2 },
-    { value: 99,   suffix: "%",   label: t.statsLabel3 },
-    { value: 124,  suffix: "+",   label: t.statsLabel4 },
+    { value: 295, suffix: "", label: t.statsLabel1 },
+    { value: 48, suffix: "hrs", label: t.statsLabel2 },
+    { value: 99, suffix: "%", label: t.statsLabel3 },
+    { value: 124, suffix: "+", label: t.statsLabel4 },
   ];
 
   const features = [
-    { icon: Shield,   title: t.maxHygiene,         desc: t.maxHygieneDesc },
-    { icon: Leaf,     title: t.ecoFriendly,         desc: t.ecoFriendlyDesc },
-    { icon: Backpack, title: t.convenientPortable,  desc: t.convenientPortableDesc },
+    { icon: Shield, title: t.maxHygiene, desc: t.maxHygieneDesc },
+    { icon: Leaf, title: t.ecoFriendly, desc: t.ecoFriendlyDesc },
+    {
+      icon: Backpack,
+      title: t.convenientPortable,
+      desc: t.convenientPortableDesc,
+    },
   ];
 
   const products = [
-    { img: "/normal.png",    title: t.standardPack,   desc: t.standardPackDesc,   link: "/products/1", price: "LKR 150" },
-    { img: "/travel.png",    title: t.travelKit,       desc: t.travelKitDesc,       link: "/products/2", price: "LKR 300" },
-    { img: "/interprise.png",title: t.enterprisePack,  desc: t.enterprisePackDesc,  link: "/products/3", price: "LKR 120" },
+    {
+      img: "/normal.png",
+      title: t.standardPack,
+      desc: t.standardPackDesc,
+      link: "/products/1",
+      price: "LKR 250",
+    },
+    {
+      img: "/travel.png",
+      title: t.travelKit,
+      desc: t.travelKitDesc,
+      link: "/products/2",
+      price: "LKR 350",
+    },
+    {
+      img: "/interprise.png",
+      title: t.enterprisePack,
+      desc: t.enterprisePackDesc,
+      link: "/products/3",
+      price: "LKR 750",
+    },
   ];
 
   return (
@@ -85,7 +139,10 @@ export default function Home() {
       <section className="relative overflow-hidden text-white animate-fadeInHero">
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(135deg, rgba(13,63,26,0.92) 0%, rgba(40,167,69,0.85) 50%, rgba(29,122,52,0.92) 100%), url("/hero.jpg") center/cover' }}
+          style={{
+            background:
+              'linear-gradient(135deg, rgba(13,63,26,0.92) 0%, rgba(40,167,69,0.85) 50%, rgba(29,122,52,0.92) 100%), url("/hero.jpg") center/cover',
+          }}
         />
         <div className="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-[#5cd65c]/30 blur-3xl animate-blob" />
         <div className="absolute -bottom-40 -right-20 w-[28rem] h-[28rem] rounded-full bg-emerald-300/20 blur-3xl animate-blob-slow" />
@@ -94,7 +151,12 @@ export default function Home() {
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-5 py-16 sm:py-20 md:py-28 text-center">
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 mb-5 sm:mb-6 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-[11px] sm:text-sm font-semibold animate-slideInUp">
             <span className="flex gap-0.5 text-yellow-300">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />)}
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current"
+                />
+              ))}
             </span>
             <span>{t.heroBadge || "Sri Lanka's #1 Hygiene Brand"}</span>
           </div>
@@ -127,16 +189,31 @@ export default function Home() {
               { v: t.heroStat2, l: t.heroStat2Label },
               { v: t.heroStat3, l: t.heroStat3Label },
             ].map(({ v, l }, i) => (
-              <div key={i} className="glass-dark rounded-xl sm:rounded-2xl py-3 sm:py-4 px-1.5 sm:px-2 hover:-translate-y-1 transition-transform duration-300">
-                <p className="text-lg sm:text-xl md:text-3xl font-bold text-yellow-200">{v}</p>
-                <p className="text-[10px] sm:text-xs md:text-sm text-white/80 mt-1 leading-tight">{l}</p>
+              <div
+                key={i}
+                className="glass-dark rounded-xl sm:rounded-2xl py-3 sm:py-4 px-1.5 sm:px-2 hover:-translate-y-1 transition-transform duration-300"
+              >
+                <p className="text-lg sm:text-xl md:text-3xl font-bold text-yellow-200">
+                  {v}
+                </p>
+                <p className="text-[10px] sm:text-xs md:text-sm text-white/80 mt-1 leading-tight">
+                  {l}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
-        <svg className="block w-full -mb-px" viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ height: 60 }}>
-          <path d="M0,32 C360,80 1080,0 1440,48 L1440,80 L0,80 Z" fill="white" />
+        <svg
+          className="block w-full -mb-px"
+          viewBox="0 0 1440 80"
+          preserveAspectRatio="none"
+          style={{ height: 60 }}
+        >
+          <path
+            d="M0,32 C360,80 1080,0 1440,48 L1440,80 L0,80 Z"
+            fill="white"
+          />
         </svg>
       </section>
 
@@ -147,8 +224,12 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(40,167,69,0.15),_transparent_60%)]" />
         <div className="relative max-w-6xl mx-auto">
           <Reveal>
-            <p className="text-center text-xs font-semibold text-[#5cd65c] uppercase tracking-widest mb-2">The Reality</p>
-            <h2 className="text-center text-2xl md:text-3xl font-bold mb-12">Why hygiene matters more than ever</h2>
+            <p className="text-center text-xs font-semibold text-[#5cd65c] uppercase tracking-widest mb-2">
+              The Reality
+            </p>
+            <h2 className="text-center text-2xl md:text-3xl font-bold mb-12">
+              Why hygiene matters more than ever
+            </h2>
           </Reveal>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map(({ value, suffix, label }, i) => (
@@ -171,9 +252,12 @@ export default function Home() {
           <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
             {t.whyUsBadge || "Why customers choose us"}
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">{t.whyChoose}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+            {t.whyChoose}
+          </h2>
           <p className="text-gray-500 max-w-xl mx-auto mb-12">
-            Built for the way you actually live — at home, on the road, and everywhere in between.
+            Built for the way you actually live — at home, on the road, and
+            everywhere in between.
           </p>
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -185,7 +269,9 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
                     <Icon className="w-8 h-8 text-[#28a745]" />
                   </div>
-                  <h3 className="text-[#28a745] font-bold text-xl mb-3">{title}</h3>
+                  <h3 className="text-[#28a745] font-bold text-xl mb-3">
+                    {title}
+                  </h3>
                   <p className="text-gray-600 leading-relaxed">{desc}</p>
                 </div>
               </div>
@@ -201,8 +287,12 @@ export default function Home() {
             <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
               {t.seeItInAction || "See It In Action"}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">{t.hygieneDifference}</h2>
-            <p className="text-gray-500 text-sm">{t.dragSliderTip || "Drag the slider to see the difference"} ↔</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+              {t.hygieneDifference}
+            </h2>
+            <p className="text-gray-500 text-sm">
+              {t.dragSliderTip || "Drag the slider to see the difference"} ↔
+            </p>
           </div>
         </Reveal>
         <Reveal variant="zoom">
@@ -218,7 +308,10 @@ export default function Home() {
         <div className="relative">
           <div className="flex animate-marquee whitespace-nowrap gap-12">
             {[...pressLogos, ...pressLogos].map((name, i) => (
-              <span key={i} className="text-2xl md:text-3xl font-bold text-gray-300 hover:text-[#28a745] transition-colors shrink-0">
+              <span
+                key={i}
+                className="text-2xl md:text-3xl font-bold text-gray-300 hover:text-[#28a745] transition-colors shrink-0"
+              >
                 {name}
               </span>
             ))}
@@ -229,8 +322,12 @@ export default function Home() {
       {/* TRUSTED-BY GRID */}
       <section className="py-14 px-5 bg-gradient-to-br from-green-50/40 to-white text-center">
         <Reveal>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">{t.trustedBy}</p>
-          <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">200+ organizations trust Hygenc</h3>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
+            {t.trustedBy}
+          </p>
+          <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">
+            200+ organizations trust Hygenc
+          </h3>
         </Reveal>
         <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
           {usedBy.map(({ icon: Icon, labelKey, count }, i) => (
@@ -239,8 +336,12 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#28a745]" />
                 </div>
-                <span className="font-semibold text-gray-700 text-xs text-center">{t[labelKey] || labelKey}</span>
-                <span className="text-[#28a745] font-bold text-xs">{count} {t.clients}</span>
+                <span className="font-semibold text-gray-700 text-xs text-center">
+                  {t[labelKey] || labelKey}
+                </span>
+                <span className="text-[#28a745] font-bold text-xs">
+                  {count} {t.clients}
+                </span>
               </div>
             </Reveal>
           ))}
@@ -253,7 +354,9 @@ export default function Home() {
           <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
             Bestsellers
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">{t.ourBestsellers}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+            {t.ourBestsellers}
+          </h2>
           <p className="text-gray-500 max-w-xl mx-auto mb-12">
             Three packs, one mission — protect what matters wherever you go.
           </p>
@@ -263,13 +366,20 @@ export default function Home() {
             <Reveal key={title} delay={i * 120}>
               <div className="flex flex-col bg-white rounded-2xl shadow-lg hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 group">
                 <div className="relative overflow-hidden">
-                  <img src={img} alt={title} loading="lazy" className="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img
+                    src={img}
+                    alt={title}
+                    loading="lazy"
+                    className="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
                   <div className="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[#28a745] text-xs font-bold rounded-full shadow">
                     {price}
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-1 text-left">
-                  <h3 className="text-gray-800 font-bold text-lg mb-2">{title}</h3>
+                  <h3 className="text-gray-800 font-bold text-lg mb-2">
+                    {title}
+                  </h3>
                   <p className="text-gray-600 text-sm flex-1 mb-4">{desc}</p>
                   <Link
                     to={link}
@@ -283,7 +393,10 @@ export default function Home() {
           ))}
         </div>
         <Reveal>
-          <Link to="/products" className="inline-block mt-10 text-[#28a745] font-bold hover:underline">
+          <Link
+            to="/products"
+            className="inline-block mt-10 text-[#28a745] font-bold hover:underline"
+          >
             {t.viewAllProducts || "View All Products →"}
           </Link>
         </Reveal>
@@ -295,32 +408,46 @@ export default function Home() {
           <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
             Loved by 10,000+ Sri Lankans
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12">{t.whatCustomersSay}</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-12">
+            {t.whatCustomersSay}
+          </h2>
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {testimonials.map(({ quote, author, role, company, location, rating, avatar }, i) => (
-            <Reveal key={author} delay={i * 120}>
-              <div className="bg-white p-7 rounded-2xl shadow-lg text-left flex flex-col h-full hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-gray-100 relative">
-                <div className="absolute -top-3 left-7 text-5xl text-[#28a745] opacity-20 leading-none">"</div>
-                <div className="flex gap-0.5 text-yellow-400 mb-3">
-                  {[...Array(rating)].map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
-                </div>
-                <p className="text-gray-700 italic flex-1 mb-5 leading-relaxed">"{quote}"</p>
-                <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#28a745] to-[#5cd65c] flex items-center justify-center text-white font-bold text-sm shrink-0">
-                    {avatar}
+          {testimonials.map(
+            ({ quote, author, role, company, location, rating, avatar }, i) => (
+              <Reveal key={author} delay={i * 120}>
+                <div className="bg-white p-7 rounded-2xl shadow-lg text-left flex flex-col h-full hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-gray-100 relative">
+                  <div className="absolute -top-3 left-7 text-5xl text-[#28a745] opacity-20 leading-none">
+                    "
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-800 text-sm">{author}</p>
-                    <p className="text-gray-400 text-xs">{role} · {company}</p>
-                    <p className="text-gray-400 text-xs flex items-center gap-1">
-                      <MapPin className="w-3 h-3" /> {location}
-                    </p>
+                  <div className="flex gap-0.5 text-yellow-400 mb-3">
+                    {[...Array(rating)].map((_, j) => (
+                      <Star key={j} className="w-4 h-4 fill-current" />
+                    ))}
+                  </div>
+                  <p className="text-gray-700 italic flex-1 mb-5 leading-relaxed">
+                    "{quote}"
+                  </p>
+                  <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
+                    <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#28a745] to-[#5cd65c] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                      {avatar}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800 text-sm">
+                        {author}
+                      </p>
+                      <p className="text-gray-400 text-xs">
+                        {role} · {company}
+                      </p>
+                      <p className="text-gray-400 text-xs flex items-center gap-1">
+                        <MapPin className="w-3 h-3" /> {location}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            ),
+          )}
         </div>
       </section>
 
@@ -331,14 +458,23 @@ export default function Home() {
             <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
               {t.faqTeaserTitle || "Quick Answers"}
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">{t.faqHeroTitle}</h2>
-            <p className="text-gray-500">{t.faqTeaserSub || "The questions our customers ask most"}</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+              {t.faqHeroTitle}
+            </h2>
+            <p className="text-gray-500">
+              {t.faqTeaserSub || "The questions our customers ask most"}
+            </p>
           </div>
         </Reveal>
         <FAQAccordion />
         <Reveal>
           <div className="text-center mt-8">
-            <Link to="/faq" className="text-[#28a745] font-bold hover:underline">See all FAQs →</Link>
+            <Link
+              to="/faq"
+              className="text-[#28a745] font-bold hover:underline"
+            >
+              See all FAQs →
+            </Link>
           </div>
         </Reveal>
       </section>
@@ -346,14 +482,28 @@ export default function Home() {
       {/* SOCIAL CTA */}
       <section className="py-16 px-5 bg-gradient-to-br from-gray-50 to-white text-center">
         <Reveal>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">{t.followJourney}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+            {t.followJourney}
+          </h2>
           <p className="text-gray-500 mb-8">{t.followJourneySub}</p>
         </Reveal>
         <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto mb-8">
-          {["/normal.png", "/travel.png", "/interprise.png", "/normal.png", "/travel.png", "/interprise.png"].map((img, i) => (
+          {[
+            "/normal.png",
+            "/travel.png",
+            "/interprise.png",
+            "/normal.png",
+            "/travel.png",
+            "/interprise.png",
+          ].map((img, i) => (
             <Reveal key={i} delay={i * 50} variant="zoom">
               <div className="aspect-square overflow-hidden rounded-lg group cursor-pointer">
-                <img src={img} loading="lazy" alt="Product" className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500" />
+                <img
+                  src={img}
+                  loading="lazy"
+                  alt="Product"
+                  className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500"
+                />
               </div>
             </Reveal>
           ))}
@@ -399,8 +549,12 @@ export default function Home() {
         <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-yellow-200/15 blur-3xl animate-blob" />
         <div className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full bg-[#5cd65c]/30 blur-3xl animate-blob-slow" />
         <Reveal>
-          <h2 className="text-3xl md:text-4xl font-bold mb-5 relative z-10">{t.readyProtect}</h2>
-          <p className="text-lg mb-8 opacity-90 relative z-10 max-w-xl mx-auto">{t.readyProtectSub}</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-5 relative z-10">
+            {t.readyProtect}
+          </h2>
+          <p className="text-lg mb-8 opacity-90 relative z-10 max-w-xl mx-auto">
+            {t.readyProtectSub}
+          </p>
           <div className="relative z-10 flex flex-wrap gap-3 justify-center">
             <Link
               to="/products"
