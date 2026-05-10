@@ -1,16 +1,16 @@
 import {
-    faFacebookMessenger,
-    faProductHunt,
+  faFacebookMessenger,
+  faProductHunt,
 } from "@fortawesome/free-brands-svg-icons";
 import {
-    faAddressCard,
-    faBalanceScale,
-    faBuilding,
-    faHouseChimney,
-    faLightbulb,
-    faNewspaper,
-    faQuestion,
-    faTruck,
+  faAddressCard,
+  faBalanceScale,
+  faBuilding,
+  faHouseChimney,
+  faLightbulb,
+  faNewspaper,
+  faQuestion,
+  faTruck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -54,11 +54,16 @@ export default function Navbar() {
           : "bg-white border-b border-gray-200"
       }`}
     >
-      <nav className={`flex justify-between items-center gap-4 lg:gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
-        scrolled ? "py-2 sm:py-2.5" : "py-3 sm:py-4"
-      }`}>
+      <nav
+        className={`flex justify-between items-center gap-4 lg:gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
+          scrolled ? "py-2 sm:py-2.5" : "py-3 sm:py-4"
+        }`}
+      >
         {/* Logo */}
-        <Link to="/home" className="flex items-center group shrink-0 mr-auto md:mr-0">
+        <Link
+          to="/home"
+          className="flex items-center group shrink-0 mr-auto md:mr-0"
+        >
           <img
             src="/fulllogo.png"
             alt="Hygenc Covers Logo"
@@ -103,9 +108,15 @@ export default function Navbar() {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
-            <span className={`h-[3px] w-6 bg-gray-800 rounded transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-            <span className={`h-[3px] w-6 bg-gray-800 rounded transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`} />
-            <span className={`h-[3px] w-6 bg-gray-800 rounded transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            <span
+              className={`h-[3px] w-6 bg-gray-800 rounded transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`}
+            />
+            <span
+              className={`h-[3px] w-6 bg-gray-800 rounded transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`}
+            />
+            <span
+              className={`h-[3px] w-6 bg-gray-800 rounded transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`}
+            />
           </button>
         </div>
       </nav>

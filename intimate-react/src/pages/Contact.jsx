@@ -9,20 +9,47 @@ import { useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
+import SEO from "../components/SEO";
 import { useLang } from "../context/LangContext";
 
 export default function Contact() {
   const { t } = useLang();
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
   const infoCards = [
-    { icon: faEnvelope, title: "Email", content: "intimatehygiene@gmail.com", href: "mailto:intimatehygiene@gmail.com" },
-    { icon: faPhoneAlt, title: "Phone", content: "+94707018171", href: "tel:+94707018171" },
-    { icon: faMapMarkerAlt, title: "Address", content: "193/12, Prasanna Uyana, Mattegoda", href: null },
-    { icon: faClock, title: "Business Hours", content: "Mon – Fri: 9AM – 6PM", href: null },
+    {
+      icon: faEnvelope,
+      title: "Email",
+      content: "intimatehygiene@gmail.com",
+      href: "mailto:intimatehygiene@gmail.com",
+    },
+    {
+      icon: faPhoneAlt,
+      title: "Phone",
+      content: "+94707018171",
+      href: "tel:+94707018171",
+    },
+    {
+      icon: faMapMarkerAlt,
+      title: "Address",
+      content: "193/12, Prasanna Uyana, Mattegoda",
+      href: null,
+    },
+    {
+      icon: faClock,
+      title: "Business Hours",
+      content: "Mon – Fri: 9AM – 6PM",
+      href: null,
+    },
   ];
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -32,28 +59,53 @@ export default function Contact() {
 
   return (
     <>
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Intimate Hygiene Enterprises. WhatsApp, email, or visit us. Fast support for orders and B2B enquiries in Sri Lanka."
+        path="/contact"
+      />
       <Navbar />
 
       {/* Hero */}
       <section
         className="relative flex items-center justify-center text-center text-white px-5 py-16 rounded-b-[40px] shadow-lg animate-fadeInHero overflow-hidden"
-        style={{ background: 'linear-gradient(rgba(40,167,69,0.85), rgba(40,167,69,0.85)), url("/hero.jpg") no-repeat center/cover' }}
+        style={{
+          background:
+            'linear-gradient(rgba(40,167,69,0.85), rgba(40,167,69,0.85)), url("/hero.jpg") no-repeat center/cover',
+        }}
       >
         <div className="absolute inset-0 bg-[rgba(40,167,69,0.25)] rounded-b-[40px]" />
         <div className="relative z-10 max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md">{t.contactHeroTitle}</h1>
-          <p className="text-lg md:text-xl leading-relaxed opacity-95">{t.contactHeroSub}</p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 drop-shadow-md">
+            {t.contactHeroTitle}
+          </h1>
+          <p className="text-lg md:text-xl leading-relaxed opacity-95">
+            {t.contactHeroSub}
+          </p>
         </div>
       </section>
 
       {/* Info Cards */}
       <section className="py-16 px-5 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {infoCards.map(({ icon, title, content, href }) => (
-          <div key={title} className="bg-white rounded-xl shadow-md p-7 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
-            <FontAwesomeIcon icon={icon} className="text-[#28a745] text-3xl mb-4" />
-            <h3 className="font-semibold text-gray-800 text-lg mb-2">{title}</h3>
+          <div
+            key={title}
+            className="bg-white rounded-xl shadow-md p-7 text-center hover:-translate-y-2 hover:shadow-xl transition-all duration-300"
+          >
+            <FontAwesomeIcon
+              icon={icon}
+              className="text-[#28a745] text-3xl mb-4"
+            />
+            <h3 className="font-semibold text-gray-800 text-lg mb-2">
+              {title}
+            </h3>
             {href ? (
-              <a href={href} className="text-gray-600 hover:text-[#28a745] text-sm transition-colors">{content}</a>
+              <a
+                href={href}
+                className="text-gray-600 hover:text-[#28a745] text-sm transition-colors"
+              >
+                {content}
+              </a>
             ) : (
               <p className="text-gray-600 text-sm">{content}</p>
             )}
@@ -63,13 +115,54 @@ export default function Contact() {
 
       {/* Contact Form */}
       <section className="py-8 px-5 max-w-2xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">{t.sendMessage}</h2>
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-5 sm:p-8 space-y-5" noValidate>
-          <input type="text" name="name" placeholder={t.yourName} value={form.name} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />
-          <input type="email" name="email" placeholder={t.yourEmail} value={form.email} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />
-          <input type="text" name="subject" placeholder={t.subject} value={form.subject} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />
-          <textarea name="message" rows={6} placeholder={t.yourMessage} value={form.message} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors resize-none" />
-          <button type="submit" className="w-full bg-[#28a745] text-white font-bold py-3 rounded-lg hover:bg-[#218838] transition-colors">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+          {t.sendMessage}
+        </h2>
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-xl shadow-md p-5 sm:p-8 space-y-5"
+          noValidate
+        >
+          <input
+            type="text"
+            name="name"
+            placeholder={t.yourName}
+            value={form.name}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors"
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder={t.yourEmail}
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors"
+          />
+          <input
+            type="text"
+            name="subject"
+            placeholder={t.subject}
+            value={form.subject}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors"
+          />
+          <textarea
+            name="message"
+            rows={6}
+            placeholder={t.yourMessage}
+            value={form.message}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors resize-none"
+          />
+          <button
+            type="submit"
+            className="w-full bg-[#28a745] text-white font-bold py-3 rounded-lg hover:bg-[#218838] transition-colors"
+          >
             {t.send}
           </button>
         </form>

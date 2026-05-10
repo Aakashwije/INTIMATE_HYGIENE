@@ -21,6 +21,7 @@ import Product1 from "./pages/Product1";
 import Product2 from "./pages/Product2";
 import Product3 from "./pages/Product3";
 import Products from "./pages/Products";
+import Quiz from "./pages/Quiz";
 import Referral from "./pages/Referral";
 import Splash from "./pages/Splash";
 
@@ -53,6 +54,7 @@ function App() {
             <Route path="/referral" element={<Referral />} />
             <Route path="/delivery" element={<Delivery />} />
             <Route path="/order" element={<OrderTemplate />} />
+            <Route path="/quiz" element={<Quiz />} />
             <Route path="*" element={<Navigate to="/splash" replace />} />
           </Routes>
         </BrowserRouter>

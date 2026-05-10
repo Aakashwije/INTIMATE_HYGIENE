@@ -24,6 +24,7 @@ import Navbar from "../components/Navbar";
 import NewsletterSignup from "../components/NewsletterSignup";
 import Reveal from "../components/Reveal";
 import ScrollToTop from "../components/ScrollToTop";
+import SEO from "../components/SEO";
 import TrustBadges from "../components/TrustBadges";
 import { useLang } from "../context/LangContext";
 
@@ -133,6 +134,11 @@ export default function Home() {
 
   return (
     <>
+      <SEO
+        title="Eco-Friendly Disposable Toilet Seat Covers Sri Lanka"
+        description="Buy premium disposable toilet seat covers online in Sri Lanka. Eco-friendly, hygienic, biodegradable. Single Use, Travel & Enterprise packs available."
+        path="/home"
+      />
       <Navbar />
 
       {/* PREMIUM HERO */}

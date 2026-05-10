@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
+import SEO from "../components/SEO";
 import { useLang } from "../context/LangContext";
 
 const productDefs = [
@@ -63,6 +64,11 @@ export default function Compare() {
   const { t } = useLang();
   return (
     <>
+      <SEO
+        title="Compare Products"
+        description="Compare Single Use, Travel and Enterprise toilet seat cover packs side by side. Find the best fit for your home, travel, or business needs."
+        path="/compare"
+      />
       <Navbar />
 
       {/* Hero */}
