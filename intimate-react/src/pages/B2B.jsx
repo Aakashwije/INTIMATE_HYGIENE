@@ -79,7 +79,7 @@ export default function B2B() {
         `Monthly Volume: ${form.volume}\n` +
         `Requirements: ${form.message || "None"}`,
     );
-    window.open(`https://wa.me/94729991950?text=${msg}`, "_blank");
+    window.open(`https://wa.me/94707018171?text=${msg}`, "_blank");
   };
 
   return (

@@ -27,7 +27,7 @@ export default function DiscountPopup() {
 
   const handleRedeem = () => {
     const msg = `Hello! I'd like to redeem my 5% first-order discount. Code: ${CODE}. Please share available products.`;
-    window.open(`https://wa.me/94729991950?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://wa.me/94707018171?text=${encodeURIComponent(msg)}`, "_blank");
     setShow(false);
   };
 

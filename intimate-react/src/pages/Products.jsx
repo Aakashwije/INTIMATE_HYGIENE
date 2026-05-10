@@ -148,7 +148,7 @@ export default function Products() {
                       )}
                     </button>
                     <a
-                      href={`https://wa.me/94729991950?text=${encodeURIComponent(p.whatsappMsg)}`}
+                      href={`https://wa.me/94707018171?text=${encodeURIComponent(p.whatsappMsg)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#25D366] text-white font-semibold rounded-xl hover:bg-[#1ea952] transition-colors text-sm"

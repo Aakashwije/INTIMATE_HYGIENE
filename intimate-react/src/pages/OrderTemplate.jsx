@@ -33,49 +33,87 @@ const products = [
 
 const FREE_DELIVERY_THRESHOLD = 3000;
 
-function buildTemplate({ name, address, product, qty, payment, note }) {
+const DISCOUNT_CODES = {
+  INTIMATE10: 10,
+  WELCOME15: 15,
+  BULK20: 20,
+};
+
+function buildTemplate({
+  name,
+  phone,
+  address,
+  city,
+  product,
+  qty,
+  payment,
+  discountCode,
+  note,
+}) {
   const p = products.find((p) => p.id === Number(product));
   const subtotal = p ? p.price * qty : 0;
-  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 250;
-  const total = subtotal + deliveryFee;
+  const discountPct = DISCOUNT_CODES[discountCode?.trim().toUpperCase()] || 0;
+  const discountAmt = Math.round((subtotal * discountPct) / 100);
+  const discountedSubtotal = subtotal - discountAmt;
+  const deliveryFee = discountedSubtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 250;
+  const total = discountedSubtotal + deliveryFee;
+  const orderRef = `IHE-${Date.now().toString(36).toUpperCase().slice(-6)}`;
 
   return `Hello Intimate Hygiene Enterprises! 👋
 
-━━━━━━━━━━━━━━━━━━━━━
-🧾 ORDER CONFIRMATION
-━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━
+🧾 NEW ORDER — ${orderRef}
+━━━━━━━━━━━━━━━━━━━━━━━
 
-👤 Name: ${name || "[Your Name]"}
-📍 Address: ${address || "[Your Delivery Address]"}
-
-🛒 Product: ${p ? p.name : "[Product Name]"}
-📦 Quantity: ${qty} ${p ? p.unit : "pack"}(s)
-💰 Unit Price: LKR ${p ? p.price.toLocaleString() : "—"} / ${p ? p.unit : "pack"}
-
+👤 CUSTOMER DETAILS
 ─────────────────────
-Subtotal:   LKR ${subtotal.toLocaleString()}
-Delivery:   ${deliveryFee === 0 ? "FREE 🎉" : `LKR ${deliveryFee.toLocaleString()}`}
-━━━━━━━━━━━━━━━━━━━━━
-TOTAL:      LKR ${total.toLocaleString()}
-━━━━━━━━━━━━━━━━━━━━━
+   Name    : ${name || "[Your Name]"}
+   Phone   : ${phone || "[Your Phone Number]"}
+   Address : ${address || "[Your Delivery Address]"}
+   City    : ${city || "[City / District]"}
 
-💳 Payment: ${payment || "[Cash on Delivery / Bank Transfer]"}
-${note ? `\n📝 Note: ${note}` : ""}
+🛒 ORDER DETAILS
+─────────────────────
+   Product : ${p ? p.name : "[Product Name]"}
+   Qty     : ${qty} ${p ? p.unit : "pack"}(s)
+   Unit Price: LKR ${p ? p.price.toLocaleString() : "—"} / ${p ? p.unit : "pack"}
 
-Please confirm availability and estimated delivery date. Thank you!`;
+💵 PRICING BREAKDOWN
+─────────────────────
+   Subtotal  : LKR ${subtotal.toLocaleString()}${
+     discountAmt > 0
+       ? `
+   Discount  : −LKR ${discountAmt.toLocaleString()} (${discountPct}% · Code: ${discountCode.trim().toUpperCase()})
+   After Disc: LKR ${discountedSubtotal.toLocaleString()}`
+       : ""
+   }
+   Delivery  : ${deliveryFee === 0 ? "FREE 🎉" : `LKR ${deliveryFee.toLocaleString()}`}
+━━━━━━━━━━━━━━━━━━━━━━━
+   TOTAL     : LKR ${total.toLocaleString()}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+💳 PAYMENT METHOD
+─────────────────────
+   ${payment || "Cash on Delivery"}
+${note ? `\n📝 SPECIAL INSTRUCTIONS\n─────────────────────\n   ${note}\n` : ""}
+Please confirm availability and estimated delivery date. Thank you! 🌿`;
 }
 
 export default function OrderTemplate() {
   const { t } = useLang();
   const [form, setForm] = useState({
     name: "",
+    phone: "",
     address: "",
+    city: "",
     product: "1",
     qty: 1,
     payment: "Cash on Delivery",
+    discountCode: "",
     note: "",
   });
   const [copied, setCopied] = useState(false);
+  const [discountMsg, setDiscountMsg] = useState("");
 
   const template = buildTemplate(form);
 
@@ -88,15 +126,30 @@ export default function OrderTemplate() {
 
   const handleWhatsApp = () => {
     window.open(
-      `https://wa.me/94729991950?text=${encodeURIComponent(template)}`,
+      `https://wa.me/94707018171?text=${encodeURIComponent(template)}`,
       "_blank",
     );
   };
 
+  const handleDiscountCheck = () => {
+    const code = form.discountCode.trim().toUpperCase();
+    if (!code) return;
+    const pct = DISCOUNT_CODES[code];
+    if (pct) {
+      setDiscountMsg(`✅ Code applied! ${pct}% off`);
+    } else {
+      setDiscountMsg("❌ Invalid discount code");
+    }
+  };
+
   const p = products.find((p) => p.id === Number(form.product));
   const subtotal = p ? p.price * form.qty : 0;
-  const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 250;
-  const total = subtotal + deliveryFee;
+  const discountPct =
+    DISCOUNT_CODES[form.discountCode?.trim().toUpperCase()] || 0;
+  const discountAmt = Math.round((subtotal * discountPct) / 100);
+  const discountedSubtotal = subtotal - discountAmt;
+  const deliveryFee = discountedSubtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 250;
+  const total = discountedSubtotal + deliveryFee;
 
   return (
     <>
@@ -137,6 +190,18 @@ export default function OrderTemplate() {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Phone Number *
+              </label>
+              <input
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                placeholder="e.g. 0712 345 678"
+                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 {t.address} *
               </label>
               <textarea
@@ -146,6 +211,49 @@ export default function OrderTemplate() {
                 rows={2}
                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745] resize-none"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                City / District *
+              </label>
+              <select
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745] bg-white"
+              >
+                <option value="">Select city / district…</option>
+                {[
+                  "Colombo",
+                  "Gampaha",
+                  "Kalutara",
+                  "Kandy",
+                  "Matale",
+                  "Nuwara Eliya",
+                  "Galle",
+                  "Matara",
+                  "Hambantota",
+                  "Jaffna",
+                  "Kilinochchi",
+                  "Mannar",
+                  "Vavuniya",
+                  "Mullaitivu",
+                  "Batticaloa",
+                  "Ampara",
+                  "Trincomalee",
+                  "Kurunegala",
+                  "Puttalam",
+                  "Anuradhapura",
+                  "Polonnaruwa",
+                  "Badulla",
+                  "Moneragala",
+                  "Ratnapura",
+                  "Kegalle",
+                ].map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -211,6 +319,37 @@ export default function OrderTemplate() {
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Discount Code
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={form.discountCode}
+                  onChange={(e) => {
+                    setForm({ ...form, discountCode: e.target.value });
+                    setDiscountMsg("");
+                  }}
+                  placeholder="e.g. INTIMATE10"
+                  className="flex-1 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745] uppercase"
+                />
+                <button
+                  type="button"
+                  onClick={handleDiscountCheck}
+                  className="px-4 py-2.5 bg-[#28a745] text-white text-sm font-semibold rounded-xl hover:bg-[#1e8c38] transition-colors"
+                >
+                  Apply
+                </button>
+              </div>
+              {discountMsg && (
+                <p
+                  className={`text-xs mt-1 ${discountMsg.startsWith("✅") ? "text-green-600" : "text-red-500"}`}
+                >
+                  {discountMsg}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 {t.note}
               </label>
               <input
@@ -228,6 +367,12 @@ export default function OrderTemplate() {
                 <span>Subtotal</span>
                 <span>LKR {subtotal.toLocaleString()}</span>
               </div>
+              {discountAmt > 0 && (
+                <div className="flex justify-between text-green-700 font-medium">
+                  <span>Discount ({discountPct}%)</span>
+                  <span>−LKR {discountAmt.toLocaleString()}</span>
+                </div>
+              )}
               <div className="flex justify-between text-gray-600">
                 <span>Delivery</span>
                 <span
@@ -240,13 +385,16 @@ export default function OrderTemplate() {
                     : `LKR ${deliveryFee.toLocaleString()}`}
                 </span>
               </div>
-              {subtotal > 0 && subtotal < FREE_DELIVERY_THRESHOLD && (
-                <p className="text-xs text-orange-500">
-                  Add LKR{" "}
-                  {(FREE_DELIVERY_THRESHOLD - subtotal).toLocaleString()} more
-                  for free delivery
-                </p>
-              )}
+              {discountedSubtotal > 0 &&
+                discountedSubtotal < FREE_DELIVERY_THRESHOLD && (
+                  <p className="text-xs text-orange-500">
+                    Add LKR{" "}
+                    {(
+                      FREE_DELIVERY_THRESHOLD - discountedSubtotal
+                    ).toLocaleString()}{" "}
+                    more for free delivery
+                  </p>
+                )}
               <div className="flex justify-between font-bold text-gray-800 pt-1 border-t border-green-200">
                 <span>Total</span>
                 <span>LKR {total.toLocaleString()}</span>

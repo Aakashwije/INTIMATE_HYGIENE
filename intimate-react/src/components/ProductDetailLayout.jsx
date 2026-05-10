@@ -36,7 +36,7 @@ export default function ProductDetailLayout({
     const msg = encodeURIComponent(
       `${whatsappMsg || `Hello! I want to order ${title}.`}\n\nQuantity: ${qty} pack(s)\n\nPlease share availability and delivery details.`,
     );
-    window.open(`https://wa.me/94729991950?text=${msg}`, "_blank");
+    window.open(`https://wa.me/94707018171?text=${msg}`, "_blank");
   };
 
   return (

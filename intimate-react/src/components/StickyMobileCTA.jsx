@@ -27,7 +27,7 @@ export default function StickyMobileCTA() {
         {t.shopNow}
       </Link>
       <a
-        href="https://wa.me/94729991950?text=Hello%21%20I%27d%20like%20to%20order%20Intimate%20Hygiene%20products."
+        href="https://wa.me/94707018171?text=Hello%21%20I%27d%20like%20to%20order%20Intimate%20Hygiene%20products."
         target="_blank"
         rel="noopener noreferrer"
         className="flex-1 py-3 text-center font-bold text-white bg-[#25D366] rounded-xl shadow-md text-sm flex items-center justify-center gap-2"

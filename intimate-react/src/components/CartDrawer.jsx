@@ -2,7 +2,7 @@ import { Minus, PartyPopper, Plus, ShoppingBag, ShoppingCart, Truck, X } from "l
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
 
-const PHONE = "94729991950";
+const PHONE = "94707018171";
 
 function buildWhatsAppMessage(items, subtotal, t) {
   const lines = items

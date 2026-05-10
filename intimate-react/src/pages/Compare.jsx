@@ -109,7 +109,7 @@ export default function Compare() {
                         {p.priceNote}
                       </p>
                       <a
-                        href={`https://wa.me/94729991950?text=${encodeURIComponent(p.whatsapp)}`}
+                        href={`https://wa.me/94707018171?text=${encodeURIComponent(p.whatsapp)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-1 w-full text-center py-1.5 sm:py-2 bg-[#25D366] text-white font-semibold rounded-xl text-[10px] sm:text-xs hover:bg-[#1ea952] transition-colors"
@@ -174,7 +174,7 @@ export default function Compare() {
           <h3 className="text-xl font-bold mb-2">{t.needHelp} 🤔</h3>
           <p className="text-gray-400 text-sm mb-5">{t.needHelpSub}</p>
           <a
-            href="https://wa.me/94729991950?text=Hello!%20I%20need%20help%20choosing%20the%20right%20toilet%20seat%20cover%20product."
+            href="https://wa.me/94707018171?text=Hello!%20I%20need%20help%20choosing%20the%20right%20toilet%20seat%20cover%20product."
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-8 py-3 bg-[#25D366] text-white font-bold rounded-xl hover:bg-[#1ea952] transition-colors"

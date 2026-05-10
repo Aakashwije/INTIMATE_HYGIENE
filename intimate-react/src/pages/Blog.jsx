@@ -300,7 +300,7 @@ export default function Blog() {
                   <ShoppingBag className="w-4 h-4" /> Shop Products
                 </Link>
                 <a
-                  href="https://wa.me/94729991950?text=Hello!%20I%20read%20your%20blog%20and%20want%20to%20order."
+                  href="https://wa.me/94707018171?text=Hello!%20I%20read%20your%20blog%20and%20want%20to%20order."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 bg-white/15 border border-white/40 text-white font-semibold rounded-xl text-sm hover:bg-white/25 transition-colors"

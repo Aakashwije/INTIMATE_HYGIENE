@@ -2,7 +2,7 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function WhatsAppButton() {
-  const phone = "94729991950";
+  const phone = "94707018171";
   const message = encodeURIComponent(
     "Hello! I am interested in ordering Intimate Hygiene products. Please share pricing and availability.",
   );

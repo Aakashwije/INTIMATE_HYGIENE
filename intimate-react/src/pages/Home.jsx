@@ -563,7 +563,7 @@ export default function Home() {
               {t.getStarted} →
             </Link>
             <a
-              href="https://wa.me/94729991950?text=Hello%21%20I%27d%20like%20to%20learn%20more%20about%20Intimate%20Hygiene%20products."
+              href="https://wa.me/94707018171?text=Hello%21%20I%27d%20like%20to%20learn%20more%20about%20Intimate%20Hygiene%20products."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3.5 font-bold border-2 border-white text-white rounded-full hover:bg-white hover:text-[#28a745] transition-all duration-300"

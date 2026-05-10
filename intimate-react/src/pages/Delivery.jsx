@@ -127,7 +127,7 @@ export default function Delivery() {
 
         <div className="text-center">
           <a
-            href="https://wa.me/94729991950?text=Hello!%20I%20want%20to%20place%20an%20order.%20Please%20guide%20me."
+            href="https://wa.me/94707018171?text=Hello!%20I%20want%20to%20place%20an%20order.%20Please%20guide%20me."
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-8 py-4 bg-[#25D366] text-white font-bold rounded-2xl text-lg hover:bg-[#1ea952] transition-colors shadow-lg"

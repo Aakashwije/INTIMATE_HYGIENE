@@ -17,7 +17,7 @@ export default function Contact() {
 
   const infoCards = [
     { icon: faEnvelope, title: "Email", content: "intimatehygiene@gmail.com", href: "mailto:intimatehygiene@gmail.com" },
-    { icon: faPhoneAlt, title: "Phone", content: "+94729991950", href: "tel:+94729991950" },
+    { icon: faPhoneAlt, title: "Phone", content: "+94707018171", href: "tel:+94707018171" },
     { icon: faMapMarkerAlt, title: "Address", content: "193/12, Prasanna Uyana, Mattegoda", href: null },
     { icon: faClock, title: "Business Hours", content: "Mon – Fri: 9AM – 6PM", href: null },
   ];
