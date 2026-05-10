@@ -7,7 +7,8 @@
       "Bash(kill %1)",
       "Bash(pkill -f \"vite\")",
       "Bash(ls /Users/aakash/Documents/GitHub/ 2>/dev/null)",
-      "Read(//Users/aakash/Documents/GitHub/**)"
+      "Read(//Users/aakash/Documents/GitHub/**)",
+      "Bash(git -C /Users/aakash/Documents/GitHub/INTIMATE_HYGIENE log --oneline -10)"
     ],
     "additionalDirectories": [
       "/Users/aakash/Documents/GitHub/INTIMATE_HYGIENE/intimate-react/src"
