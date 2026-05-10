@@ -1,3 +1,4 @@
+import { PartyPopper } from "lucide-react";
 import { useLang } from "../context/LangContext";
 
 const FREE_THRESHOLD = 3000;
@@ -11,9 +12,12 @@ export default function DeliveryProgressBar({ orderTotal = 0 }) {
   return (
     <div className="bg-green-50 border border-green-200 rounded-xl px-5 py-3">
       <div className="flex items-center justify-between mb-1.5">
-        <p className="text-sm font-semibold text-gray-700">
+        <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
           {achieved ? (
-            <span className="text-[#28a745]">🎉 {t.deliveryProgressUnlocked}</span>
+            <>
+              <PartyPopper className="w-4 h-4 text-[#28a745]" />
+              <span className="text-[#28a745]">{t.deliveryProgressUnlocked}</span>
+            </>
           ) : (
             <>
               {t.deliveryProgressAdd?.split("{0}")[0] || "Add "}
@@ -30,5 +34,3 @@ export default function DeliveryProgressBar({ orderTotal = 0 }) {
     </div>
   );
 }
-
-

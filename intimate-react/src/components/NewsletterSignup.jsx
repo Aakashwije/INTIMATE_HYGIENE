@@ -1,3 +1,4 @@
+import { CheckCircle, Gift } from "lucide-react";
 import { useState } from "react";
 import { useLang } from "../context/LangContext";
 
@@ -9,7 +10,6 @@ export default function NewsletterSignup() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) return;
-    // Persist locally; integrate with backend / Mailchimp / EmailJS later.
     try {
       const list = JSON.parse(localStorage.getItem("newsletter") || "[]");
       list.push({ email, ts: Date.now() });
@@ -22,13 +22,13 @@ export default function NewsletterSignup() {
 
   return (
     <section className="py-16 px-5 bg-gradient-to-br from-[#28a745] via-[#1d7a34] to-[#0d3f1a] text-white relative overflow-hidden animate-gradientShift">
-      {/* Decorative blobs */}
       <div className="absolute -top-20 -left-20 w-72 h-72 rounded-full bg-white/10 blur-3xl animate-blob" />
       <div className="absolute -bottom-20 -right-20 w-72 h-72 rounded-full bg-[#5cd65c]/30 blur-3xl animate-blob-slow" />
 
       <div className="relative max-w-3xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-5 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-sm font-semibold">
-          <span className="text-yellow-300">🎁</span> {t.newsletterBadge || "Get 5% Off Your First Order"}
+          <Gift className="w-4 h-4 text-yellow-300" />
+          {t.newsletterBadge || "Get 5% Off Your First Order"}
         </div>
         <h2 className="text-3xl md:text-4xl font-bold mb-3">{t.newsletterTitle || "Join the Hygenc Family"}</h2>
         <p className="text-white/85 mb-8 max-w-xl mx-auto">
@@ -37,7 +37,7 @@ export default function NewsletterSignup() {
 
         {submitted ? (
           <div className="glass-dark rounded-2xl px-6 py-5 max-w-md mx-auto animate-zoomIn">
-            <div className="text-3xl mb-1">✅</div>
+            <CheckCircle className="w-10 h-10 text-green-300 mx-auto mb-2" />
             <p className="font-bold text-lg">{t.newsletterThanks || "You're in! Check your inbox."}</p>
             <p className="text-white/75 text-sm mt-1">{t.newsletterThanksSub || "We'll send your discount code shortly."}</p>
           </div>

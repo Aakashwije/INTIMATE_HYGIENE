@@ -1,3 +1,4 @@
+import { Backpack, Building2, CheckCircle, GraduationCap, HeartPulse, Hotel, Landmark, Leaf, MapPin, MessageCircle, Plane, Recycle, Shield, ShoppingCart, Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import BeforeAfterSlider from "../components/BeforeAfterSlider";
 import CountUp from "../components/CountUp";
@@ -11,12 +12,12 @@ import TrustBadges from "../components/TrustBadges";
 import { useLang } from "../context/LangContext";
 
 const usedBy = [
-  { icon: "🏨", labelKey: "usedByHotels", count: "50+" },
-  { icon: "🏥", labelKey: "usedByHospitals", count: "30+" },
-  { icon: "🏢", labelKey: "usedByOffices", count: "80+" },
-  { icon: "✈️", labelKey: "usedByAirlines", count: "5+" },
-  { icon: "🎓", labelKey: "usedByUniversities", count: "15+" },
-  { icon: "🏛️", labelKey: "usedByGovt", count: "20+" },
+  { icon: Hotel,        labelKey: "usedByHotels",       count: "50+" },
+  { icon: HeartPulse,   labelKey: "usedByHospitals",    count: "30+" },
+  { icon: Building2,    labelKey: "usedByOffices",       count: "80+" },
+  { icon: Plane,        labelKey: "usedByAirlines",      count: "5+"  },
+  { icon: GraduationCap,labelKey: "usedByUniversities",  count: "15+" },
+  { icon: Landmark,     labelKey: "usedByGovt",          count: "20+" },
 ];
 
 const testimonials = [
@@ -49,8 +50,8 @@ const testimonials = [
   },
 ];
 
-const certKeys = ["certEco", "certBacterial", "certBio", "certQuality", "certHospital"];
-const certIcons = ["🌿", "🦠", "♻️", "✅", "🏥"];
+const certKeys  = ["certEco", "certBacterial", "certBio", "certQuality", "certHospital"];
+const certIcons = [Leaf, Shield, Recycle, CheckCircle, HeartPulse];
 
 const pressLogos = ["Cinnamon", "HSBC", "SriLankan Airlines", "Hilton", "MAS Holdings", "Dialog"];
 
@@ -58,22 +59,22 @@ export default function Home() {
   const { t } = useLang();
 
   const stats = [
-    { value: 295, suffix: "", label: t.statsLabel1 },
-    { value: 48, suffix: "hrs", label: t.statsLabel2 },
-    { value: 99, suffix: "%", label: t.statsLabel3 },
-    { value: 124, suffix: "+", label: t.statsLabel4 },
+    { value: 295,  suffix: "",    label: t.statsLabel1 },
+    { value: 48,   suffix: "hrs", label: t.statsLabel2 },
+    { value: 99,   suffix: "%",   label: t.statsLabel3 },
+    { value: 124,  suffix: "+",   label: t.statsLabel4 },
   ];
 
   const features = [
-    { icon: "🛡️", title: t.maxHygiene, desc: t.maxHygieneDesc },
-    { icon: "🌱", title: t.ecoFriendly, desc: t.ecoFriendlyDesc },
-    { icon: "🎒", title: t.convenientPortable, desc: t.convenientPortableDesc },
+    { icon: Shield,   title: t.maxHygiene,         desc: t.maxHygieneDesc },
+    { icon: Leaf,     title: t.ecoFriendly,         desc: t.ecoFriendlyDesc },
+    { icon: Backpack, title: t.convenientPortable,  desc: t.convenientPortableDesc },
   ];
 
   const products = [
-    { img: "/normal.png", title: t.standardPack, desc: t.standardPackDesc, link: "/products/1", price: "LKR 150" },
-    { img: "/travel.png", title: t.travelKit, desc: t.travelKitDesc, link: "/products/2", price: "LKR 300" },
-    { img: "/interprise.png", title: t.enterprisePack, desc: t.enterprisePackDesc, link: "/products/3", price: "LKR 120" },
+    { img: "/normal.png",    title: t.standardPack,   desc: t.standardPackDesc,   link: "/products/1", price: "LKR 150" },
+    { img: "/travel.png",    title: t.travelKit,       desc: t.travelKitDesc,       link: "/products/2", price: "LKR 300" },
+    { img: "/interprise.png",title: t.enterprisePack,  desc: t.enterprisePackDesc,  link: "/products/3", price: "LKR 120" },
   ];
 
   return (
@@ -82,24 +83,18 @@ export default function Home() {
 
       {/* PREMIUM HERO */}
       <section className="relative overflow-hidden text-white animate-fadeInHero">
-        {/* Layered gradient + image background */}
         <div
           className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(13,63,26,0.92) 0%, rgba(40,167,69,0.85) 50%, rgba(29,122,52,0.92) 100%), url("/hero.jpg") center/cover',
-          }}
+          style={{ background: 'linear-gradient(135deg, rgba(13,63,26,0.92) 0%, rgba(40,167,69,0.85) 50%, rgba(29,122,52,0.92) 100%), url("/hero.jpg") center/cover' }}
         />
-        {/* Animated blobs */}
         <div className="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-[#5cd65c]/30 blur-3xl animate-blob" />
         <div className="absolute -bottom-40 -right-20 w-[28rem] h-[28rem] rounded-full bg-emerald-300/20 blur-3xl animate-blob-slow" />
         <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-yellow-200/15 blur-3xl animate-blob" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-5 py-20 md:py-28 text-center">
-          {/* Trust badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-xs sm:text-sm font-semibold animate-slideInUp">
-            <span className="flex items-center gap-1 text-yellow-300">
-              {"★".repeat(5)}
+            <span className="flex gap-0.5 text-yellow-300">
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
             </span>
             <span>{t.heroBadge || "Sri Lanka's #1 Hygiene Brand"}</span>
           </div>
@@ -111,13 +106,12 @@ export default function Home() {
             {t.heroSubtitle}
           </p>
 
-          {/* CTAs */}
           <div className="mt-8 flex gap-3 justify-center flex-wrap animate-slideInUp">
             <Link
               to="/products"
-              className="btn-shimmer px-8 py-3.5 bg-white text-[#28a745] font-bold rounded-full hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 shadow-lg"
+              className="btn-shimmer flex items-center gap-2 px-8 py-3.5 bg-white text-[#28a745] font-bold rounded-full hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 shadow-lg"
             >
-              🛒 {t.shopNow}
+              <ShoppingCart className="w-5 h-5" /> {t.shopNow}
             </Link>
             <Link
               to="/about"
@@ -127,17 +121,13 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Hero mini-stats */}
           <div className="mt-12 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
             {[
               { v: t.heroStat1, l: t.heroStat1Label },
               { v: t.heroStat2, l: t.heroStat2Label },
               { v: t.heroStat3, l: t.heroStat3Label },
             ].map(({ v, l }, i) => (
-              <div
-                key={i}
-                className="glass-dark rounded-2xl py-4 px-2 hover:-translate-y-1 transition-transform duration-300"
-              >
+              <div key={i} className="glass-dark rounded-2xl py-4 px-2 hover:-translate-y-1 transition-transform duration-300">
                 <p className="text-xl md:text-3xl font-bold text-yellow-200">{v}</p>
                 <p className="text-xs md:text-sm text-white/80 mt-1">{l}</p>
               </div>
@@ -145,26 +135,20 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Wave bottom */}
         <svg className="block w-full -mb-px" viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ height: 60 }}>
           <path d="M0,32 C360,80 1080,0 1440,48 L1440,80 L0,80 Z" fill="white" />
         </svg>
       </section>
 
-      {/* TRUST BADGES (full width) */}
       <TrustBadges />
 
-      {/* HYGIENE STATS — animated count up */}
+      {/* HYGIENE STATS */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white py-16 px-5 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(40,167,69,0.15),_transparent_60%)]" />
         <div className="relative max-w-6xl mx-auto">
           <Reveal>
-            <p className="text-center text-xs font-semibold text-[#5cd65c] uppercase tracking-widest mb-2">
-              The Reality
-            </p>
-            <h2 className="text-center text-2xl md:text-3xl font-bold mb-12">
-              Why hygiene matters more than ever
-            </h2>
+            <p className="text-center text-xs font-semibold text-[#5cd65c] uppercase tracking-widest mb-2">The Reality</p>
+            <h2 className="text-center text-2xl md:text-3xl font-bold mb-12">Why hygiene matters more than ever</h2>
           </Reveal>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {stats.map(({ value, suffix, label }, i) => (
@@ -181,7 +165,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHY CHOOSE - polished cards with icons */}
+      {/* WHY CHOOSE */}
       <section className="py-20 px-5 max-w-6xl mx-auto text-center">
         <Reveal>
           <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
@@ -193,13 +177,13 @@ export default function Home() {
           </p>
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {features.map(({ icon, title, desc }, i) => (
+          {features.map(({ icon: Icon, title, desc }, i) => (
             <Reveal key={title} delay={i * 120}>
               <div className="relative bg-white p-8 rounded-2xl shadow-md hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group overflow-hidden border border-gray-100">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
                 <div className="relative">
-                  <div className="text-5xl mb-4 inline-block group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
-                    {icon}
+                  <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300">
+                    <Icon className="w-8 h-8 text-[#28a745]" />
                   </div>
                   <h3 className="text-[#28a745] font-bold text-xl mb-3">{title}</h3>
                   <p className="text-gray-600 leading-relaxed">{desc}</p>
@@ -210,7 +194,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* BEFORE / AFTER INTERACTIVE SLIDER */}
+      {/* BEFORE / AFTER */}
       <section className="py-20 px-5 bg-gradient-to-br from-gray-50 to-white">
         <Reveal>
           <div className="text-center mb-10">
@@ -234,10 +218,7 @@ export default function Home() {
         <div className="relative">
           <div className="flex animate-marquee whitespace-nowrap gap-12">
             {[...pressLogos, ...pressLogos].map((name, i) => (
-              <span
-                key={i}
-                className="text-2xl md:text-3xl font-bold text-gray-300 hover:text-[#28a745] transition-colors flex-shrink-0"
-              >
+              <span key={i} className="text-2xl md:text-3xl font-bold text-gray-300 hover:text-[#28a745] transition-colors shrink-0">
                 {name}
               </span>
             ))}
@@ -248,16 +229,16 @@ export default function Home() {
       {/* TRUSTED-BY GRID */}
       <section className="py-14 px-5 bg-gradient-to-br from-green-50/40 to-white text-center">
         <Reveal>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">
-            {t.trustedBy}
-          </p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest mb-2">{t.trustedBy}</p>
           <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-8">200+ organizations trust Hygenc</h3>
         </Reveal>
         <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
-          {usedBy.map(({ icon, labelKey, count }, i) => (
+          {usedBy.map(({ icon: Icon, labelKey, count }, i) => (
             <Reveal key={labelKey} delay={i * 60}>
-              <div className="flex flex-col items-center gap-1 bg-white rounded-2xl px-5 py-4 min-w-[130px] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100">
-                <span className="text-3xl">{icon}</span>
+              <div className="flex flex-col items-center gap-2 bg-white rounded-2xl px-5 py-4 min-w-[130px] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-[#28a745]" />
+                </div>
                 <span className="font-semibold text-gray-700 text-xs text-center">{t[labelKey] || labelKey}</span>
                 <span className="text-[#28a745] font-bold text-xs">{count} {t.clients}</span>
               </div>
@@ -282,12 +263,7 @@ export default function Home() {
             <Reveal key={title} delay={i * 120}>
               <div className="flex flex-col bg-white rounded-2xl shadow-lg hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 group">
                 <div className="relative overflow-hidden">
-                  <img
-                    src={img}
-                    alt={title}
-                    loading="lazy"
-                    className="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
+                  <img src={img} alt={title} loading="lazy" className="w-full h-60 object-cover group-hover:scale-110 transition-transform duration-700" />
                   <div className="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[#28a745] text-xs font-bold rounded-full shadow">
                     {price}
                   </div>
@@ -307,16 +283,13 @@ export default function Home() {
           ))}
         </div>
         <Reveal>
-          <Link
-            to="/products"
-            className="inline-block mt-10 text-[#28a745] font-bold hover:underline"
-          >
+          <Link to="/products" className="inline-block mt-10 text-[#28a745] font-bold hover:underline">
             {t.viewAllProducts || "View All Products →"}
           </Link>
         </Reveal>
       </section>
 
-      {/* TESTIMONIALS - polished */}
+      {/* TESTIMONIALS */}
       <section className="py-20 px-5 bg-gradient-to-br from-gray-50 to-white text-center">
         <Reveal>
           <span className="inline-block text-xs font-bold text-[#28a745] uppercase tracking-widest mb-3 px-3 py-1 bg-green-50 rounded-full">
@@ -329,18 +302,20 @@ export default function Home() {
             <Reveal key={author} delay={i * 120}>
               <div className="bg-white p-7 rounded-2xl shadow-lg text-left flex flex-col h-full hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 border border-gray-100 relative">
                 <div className="absolute -top-3 left-7 text-5xl text-[#28a745] opacity-20 leading-none">"</div>
-                <div className="flex gap-0.5 text-yellow-400 text-base mb-3">
-                  {[...Array(rating)].map((_, j) => <span key={j}>★</span>)}
+                <div className="flex gap-0.5 text-yellow-400 mb-3">
+                  {[...Array(rating)].map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
                 </div>
                 <p className="text-gray-700 italic flex-1 mb-5 leading-relaxed">"{quote}"</p>
                 <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100">
-                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#28a745] to-[#5cd65c] flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                  <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#28a745] to-[#5cd65c] flex items-center justify-center text-white font-bold text-sm shrink-0">
                     {avatar}
                   </div>
                   <div>
                     <p className="font-semibold text-gray-800 text-sm">{author}</p>
                     <p className="text-gray-400 text-xs">{role} · {company}</p>
-                    <p className="text-gray-400 text-xs">📍 {location}</p>
+                    <p className="text-gray-400 text-xs flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {location}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -349,7 +324,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ TEASER WITH ACCORDION */}
+      {/* FAQ TEASER */}
       <section className="py-20 px-5 bg-white">
         <Reveal>
           <div className="text-center mb-10">
@@ -363,9 +338,7 @@ export default function Home() {
         <FAQAccordion />
         <Reveal>
           <div className="text-center mt-8">
-            <Link to="/faq" className="text-[#28a745] font-bold hover:underline">
-              See all FAQs →
-            </Link>
+            <Link to="/faq" className="text-[#28a745] font-bold hover:underline">See all FAQs →</Link>
           </div>
         </Reveal>
       </section>
@@ -406,17 +379,19 @@ export default function Home() {
       {/* CERTIFICATIONS */}
       <section className="py-12 px-5 bg-white border-t border-gray-100">
         <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
-          {certKeys.map((key, i) => (
-            <Reveal key={key} delay={i * 80} variant="zoom">
-              <span className="flex items-center gap-2 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 text-green-700 text-sm font-semibold px-4 py-2 rounded-full hover:scale-105 transition-transform">
-                {certIcons[i]} {t[key]}
-              </span>
-            </Reveal>
-          ))}
+          {certKeys.map((key, i) => {
+            const Icon = certIcons[i];
+            return (
+              <Reveal key={key} delay={i * 80} variant="zoom">
+                <span className="flex items-center gap-2 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 text-green-700 text-sm font-semibold px-4 py-2 rounded-full hover:scale-105 transition-transform">
+                  <Icon className="w-4 h-4" /> {t[key]}
+                </span>
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 
-      {/* NEWSLETTER */}
       <NewsletterSignup />
 
       {/* FINAL CTA */}
@@ -437,9 +412,9 @@ export default function Home() {
               href="https://wa.me/94729991950?text=Hello%21%20I%27d%20like%20to%20learn%20more%20about%20Intimate%20Hygiene%20products."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-8 py-3.5 font-bold border-2 border-white text-white rounded-full hover:bg-white hover:text-[#28a745] transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-3.5 font-bold border-2 border-white text-white rounded-full hover:bg-white hover:text-[#28a745] transition-all duration-300"
             >
-              💬 Chat with Us
+              <MessageCircle className="w-5 h-5" /> Chat with Us
             </a>
           </div>
         </Reveal>

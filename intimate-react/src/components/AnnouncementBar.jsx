@@ -1,3 +1,4 @@
+import { Gift, Timer, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLang } from "../context/LangContext";
 
@@ -28,12 +29,13 @@ export default function AnnouncementBar() {
 
   return (
     <div className="bg-gradient-to-r from-[#0d3f1a] via-[#1d7a34] to-[#28a745] text-white text-xs sm:text-sm py-2 px-4 flex items-center justify-center gap-3 relative animate-gradientShift">
-      <span className="hidden sm:inline">🎁</span>
+      <Gift className="hidden sm:block w-4 h-4 shrink-0" />
       <span className="font-semibold">
         {t.announcement || "Limited time: 5% off + free island-wide delivery on orders over LKR 3,000"}
       </span>
-      <span className="hidden md:inline-flex items-center gap-1 font-mono bg-black/25 px-2 py-0.5 rounded-md">
-        ⏱ {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
+      <span className="hidden md:inline-flex items-center gap-1.5 font-mono bg-black/25 px-2 py-0.5 rounded-md">
+        <Timer className="w-3.5 h-3.5" />
+        {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
       </span>
       <button
         onClick={() => {
@@ -41,9 +43,9 @@ export default function AnnouncementBar() {
           sessionStorage.setItem("hideAnnouncement", "1");
         }}
         aria-label="Dismiss"
-        className="absolute right-2 text-white/70 hover:text-white text-base leading-none"
+        className="absolute right-2 text-white/70 hover:text-white"
       >
-        ×
+        <X className="w-4 h-4" />
       </button>
     </div>
   );

@@ -8,7 +8,13 @@
       "Bash(pkill -f \"vite\")",
       "Bash(ls /Users/aakash/Documents/GitHub/ 2>/dev/null)",
       "Read(//Users/aakash/Documents/GitHub/**)",
-      "Bash(git -C /Users/aakash/Documents/GitHub/INTIMATE_HYGIENE log --oneline -10)"
+      "Bash(git -C /Users/aakash/Documents/GitHub/INTIMATE_HYGIENE log --oneline -10)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm install *)",
+      "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\(Object.keys\\(l\\).slice\\(0,20\\).join\\(', '\\)\\); console.log\\('Total:', Object.keys\\(l\\).length\\)\")",
+      "Bash(node -e \"const l = require\\('lucide-react'\\); const icons = ['Lock','Truck','ShieldCheck','Star','Gift','Timer','PartyPopper','CheckCircle','ShoppingCart','ShoppingBag','Hotel','HeartPulse','Plane','Building2','GraduationCap','Landmark','Bug','Sparkles','ArrowLeftRight','Newspaper','Leaf','Shield','Backpack','Recycle','Check','Smartphone','MapPin','Microscope','Briefcase','Baby','X','Minus','Plus','Banknote','Package','Trophy','Clock','CreditCard','MessageCircle','Sprout','CircleCheck']; icons.forEach\\(i => console.log\\(i, l[i] ? 'OK' : 'MISSING'\\)\\)\")"
     ],
     "additionalDirectories": [
       "/Users/aakash/Documents/GitHub/INTIMATE_HYGIENE/intimate-react/src"
