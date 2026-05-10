@@ -26,9 +26,8 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-img, svg, video {
+:where(img, svg, video) {
   max-width: 100%;
-  height: auto;
 }
 
 /* Honor iOS safe-area for fixed bottom UI */

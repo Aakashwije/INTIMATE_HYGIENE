@@ -54,11 +54,11 @@ export default function Navbar() {
           : "bg-white border-b border-gray-200"
       }`}
     >
-      <nav className={`flex justify-between items-center max-w-6xl mx-auto px-4 sm:px-6 transition-all duration-300 ${
+      <nav className={`flex justify-between items-center gap-4 lg:gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300 ${
         scrolled ? "py-2 sm:py-2.5" : "py-3 sm:py-4"
       }`}>
         {/* Logo */}
-        <Link to="/home" className="flex items-center group shrink-0">
+        <Link to="/home" className="flex items-center group shrink-0 mr-auto md:mr-0">
           <img
             src="/fulllogo.png"
             alt="Hygenc Covers Logo"
@@ -69,14 +69,14 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav Links */}
-        <ul className="hidden md:flex gap-1 list-none">
+        <ul className="hidden md:flex gap-1 lg:gap-1.5 list-none flex-1 justify-center">
           {navItems.map(({ to, label, icon }) => {
             const isActive = location.pathname === to;
             return (
               <li key={to}>
                 <Link
                   to={to}
-                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  className={`flex items-center gap-1.5 px-3 lg:px-3.5 py-2 text-sm font-medium rounded-full transition-all duration-300 whitespace-nowrap ${
                     isActive
                       ? "bg-[#28a745] text-white scale-105 shadow-md"
                       : "text-gray-800 hover:bg-[#28a745] hover:text-white hover:scale-105"
@@ -91,7 +91,7 @@ export default function Navbar() {
         </ul>
 
         {/* Right cluster */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <CartButton />
           <div className="hidden md:block">
             <LangToggle />
