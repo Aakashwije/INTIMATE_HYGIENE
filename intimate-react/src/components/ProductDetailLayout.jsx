@@ -64,13 +64,13 @@ export default function ProductDetailLayout({
       </section>
 
       {/* Product Details */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-6xl mx-auto my-20 px-5 items-start">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 max-w-6xl mx-auto my-12 sm:my-20 px-4 sm:px-5 items-start">
         <img
           src={image}
           alt={imageAlt}
           className="w-full rounded-xl shadow-lg object-cover"
         />
-        <div className="bg-white p-8 rounded-xl shadow-md">
+        <div className="bg-white p-5 sm:p-8 rounded-xl shadow-md">
           {sections
             .slice(0, 2)
             .map(({ heading, items, text, highlightItem }) => (

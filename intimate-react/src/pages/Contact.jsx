@@ -64,7 +64,7 @@ export default function Contact() {
       {/* Contact Form */}
       <section className="py-8 px-5 max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">{t.sendMessage}</h2>
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-8 space-y-5" noValidate>
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-md p-5 sm:p-8 space-y-5" noValidate>
           <input type="text" name="name" placeholder={t.yourName} value={form.name} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />
           <input type="email" name="email" placeholder={t.yourEmail} value={form.email} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />
           <input type="text" name="subject" placeholder={t.subject} value={form.subject} onChange={handleChange} required className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />

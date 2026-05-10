@@ -13,6 +13,36 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Honor iOS safe-area for fixed bottom UI */
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+.bottom-safe {
+  bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+
+/* Tighter horizontal padding on tiny phones */
+@media (max-width: 380px) {
+  .px-5 { padding-left: 1rem; padding-right: 1rem; }
+  .px-6 { padding-left: 1rem; padding-right: 1rem; }
 }
 
 ::selection {

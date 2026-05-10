@@ -91,45 +91,45 @@ export default function Home() {
         <div className="absolute -bottom-40 -right-20 w-[28rem] h-[28rem] rounded-full bg-emerald-300/20 blur-3xl animate-blob-slow" />
         <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-yellow-200/15 blur-3xl animate-blob" />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-5 py-20 md:py-28 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-xs sm:text-sm font-semibold animate-slideInUp">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-5 py-16 sm:py-20 md:py-28 text-center">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 mb-5 sm:mb-6 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-[11px] sm:text-sm font-semibold animate-slideInUp">
             <span className="flex gap-0.5 text-yellow-300">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-current" />)}
+              {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />)}
             </span>
             <span>{t.heroBadge || "Sri Lanka's #1 Hygiene Brand"}</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-5 drop-shadow-lg leading-tight animate-slideInUp">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-5 drop-shadow-lg leading-tight animate-slideInUp">
             {t.heroTitle}
           </h1>
-          <p className="text-lg md:text-xl leading-relaxed opacity-95 max-w-2xl mx-auto animate-slideInUp">
+          <p className="text-base sm:text-lg md:text-xl leading-relaxed opacity-95 max-w-2xl mx-auto animate-slideInUp">
             {t.heroSubtitle}
           </p>
 
-          <div className="mt-8 flex gap-3 justify-center flex-wrap animate-slideInUp">
+          <div className="mt-6 sm:mt-8 flex gap-2.5 sm:gap-3 justify-center flex-wrap animate-slideInUp">
             <Link
               to="/products"
-              className="btn-shimmer flex items-center gap-2 px-8 py-3.5 bg-white text-[#28a745] font-bold rounded-full hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 shadow-lg"
+              className="btn-shimmer flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 bg-white text-[#28a745] font-bold rounded-full hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 shadow-lg text-sm sm:text-base"
             >
-              <ShoppingCart className="w-5 h-5" /> {t.shopNow}
+              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" /> {t.shopNow}
             </Link>
             <Link
               to="/about"
-              className="px-8 py-3.5 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#28a745] transition-all duration-300 backdrop-blur-sm"
+              className="px-6 sm:px-8 py-3 sm:py-3.5 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#28a745] transition-all duration-300 backdrop-blur-sm text-sm sm:text-base"
             >
               {t.learnMore}
             </Link>
           </div>
 
-          <div className="mt-12 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
+          <div className="mt-10 sm:mt-12 grid grid-cols-3 gap-2 sm:gap-4 max-w-2xl mx-auto">
             {[
               { v: t.heroStat1, l: t.heroStat1Label },
               { v: t.heroStat2, l: t.heroStat2Label },
               { v: t.heroStat3, l: t.heroStat3Label },
             ].map(({ v, l }, i) => (
-              <div key={i} className="glass-dark rounded-2xl py-4 px-2 hover:-translate-y-1 transition-transform duration-300">
-                <p className="text-xl md:text-3xl font-bold text-yellow-200">{v}</p>
-                <p className="text-xs md:text-sm text-white/80 mt-1">{l}</p>
+              <div key={i} className="glass-dark rounded-xl sm:rounded-2xl py-3 sm:py-4 px-1.5 sm:px-2 hover:-translate-y-1 transition-transform duration-300">
+                <p className="text-lg sm:text-xl md:text-3xl font-bold text-yellow-200">{v}</p>
+                <p className="text-[10px] sm:text-xs md:text-sm text-white/80 mt-1 leading-tight">{l}</p>
               </div>
             ))}
           </div>
@@ -235,7 +235,7 @@ export default function Home() {
         <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
           {usedBy.map(({ icon: Icon, labelKey, count }, i) => (
             <Reveal key={labelKey} delay={i * 60}>
-              <div className="flex flex-col items-center gap-2 bg-white rounded-2xl px-5 py-4 min-w-[130px] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100">
+              <div className="flex flex-col items-center gap-2 bg-white rounded-2xl px-3 sm:px-5 py-4 min-w-[105px] sm:min-w-[130px] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-100">
                 <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-[#28a745]" />
                 </div>

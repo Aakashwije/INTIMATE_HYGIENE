@@ -54,16 +54,16 @@ export default function Navbar() {
           : "bg-white border-b border-gray-200"
       }`}
     >
-      <nav className={`flex justify-between items-center max-w-6xl mx-auto px-6 transition-all duration-300 ${
-        scrolled ? "py-2.5" : "py-4"
+      <nav className={`flex justify-between items-center max-w-6xl mx-auto px-4 sm:px-6 transition-all duration-300 ${
+        scrolled ? "py-2 sm:py-2.5" : "py-3 sm:py-4"
       }`}>
         {/* Logo */}
-        <Link to="/home" className="flex items-center group">
+        <Link to="/home" className="flex items-center group shrink-0">
           <img
             src="/fulllogo.png"
             alt="Hygenc Covers Logo"
             className={`w-auto transition-all duration-300 group-hover:scale-105 ${
-              scrolled ? "h-10" : "h-14"
+              scrolled ? "h-8 sm:h-10" : "h-10 sm:h-14"
             }`}
           />
         </Link>
@@ -91,7 +91,7 @@ export default function Navbar() {
         </ul>
 
         {/* Right cluster */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <CartButton />
           <div className="hidden md:block">
             <LangToggle />
@@ -112,7 +112,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden absolute right-4 top-20 bg-white shadow-2xl rounded-2xl w-60 p-3 z-50 animate-slideDown border border-gray-100">
+        <div className="md:hidden absolute right-3 left-3 sm:left-auto top-full mt-1 bg-white shadow-2xl rounded-2xl sm:w-64 max-h-[calc(100vh-5rem)] overflow-y-auto p-3 z-50 animate-slideDown border border-gray-100">
           <ul className="flex flex-col gap-1 list-none">
             {navItems.map(({ to, label, icon }) => {
               const isActive = location.pathname === to;

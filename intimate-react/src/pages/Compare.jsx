@@ -42,23 +42,24 @@ export default function Compare() {
         </div>
       </section>
 
-      <main className="max-w-5xl mx-auto px-4 py-14">
-        <div className="overflow-x-auto">
-          <table className="w-full border-separate border-spacing-0 text-sm">
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 py-14">
+        <p className="md:hidden text-center text-xs text-gray-400 mb-3">← {t.scrollHint || "Swipe to compare"} →</p>
+        <div className="overflow-x-auto -mx-3 sm:mx-0 px-3 sm:px-0">
+          <table className="w-full border-separate border-spacing-0 text-xs sm:text-sm min-w-[560px]">
             <thead>
               <tr>
-                <th className="w-40 md:w-52" />
+                <th className="w-28 sm:w-40 md:w-52" />
                 {productDefs.map((p) => (
-                  <th key={p.nameKey} className="pb-6 px-3 align-top">
-                    <div className="bg-white rounded-2xl shadow-md p-4 flex flex-col items-center gap-2">
-                      <img src={p.img} alt={t[p.nameKey]} className="w-24 h-24 object-cover rounded-xl" />
-                      <p className="font-bold text-gray-800 text-base leading-tight">{t[p.nameKey]}</p>
-                      <p className="text-2xl font-bold text-[#28a745]">{p.price}</p>
-                      <p className="text-xs text-gray-400">{p.priceNote}</p>
-                      <a href={`https://wa.me/94729991950?text=${encodeURIComponent(p.whatsapp)}`} target="_blank" rel="noopener noreferrer" className="mt-1 w-full text-center py-2 bg-[#25D366] text-white font-semibold rounded-xl text-xs hover:bg-[#1ea952] transition-colors">
+                  <th key={p.nameKey} className="pb-6 px-1.5 sm:px-3 align-top">
+                    <div className="bg-white rounded-2xl shadow-md p-3 sm:p-4 flex flex-col items-center gap-1.5 sm:gap-2">
+                      <img src={p.img} alt={t[p.nameKey]} className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-xl" />
+                      <p className="font-bold text-gray-800 text-xs sm:text-base leading-tight">{t[p.nameKey]}</p>
+                      <p className="text-lg sm:text-2xl font-bold text-[#28a745]">{p.price}</p>
+                      <p className="text-[10px] sm:text-xs text-gray-400">{p.priceNote}</p>
+                      <a href={`https://wa.me/94729991950?text=${encodeURIComponent(p.whatsapp)}`} target="_blank" rel="noopener noreferrer" className="mt-1 w-full text-center py-1.5 sm:py-2 bg-[#25D366] text-white font-semibold rounded-xl text-[10px] sm:text-xs hover:bg-[#1ea952] transition-colors">
                         {t.orderOnWhatsApp}
                       </a>
-                      <Link to={p.link} className="w-full text-center py-1.5 border border-[#7CB342] text-[#7CB342] font-semibold rounded-xl text-xs hover:bg-[#7CB342] hover:text-white transition-all">
+                      <Link to={p.link} className="w-full text-center py-1 sm:py-1.5 border border-[#7CB342] text-[#7CB342] font-semibold rounded-xl text-[10px] sm:text-xs hover:bg-[#7CB342] hover:text-white transition-all">
                         {t.viewDetails}
                       </Link>
                     </div>
@@ -69,14 +70,14 @@ export default function Compare() {
             <tbody>
               {rows.map(({ label, values, best }, ri) => (
                 <tr key={label} className={ri % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-                  <td className="py-3 px-4 font-semibold text-gray-700 rounded-l-xl">{label}</td>
+                  <td className="py-3 px-2 sm:px-4 font-semibold text-gray-700 rounded-l-xl text-xs sm:text-sm">{label}</td>
                   {values.map((val, ci) => {
                     const isGood = val === "✔";
                     const isBad = val === "✗";
                     const isBest = best === ci;
                     return (
-                      <td key={ci} className={`py-3 px-4 text-center font-medium rounded-xl ${isGood ? "text-[#28a745]" : ""} ${isBad ? "text-gray-300" : ""} ${isBest ? "bg-green-50 text-[#28a745] font-bold" : ""}`}>
-                        {isGood ? <span className="text-lg">✔</span> : isBad ? <span className="text-lg">—</span> : <span className={isBest ? "text-[#28a745] font-bold" : "text-gray-700"}>{val}</span>}
+                      <td key={ci} className={`py-3 px-2 sm:px-4 text-center font-medium rounded-xl ${isGood ? "text-[#28a745]" : ""} ${isBad ? "text-gray-300" : ""} ${isBest ? "bg-green-50 text-[#28a745] font-bold" : ""}`}>
+                        {isGood ? <span className="text-base sm:text-lg">✔</span> : isBad ? <span className="text-base sm:text-lg">—</span> : <span className={isBest ? "text-[#28a745] font-bold" : "text-gray-700"}>{val}</span>}
                       </td>
                     );
                   })}

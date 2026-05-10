@@ -25,10 +25,10 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[#222] text-white pt-16 pb-5 px-5 mt-12">
-      <div className="flex flex-wrap justify-between max-w-6xl mx-auto gap-8">
+    <footer className="bg-[#222] text-white pt-12 sm:pt-16 pb-24 sm:pb-5 px-5 mt-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto gap-8">
         {/* Brand */}
-        <div className="flex-1 min-w-[200px]">
+        <div className="sm:col-span-2 lg:col-span-1">
           <Link to="/home">
             <img
               src="/fulllogo.png"
@@ -40,7 +40,7 @@ export default function Footer() {
         </div>
 
         {/* Quick Links */}
-        <div className="flex-1 min-w-[150px]">
+        <div>
           <h3 className="text-[#28a745] font-semibold text-lg mb-4">{t.quickLinks}</h3>
           <ul className="list-none space-y-2 text-sm">
             {quickLinks.map(([label, to]) => (
@@ -54,12 +54,12 @@ export default function Footer() {
         </div>
 
         {/* Contact */}
-        <div className="flex-1 min-w-[200px]">
+        <div className="break-words">
           <h3 className="text-[#28a745] font-semibold text-lg mb-4">{t.contactUs}</h3>
           <div className="space-y-2 text-sm text-gray-300">
-            <p>
+            <p className="break-words">
               Email:{" "}
-              <a href="mailto:intimatehygiene@gmail.com" className="text-white hover:text-[#81a42f]">
+              <a href="mailto:intimatehygiene@gmail.com" className="text-white hover:text-[#81a42f] break-all">
                 intimatehygiene@gmail.com
               </a>
             </p>
@@ -74,7 +74,7 @@ export default function Footer() {
         </div>
 
         {/* Social */}
-        <div className="flex-1 min-w-[150px]">
+        <div>
           <h3 className="text-[#28a745] font-semibold text-lg mb-4">Follow Us</h3>
           <div className="flex flex-col gap-3 text-sm">
             <a href="https://www.facebook.com/share/17B27TNYy5/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#81a42f] flex items-center gap-2">

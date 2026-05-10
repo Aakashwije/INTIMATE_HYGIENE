@@ -129,7 +129,7 @@ export default function B2B() {
             {tiers.map(({ name, volume, price, unit, color, badge, highlight, features }) => (
               <div
                 key={name}
-                className={`bg-white rounded-2xl border-2 ${color} p-6 flex flex-col ${highlight ? "shadow-xl scale-105" : "shadow-md"}`}
+                className={`bg-white rounded-2xl border-2 ${color} p-6 flex flex-col ${highlight ? "shadow-xl md:scale-105" : "shadow-md"}`}
               >
                 {highlight && (
                   <span className="flex items-center justify-center gap-1 text-xs font-bold bg-[#28a745] text-white px-3 py-1 rounded-full self-center mb-4">
@@ -204,7 +204,7 @@ export default function B2B() {
       <section id="b2b-form" className="py-16 px-5 max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">Request a Quote</h2>
         <p className="text-gray-500 text-center mb-8">Fill in your details and we'll respond via WhatsApp within 2 hours.</p>
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-md p-8 space-y-4">
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-md p-5 sm:p-8 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <input name="company" placeholder="Company / Organisation Name" value={form.company} onChange={onChange} required className="border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />
             <input name="name" placeholder="Your Full Name" value={form.name} onChange={onChange} required className="border border-gray-300 rounded-lg px-4 py-3 text-gray-800 focus:outline-none focus:border-[#28a745] transition-colors" />

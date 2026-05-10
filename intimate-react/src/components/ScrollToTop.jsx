@@ -11,7 +11,7 @@ export default function ScrollToTop() {
       alt="Go to Top"
       title="Go to Top"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      className="fixed bottom-7 right-7 w-12 h-12 md:w-12 md:h-12 cursor-pointer z-50 hover:scale-110 transition-transform duration-300"
+      className="fixed bottom-44 sm:bottom-40 md:bottom-24 right-5 sm:right-7 w-10 h-10 sm:w-12 sm:h-12 cursor-pointer z-50 hover:scale-110 transition-transform duration-300"
     />
   );
 }
