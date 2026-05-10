@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd intimate-react && npm install && npm run build",
+  "outputDirectory": "intimate-react/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

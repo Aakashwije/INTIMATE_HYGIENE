@@ -425,6 +425,7 @@ intimate-react/
 │
 ├── index.html
 ├── vite.config.js
+├── vercel.json           # SPA rewrite rule for Vercel deployment
 ├── eslint.config.js
 └── package.json
 ```
@@ -468,6 +469,57 @@ npm run build
 ```bash
 npm run preview
 # → http://localhost:4173/
+```
+
+---
+
+## Deploying to Vercel
+
+### One-click deploy (recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+
+### Manual deploy via Vercel CLI
+
+```bash
+# Install Vercel CLI globally
+npm install -g vercel
+
+# From inside the intimate-react/ directory
+cd intimate-react
+vercel
+
+# Follow the prompts:
+#   Set up and deploy → Y
+#   Which scope? → your account
+#   Link to existing project? → N (first time)
+#   Project name → hygenc-covers  (or any name)
+#   Directory → ./  (current — intimate-react/)
+#   Build command → npm run build   ✓ (auto-detected)
+#   Output directory → dist          ✓ (auto-detected)
+#   Override settings? → N
+```
+
+### Deploy via GitHub (CI/CD)
+
+1. Push `intimate-react/` to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new) → Import Git Repository
+3. Select the repo → set **Root Directory** to `intimate-react`
+4. Vercel auto-detects Vite — leave all build settings as default
+5. Click **Deploy**
+
+Every push to `main` will trigger an automatic redeploy.
+
+### What `vercel.json` does
+
+All routes (`/home`, `/products`, `/faq`, …) are client-side routes handled by React Router. Without a rewrite rule, Vercel would return **404** on direct URL visits or page refreshes. The `vercel.json` at the project root fixes this:
+
+```json
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
 ```
 
 ---
