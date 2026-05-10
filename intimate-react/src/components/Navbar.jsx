@@ -13,9 +13,10 @@ import {
     faTruck,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLang } from "../context/LangContext";
+import CartButton from "./CartButton";
 import LangToggle from "./LangToggle";
 
 const navItemDefs = [
@@ -33,19 +34,37 @@ const navItemDefs = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { t } = useLang();
   const navItems = navItemDefs.map((item) => ({ ...item, label: t[item.key] }));
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 30);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <nav className="flex justify-between items-center max-w-6xl mx-auto px-8 py-5">
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/85 backdrop-blur-md shadow-md border-b border-gray-100"
+          : "bg-white border-b border-gray-200"
+      }`}
+    >
+      <nav className={`flex justify-between items-center max-w-6xl mx-auto px-6 transition-all duration-300 ${
+        scrolled ? "py-2.5" : "py-4"
+      }`}>
         {/* Logo */}
-        <Link to="/home" className="flex items-center">
+        <Link to="/home" className="flex items-center group">
           <img
             src="/fulllogo.png"
             alt="Hygenc Covers Logo"
-            className="h-14 w-auto"
+            className={`w-auto transition-all duration-300 group-hover:scale-105 ${
+              scrolled ? "h-10" : "h-14"
+            }`}
           />
         </Link>
 
@@ -59,7 +78,7 @@ export default function Navbar() {
                   to={to}
                   className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
                     isActive
-                      ? "bg-[#28a745] text-white scale-105"
+                      ? "bg-[#28a745] text-white scale-105 shadow-md"
                       : "text-gray-800 hover:bg-[#28a745] hover:text-white hover:scale-105"
                   }`}
                 >
@@ -71,27 +90,30 @@ export default function Navbar() {
           })}
         </ul>
 
-        {/* Lang toggle — desktop */}
-        <div className="hidden md:block">
-          <LangToggle />
-        </div>
+        {/* Right cluster */}
+        <div className="flex items-center gap-2">
+          <CartButton />
+          <div className="hidden md:block">
+            <LangToggle />
+          </div>
 
-        {/* Hamburger */}
-        <button
-          className="md:hidden flex flex-col cursor-pointer z-50 gap-1"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span className="h-[3px] w-6 bg-gray-800 rounded" />
-          <span className="h-[3px] w-6 bg-gray-800 rounded" />
-          <span className="h-[3px] w-6 bg-gray-800 rounded" />
-        </button>
+          {/* Hamburger */}
+          <button
+            className="md:hidden flex flex-col cursor-pointer z-50 gap-1 p-2"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span className={`h-[3px] w-6 bg-gray-800 rounded transition-transform duration-300 ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`h-[3px] w-6 bg-gray-800 rounded transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`h-[3px] w-6 bg-gray-800 rounded transition-transform duration-300 ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden absolute right-4 top-20 bg-white shadow-lg rounded-xl w-52 p-4 z-50 animate-slideDown">
-          <ul className="flex flex-col gap-2 list-none">
+        <div className="md:hidden absolute right-4 top-20 bg-white shadow-2xl rounded-2xl w-60 p-3 z-50 animate-slideDown border border-gray-100">
+          <ul className="flex flex-col gap-1 list-none">
             {navItems.map(({ to, label, icon }) => {
               const isActive = location.pathname === to;
               return (
@@ -99,19 +121,22 @@ export default function Navbar() {
                   <Link
                     to={to}
                     onClick={() => setMenuOpen(false)}
-                    className={`flex items-center gap-2 px-4 py-2 font-medium rounded-full transition-all duration-300 ${
+                    className={`flex items-center gap-2 px-4 py-2.5 font-medium rounded-xl transition-all duration-300 text-sm ${
                       isActive
                         ? "bg-[#28a745] text-white"
-                        : "text-gray-800 hover:bg-[#28a745] hover:text-white"
+                        : "text-gray-800 hover:bg-green-50 hover:text-[#28a745]"
                     }`}
                   >
-                    <FontAwesomeIcon icon={icon} />
+                    <FontAwesomeIcon icon={icon} className="w-4" />
                     {label}
                   </Link>
                 </li>
               );
             })}
           </ul>
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <LangToggle />
+          </div>
         </div>
       )}
     </header>
