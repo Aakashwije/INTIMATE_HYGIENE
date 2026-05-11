@@ -65,7 +65,7 @@ function getRecommendation(answers) {
       desc: "With a free plastic dispenser included, this flushable pack is designed for high-traffic environments. Perfect for hotels, hospitals, offices and any large operation.",
       price: "LKR 750 / pack",
       badge: "🏆 Best for Business",
-      img: "/interprise.png",
+      img: "/interprisenew.png",
       link: "/products/3",
       whatsapp:
         "Hello! I completed the product quiz and was recommended the Enterprise Pack. Please share bulk pricing and availability.",
@@ -91,7 +91,7 @@ function getRecommendation(answers) {
       desc: "Compact, waterproof and anti-slip — the ideal companion for commuters, travellers and anyone who is always on the move.",
       price: "LKR 350 / 10-pack",
       badge: "✈️ Best for Travellers",
-      img: "/travel.png",
+      img: "/travelnew.png",
       link: "/products/2",
       whatsapp:
         "Hello! I completed the product quiz and was recommended the Travel Pack. Please share availability and delivery details.",
@@ -111,7 +111,7 @@ function getRecommendation(answers) {
     desc: "Biodegradable, individually wrapped and affordable — our most popular pack for everyday home and family use.",
     price: "LKR 250 / pack",
     badge: "🌿 Most Popular",
-    img: "/normal.png",
+    img: "/normalnew.png",
     link: "/products/1",
     whatsapp:
       "Hello! I completed the product quiz and was recommended the Single Use Pack. Please share availability and delivery details.",

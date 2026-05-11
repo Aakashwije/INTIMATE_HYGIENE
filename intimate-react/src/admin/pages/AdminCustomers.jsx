@@ -158,10 +158,10 @@ const CUSTOMERS = [
 ];
 
 const SEGMENT_COLORS = {
-  VIP: "bg-amber-500/15 text-amber-400 border-amber-500/20",
-  B2B: "bg-violet-500/15 text-violet-400 border-violet-500/20",
-  Regular: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-  New: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
+  VIP: "bg-amber-50 text-amber-600 border-amber-200",
+  B2B: "bg-violet-50 text-violet-600 border-violet-200",
+  Regular: "bg-blue-50 text-blue-600 border-blue-200",
+  New: "bg-green-100 text-green-primary border-green-200",
 };
 
 const SEGMENTS = ["all", "VIP", "B2B", "Regular", "New"];
@@ -193,8 +193,8 @@ export default function AdminCustomers() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white">Customers</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Customers</h1>
+          <p className="text-gray-500 text-sm mt-1">
             Customer profiles and lifetime value
           </p>
         </div>
@@ -221,14 +221,14 @@ export default function AdminCustomers() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3"
+            className="bg-white border border-gray-200 rounded-2xl p-4 flex items-center gap-3"
           >
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center text-green-primary shrink-0">
               <Icon className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-white font-bold">{value}</div>
-              <div className="text-slate-500 text-xs">{label}</div>
+              <div className="text-gray-900 font-bold">{value}</div>
+              <div className="text-gray-500 text-xs">{label}</div>
             </div>
           </motion.div>
         ))}
@@ -242,12 +242,12 @@ export default function AdminCustomers() {
         className="flex flex-col sm:flex-row gap-3"
       >
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name or city…"
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-primary/30 transition-all"
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -257,8 +257,8 @@ export default function AdminCustomers() {
               onClick={() => setSegment(s)}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
                 segment === s
-                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                  : "bg-slate-800/60 border-slate-700/50 text-slate-400 hover:text-white"
+                  ? "bg-green-100 border-green-primary/30 text-green-primary"
+                  : "bg-gray-50 border-gray-200 text-gray-500 hover:text-gray-900"
               }`}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -276,18 +276,18 @@ export default function AdminCustomers() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 + i * 0.06 }}
             whileHover={{ y: -2 }}
-            className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5 hover:border-slate-600/50 transition-colors"
+            className="bg-white border border-gray-200 rounded-2xl p-5 hover:border-green-primary/50 transition-colors"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-emerald-500/20">
+                <div className="w-11 h-11 rounded-xl bg-linear-to-br from-green-primary to-green-dark flex items-center justify-center text-gray-900 font-bold text-sm shadow-lg shadow-green-primary/20">
                   {c.avatar}
                 </div>
                 <div>
-                  <div className="text-white font-semibold text-sm">
+                  <div className="text-gray-900 font-semibold text-sm">
                     {c.name}
                   </div>
-                  <div className="flex items-center gap-1 text-slate-500 text-xs">
+                  <div className="flex items-center gap-1 text-gray-500 text-xs">
                     <MapPin className="w-3 h-3" />
                     {c.city}
                   </div>
@@ -301,27 +301,27 @@ export default function AdminCustomers() {
             </div>
 
             <div className="grid grid-cols-3 gap-2 mb-4">
-              <div className="bg-slate-800/60 rounded-xl p-2.5 text-center">
-                <div className="text-white font-bold text-sm">{c.orders}</div>
-                <div className="text-slate-600 text-xs">Orders</div>
+              <div className="bg-gray-50 rounded-xl p-2.5 text-center">
+                <div className="text-gray-900 font-bold text-sm">{c.orders}</div>
+                <div className="text-gray-400 text-xs">Orders</div>
               </div>
-              <div className="bg-slate-800/60 rounded-xl p-2.5 text-center">
-                <div className="text-emerald-400 font-bold text-xs">{`LKR ${(c.totalSpent / 1000).toFixed(0)}k`}</div>
-                <div className="text-slate-600 text-xs">Spent</div>
+              <div className="bg-gray-50 rounded-xl p-2.5 text-center">
+                <div className="text-green-primary font-bold text-xs">{`LKR ${(c.totalSpent / 1000).toFixed(0)}k`}</div>
+                <div className="text-gray-400 text-xs">Spent</div>
               </div>
-              <div className="bg-slate-800/60 rounded-xl p-2.5 text-center">
+              <div className="bg-gray-50 rounded-xl p-2.5 text-center">
                 <div className="flex items-center justify-center gap-0.5">
                   <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
-                  <span className="text-white font-bold text-sm">
+                  <span className="text-gray-900 font-bold text-sm">
                     {c.rating}
                   </span>
                 </div>
-                <div className="text-slate-600 text-xs">Rating</div>
+                <div className="text-gray-400 text-xs">Rating</div>
               </div>
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1 text-slate-500 text-xs">
+              <div className="flex items-center gap-1 text-gray-500 text-xs">
                 <Phone className="w-3 h-3" />
                 {c.phone}
               </div>
@@ -335,13 +335,13 @@ export default function AdminCustomers() {
                 WhatsApp
               </a>
             </div>
-            <div className="text-slate-600 text-xs mt-2">
+            <div className="text-gray-400 text-xs mt-2">
               Last order: {c.lastOrder}
             </div>
           </motion.div>
         ))}
         {filtered.length === 0 && (
-          <div className="col-span-3 py-12 text-center text-slate-600">
+          <div className="col-span-3 py-12 text-center text-gray-400">
             No customers found
           </div>
         )}

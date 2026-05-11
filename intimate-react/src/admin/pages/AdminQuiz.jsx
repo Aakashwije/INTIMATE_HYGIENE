@@ -83,7 +83,7 @@ const resultDist = [
   {
     name: "Single Use Pack",
     value: QUIZ_RESULTS.filter((r) => r.result === "Single Use Pack").length,
-    color: "#10b981",
+    color: "#28a745",
   },
   {
     name: "Travel Pack",
@@ -112,8 +112,8 @@ export default function AdminQuiz() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-2xl font-bold text-white">Quiz Responses</h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-gray-900">Quiz Responses</h1>
+        <p className="text-gray-500 text-sm mt-1">
           Analyze which products customers are being recommended
         </p>
       </motion.div>
@@ -124,9 +124,9 @@ export default function AdminQuiz() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-4">Result Distribution</h2>
+          <h2 className="text-gray-900 font-semibold mb-4">Result Distribution</h2>
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
@@ -144,10 +144,10 @@ export default function AdminQuiz() {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: 12,
-                  color: "#f8fafc",
+                  color: "#111827",
                 }}
               />
             </PieChart>
@@ -159,8 +159,8 @@ export default function AdminQuiz() {
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ background: r.color }}
                 />
-                <span className="text-slate-400 text-xs flex-1">{r.name}</span>
-                <span className="text-white text-xs font-bold">
+                <span className="text-gray-500 text-xs flex-1">{r.name}</span>
+                <span className="text-gray-900 text-xs font-bold">
                   {r.value} users
                 </span>
               </div>
@@ -172,38 +172,38 @@ export default function AdminQuiz() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-4">Score Distribution</h2>
+          <h2 className="text-gray-900 font-semibold mb-4">Score Distribution</h2>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart
               data={scoreData}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis
                 dataKey="score"
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <Tooltip
                 contentStyle={{
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: 12,
-                  color: "#f8fafc",
+                  color: "#111827",
                 }}
               />
               <Bar
                 dataKey="count"
                 name="Responses"
-                fill="#10b981"
+                fill="#28a745"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -216,19 +216,19 @@ export default function AdminQuiz() {
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-slate-900/60 border border-slate-700/50 rounded-2xl overflow-hidden"
+        className="bg-white border border-gray-200 rounded-2xl overflow-hidden"
       >
-        <div className="px-5 py-4 border-b border-slate-700/50">
-          <h2 className="text-white font-semibold">All Responses</h2>
+        <div className="px-5 py-4 border-b border-gray-200">
+          <h2 className="text-gray-900 font-semibold">All Responses</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700/50">
+              <tr className="border-b border-gray-200">
                 {["#", "Name", "Recommended", "Score", "Date"].map((h) => (
                   <th
                     key={h}
-                    className="text-left text-slate-400 text-xs font-medium px-5 py-3"
+                    className="text-left text-gray-500 text-xs font-medium px-5 py-3"
                   >
                     {h}
                   </th>
@@ -242,20 +242,20 @@ export default function AdminQuiz() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 + i * 0.04 }}
-                  className="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors"
+                  className="border-b border-gray-100 hover:bg-gray-100/30 transition-colors"
                 >
-                  <td className="px-5 py-3 text-slate-600 text-xs">{r.id}</td>
-                  <td className="px-5 py-3 text-white text-xs font-medium">
+                  <td className="px-5 py-3 text-gray-400 text-xs">{r.id}</td>
+                  <td className="px-5 py-3 text-gray-900 text-xs font-medium">
                     {r.name}
                   </td>
                   <td className="px-5 py-3">
                     <span
                       className={`text-xs px-2 py-0.5 rounded-lg border font-medium ${
                         r.result === "Enterprise Pack"
-                          ? "bg-violet-500/15 text-violet-400 border-violet-500/20"
+                          ? "bg-violet-50 text-violet-600 border-violet-200"
                           : r.result === "Travel Pack"
-                            ? "bg-blue-500/15 text-blue-400 border-blue-500/20"
-                            : "bg-emerald-500/15 text-emerald-400 border-emerald-500/20"
+                            ? "bg-blue-50 text-blue-600 border-blue-200"
+                            : "bg-green-100 text-green-primary border-green-200"
                       }`}
                     >
                       {r.result}
@@ -263,18 +263,18 @@ export default function AdminQuiz() {
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-1.5">
-                      <div className="h-1.5 bg-slate-800 rounded-full w-16 overflow-hidden">
+                      <div className="h-1.5 bg-gray-100 rounded-full w-16 overflow-hidden">
                         <div
-                          className="h-full bg-emerald-500 rounded-full"
+                          className="h-full bg-green-primary rounded-full"
                           style={{ width: `${r.score * 10}%` }}
                         />
                       </div>
-                      <span className="text-white text-xs font-semibold">
+                      <span className="text-gray-900 text-xs font-semibold">
                         {r.score}/10
                       </span>
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-slate-500 text-xs">{r.date}</td>
+                  <td className="px-5 py-3 text-gray-500 text-xs">{r.date}</td>
                 </motion.tr>
               ))}
             </tbody>

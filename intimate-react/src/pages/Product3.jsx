@@ -39,7 +39,7 @@ export default function Product3() {
       <ProductDetailLayout
         title="Enterprise Pack (Flushable)"
         subtitle="Safe, eco friendly, and water soluble covers with a <strong>free plastic dispenser included!</strong>"
-        image="/interprise.png"
+        image="/interprisenew.png"
         imageAlt="Flushable Paper Toilet Seat Covers"
         highlight="★ Comes with a FREE plastic dispenser with instructions"
         price="LKR 750"

@@ -14,7 +14,7 @@ import { useLang } from "../context/LangContext";
 const productDefs = [
   {
     id: "single",
-    img: "/normal.png",
+    img: "/normalnew.png",
     titleKey: "singleUse",
     descKey: "singleUseDesc",
     badge: "singleUseLabel",
@@ -28,7 +28,7 @@ const productDefs = [
   },
   {
     id: "travel",
-    img: "/travel.png",
+    img: "/travelnew.png",
     titleKey: "travelPack",
     descKey: "travelPackDesc",
     badge: "budgetFriendly",
@@ -42,7 +42,7 @@ const productDefs = [
   },
   {
     id: "enterprise",
-    img: "/interprise.png",
+    img: "/interprisenew.png",
     titleKey: "enterprise",
     descKey: "enterpriseDesc",
     badge: "bestSeller",

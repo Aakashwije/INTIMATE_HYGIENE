@@ -176,19 +176,19 @@ const ALL_ORDERS = [
 const STATUS_META = {
   delivered: {
     icon: CheckCircle,
-    classes: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
+    classes: "bg-green-100 text-green-primary border-green-200",
   },
   shipped: {
     icon: Truck,
-    classes: "bg-blue-500/15 text-blue-400 border-blue-500/20",
+    classes: "bg-blue-50 text-blue-600 border-blue-200",
   },
   processing: {
     icon: Clock,
-    classes: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+    classes: "bg-amber-50 text-amber-600 border-amber-200",
   },
   cancelled: {
     icon: RotateCcw,
-    classes: "bg-red-500/15 text-red-400 border-red-500/20",
+    classes: "bg-red-50 text-red-600 border-red-200",
   },
 };
 
@@ -244,12 +244,12 @@ export default function AdminOrders() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white">Orders</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
+          <p className="text-gray-500 text-sm mt-1">
             Manage and track all customer orders
           </p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm hover:bg-emerald-500/20 transition-all self-start">
+        <button className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-primary text-sm hover:bg-green-100 transition-all self-start">
           <Download className="w-4 h-4" />
           Export CSV
         </button>
@@ -288,7 +288,7 @@ export default function AdminOrders() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.07 }}
-            className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3"
+            className="bg-white border border-gray-200 rounded-2xl p-4 flex items-center gap-3"
           >
             <div
               className={`w-9 h-9 rounded-xl bg-${color}-500/10 flex items-center justify-center text-${color}-400`}
@@ -296,8 +296,8 @@ export default function AdminOrders() {
               <Icon className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-white font-bold">{value}</div>
-              <div className="text-slate-500 text-xs">{label}</div>
+              <div className="text-gray-900 font-bold">{value}</div>
+              <div className="text-gray-500 text-xs">{label}</div>
             </div>
           </motion.div>
         ))}
@@ -311,7 +311,7 @@ export default function AdminOrders() {
         className="flex flex-col sm:flex-row gap-3"
       >
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input
             value={search}
             onChange={(e) => {
@@ -319,7 +319,7 @@ export default function AdminOrders() {
               setPage(1);
             }}
             placeholder="Search by name or order ID…"
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-sm text-slate-300 placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-primary/30 transition-all"
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -332,8 +332,8 @@ export default function AdminOrders() {
               }}
               className={`px-3 py-2 rounded-xl text-xs font-medium transition-all border ${
                 statusFilter === s
-                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                  : "bg-slate-800/60 border-slate-700/50 text-slate-400 hover:text-white"
+                  ? "bg-green-100 border-green-primary/30 text-green-primary"
+                  : "bg-gray-50 border-gray-200 text-gray-500 hover:text-gray-900"
               }`}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -347,12 +347,12 @@ export default function AdminOrders() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25 }}
-        className="bg-slate-900/60 border border-slate-700/50 rounded-2xl overflow-hidden"
+        className="bg-white border border-gray-200 rounded-2xl overflow-hidden"
       >
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-700/50">
+              <tr className="border-b border-gray-200">
                 {[
                   "Order ID",
                   "Customer",
@@ -364,7 +364,7 @@ export default function AdminOrders() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left text-slate-400 text-xs font-medium px-5 py-4"
+                    className="text-left text-gray-500 text-xs font-medium px-5 py-4"
                   >
                     {h}
                   </th>
@@ -378,23 +378,23 @@ export default function AdminOrders() {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 + i * 0.04 }}
-                  className="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors group"
+                  className="border-b border-gray-100 hover:bg-gray-100/30 transition-colors group"
                 >
                   <td className="px-5 py-4">
-                    <span className="text-emerald-400 font-mono text-xs font-semibold">
+                    <span className="text-green-primary font-mono text-xs font-semibold">
                       {order.id}
                     </span>
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-300 shrink-0">
+                      <div className="w-7 h-7 rounded-lg bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">
                         {order.avatar}
                       </div>
                       <div>
-                        <div className="text-white text-xs font-medium">
+                        <div className="text-gray-900 text-xs font-medium">
                           {order.customer}
                         </div>
-                        <div className="text-slate-500 text-xs flex items-center gap-1">
+                        <div className="text-gray-500 text-xs flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
                           {order.city}
                         </div>
@@ -402,31 +402,31 @@ export default function AdminOrders() {
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <div className="text-slate-300 text-xs">
+                    <div className="text-gray-700 text-xs">
                       {order.product}
                     </div>
-                    <div className="text-slate-600 text-xs">
+                    <div className="text-gray-400 text-xs">
                       Qty: {order.qty}
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <span className="text-white font-semibold text-xs">
+                    <span className="text-gray-900 font-semibold text-xs">
                       LKR {order.amount.toLocaleString()}
                     </span>
-                    <div className="text-slate-600 text-xs">
+                    <div className="text-gray-400 text-xs">
                       {order.payMethod}
                     </div>
                   </td>
                   <td className="px-5 py-4">
                     <StatusBadge status={order.status} />
                   </td>
-                  <td className="px-5 py-4 text-slate-500 text-xs">
+                  <td className="px-5 py-4 text-gray-500 text-xs">
                     {order.date}
                   </td>
                   <td className="px-5 py-4">
                     <button
                       onClick={() => setSelected(order)}
-                      className="flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-400 transition-colors opacity-0 group-hover:opacity-100 hover:bg-emerald-500/10 px-2 py-1 rounded-lg"
+                      className="flex items-center gap-1 text-xs text-gray-500 hover:text-green-primary transition-colors opacity-0 group-hover:opacity-100 hover:bg-green-50 px-2 py-1 rounded-lg"
                     >
                       <Eye className="w-3.5 h-3.5" /> View
                     </button>
@@ -437,7 +437,7 @@ export default function AdminOrders() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="px-5 py-12 text-center text-slate-600"
+                    className="px-5 py-12 text-center text-gray-400"
                   >
                     No orders found
                   </td>
@@ -449,8 +449,8 @@ export default function AdminOrders() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-5 py-3 border-t border-slate-700/50">
-            <span className="text-slate-500 text-xs">
+          <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200">
+            <span className="text-gray-500 text-xs">
               Showing {(page - 1) * PER_PAGE + 1}–
               {Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
             </span>
@@ -459,7 +459,7 @@ export default function AdminOrders() {
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${page === i + 1 ? "bg-emerald-500 text-white" : "bg-slate-800 text-slate-400 hover:bg-slate-700"}`}
+                  className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${page === i + 1 ? "bg-green-primary text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
                 >
                   {i + 1}
                 </button>
@@ -485,46 +485,46 @@ export default function AdminOrders() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed right-0 top-0 bottom-0 w-full max-w-sm bg-slate-900 border-l border-slate-700/50 z-50 overflow-y-auto"
+              className="fixed right-0 top-0 bottom-0 w-full max-w-sm bg-white border-l border-gray-200 z-50 overflow-y-auto"
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-white font-bold">Order Details</h2>
+                  <h2 className="text-gray-900 font-bold">Order Details</h2>
                   <button
                     onClick={() => setSelected(null)}
-                    className="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="bg-slate-800/60 rounded-2xl p-4">
-                    <div className="text-emerald-400 font-mono text-sm font-bold mb-1">
+                  <div className="bg-gray-50 rounded-2xl p-4">
+                    <div className="text-green-primary font-mono text-sm font-bold mb-1">
                       {selected.id}
                     </div>
-                    <div className="text-slate-400 text-xs">
+                    <div className="text-gray-500 text-xs">
                       {selected.date}
                     </div>
                   </div>
 
-                  <div className="bg-slate-800/60 rounded-2xl p-4 space-y-3">
-                    <h3 className="text-slate-400 text-xs font-medium uppercase tracking-wide">
+                  <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+                    <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
                       Customer
                     </h3>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold">
+                      <div className="w-10 h-10 rounded-xl bg-linear-to-br from-green-primary to-green-dark flex items-center justify-center text-gray-900 font-bold">
                         {selected.avatar}
                       </div>
                       <div>
-                        <div className="text-white font-semibold">
+                        <div className="text-gray-900 font-semibold">
                           {selected.customer}
                         </div>
-                        <div className="text-slate-400 text-xs flex items-center gap-1">
+                        <div className="text-gray-500 text-xs flex items-center gap-1">
                           <Phone className="w-3 h-3" />
                           {selected.phone}
                         </div>
-                        <div className="text-slate-400 text-xs flex items-center gap-1">
+                        <div className="text-gray-500 text-xs flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
                           {selected.city}
                         </div>
@@ -532,40 +532,40 @@ export default function AdminOrders() {
                     </div>
                   </div>
 
-                  <div className="bg-slate-800/60 rounded-2xl p-4 space-y-2">
-                    <h3 className="text-slate-400 text-xs font-medium uppercase tracking-wide">
+                  <div className="bg-gray-50 rounded-2xl p-4 space-y-2">
+                    <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
                       Order
                     </h3>
                     <div className="flex justify-between">
-                      <span className="text-slate-400 text-sm">Product</span>
-                      <span className="text-white text-sm font-medium">
+                      <span className="text-gray-500 text-sm">Product</span>
+                      <span className="text-gray-900 text-sm font-medium">
                         {selected.product}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400 text-sm">Quantity</span>
-                      <span className="text-white text-sm font-medium">
+                      <span className="text-gray-500 text-sm">Quantity</span>
+                      <span className="text-gray-900 text-sm font-medium">
                         {selected.qty}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400 text-sm">Payment</span>
-                      <span className="text-white text-sm font-medium">
+                      <span className="text-gray-500 text-sm">Payment</span>
+                      <span className="text-gray-900 text-sm font-medium">
                         {selected.payMethod}
                       </span>
                     </div>
-                    <div className="border-t border-slate-700/50 pt-2 flex justify-between">
-                      <span className="text-slate-300 font-semibold">
+                    <div className="border-t border-gray-200 pt-2 flex justify-between">
+                      <span className="text-gray-700 font-semibold">
                         Total
                       </span>
-                      <span className="text-emerald-400 font-bold text-lg">
+                      <span className="text-green-primary font-bold text-lg">
                         LKR {selected.amount.toLocaleString()}
                       </span>
                     </div>
                   </div>
 
-                  <div className="bg-slate-800/60 rounded-2xl p-4">
-                    <h3 className="text-slate-400 text-xs font-medium uppercase tracking-wide mb-3">
+                  <div className="bg-gray-50 rounded-2xl p-4">
+                    <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-3">
                       Status
                     </h3>
                     <StatusBadge status={selected.status} />

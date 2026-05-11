@@ -7,13 +7,13 @@ const SectionCard = ({ icon: Icon, title, children }) => (
   <motion.div
     initial={{ opacity: 0, y: 15 }}
     animate={{ opacity: 1, y: 0 }}
-    className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6"
+    className="bg-white border border-gray-200 rounded-2xl p-6"
   >
     <div className="flex items-center gap-2.5 mb-5">
-      <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+      <div className="w-8 h-8 rounded-xl bg-green-50 flex items-center justify-center text-green-primary">
         <Icon className="w-4 h-4" />
       </div>
-      <h2 className="text-white font-semibold">{title}</h2>
+      <h2 className="text-gray-900 font-semibold">{title}</h2>
     </div>
     {children}
   </motion.div>
@@ -21,25 +21,25 @@ const SectionCard = ({ icon: Icon, title, children }) => (
 
 const Field = ({ label, ...props }) => (
   <div>
-    <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">
+    <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
       {label}
     </label>
     <input
-      className="w-full px-4 py-2.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition-all"
+      className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-primary/30 transition-all"
       {...props}
     />
   </div>
 );
 
 const Toggle = ({ label, desc, checked, onChange }) => (
-  <div className="flex items-center justify-between py-3 border-b border-slate-800/60 last:border-0">
+  <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
     <div>
-      <div className="text-white text-sm font-medium">{label}</div>
-      {desc && <div className="text-slate-500 text-xs mt-0.5">{desc}</div>}
+      <div className="text-gray-900 text-sm font-medium">{label}</div>
+      {desc && <div className="text-gray-500 text-xs mt-0.5">{desc}</div>}
     </div>
     <button
       onClick={() => onChange(!checked)}
-      className={`relative w-11 h-6 rounded-full transition-all duration-300 ${checked ? "bg-emerald-500" : "bg-slate-700"}`}
+      className={`relative w-11 h-6 rounded-full transition-all duration-300 ${checked ? "bg-green-primary" : "bg-gray-200"}`}
     >
       <span
         className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-all duration-300 ${checked ? "translate-x-5" : "translate-x-0"}`}
@@ -86,8 +86,8 @@ export default function AdminSettings() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+        <p className="text-gray-500 text-sm mt-1">
           Manage store configuration and preferences
         </p>
       </motion.div>
@@ -139,7 +139,7 @@ export default function AdminSettings() {
               }
             />
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
                 Auto-Greeting Message
               </label>
               <textarea
@@ -148,7 +148,7 @@ export default function AdminSettings() {
                 onChange={(e) =>
                   setWhatsapp((s) => ({ ...s, greeting: e.target.value }))
                 }
-                className="w-full px-4 py-2.5 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 resize-none"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-primary/30 resize-none"
               />
             </div>
           </div>
@@ -223,13 +223,13 @@ export default function AdminSettings() {
               {
                 label: "Admin 1",
                 user: "owner",
-                name: "Aakash Perera",
+                name: "Aakash Wijesekara",
                 role: "Super Admin",
               },
               {
                 label: "Admin 2",
                 user: "manager",
-                name: "Store Manager",
+                name: "Upul Wijesekara",
                 role: "Manager",
               },
               {
@@ -241,33 +241,31 @@ export default function AdminSettings() {
             ].map((a) => (
               <div
                 key={a.user}
-                className={`bg-slate-800/60 rounded-xl p-4 border ${user?.username === a.user ? "border-emerald-500/30" : "border-slate-700/50"}`}
+                className={`bg-gray-50 rounded-xl p-4 border ${user?.username === a.user ? "border-green-primary/30" : "border-gray-200"}`}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-xs font-bold">
+                  <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center text-green-primary text-xs font-bold">
                     {a.user.slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <div className="text-white text-xs font-semibold">
+                    <div className="text-gray-900 text-xs font-semibold">
                       {a.name}
                     </div>
-                    <div className="text-slate-500 text-xs">{a.role}</div>
+                    <div className="text-gray-500 text-xs">{a.role}</div>
                   </div>
                 </div>
-                <div className="text-slate-600 text-xs font-mono">
-                  @{a.user}
-                </div>
+                <div className="text-gray-400 text-xs font-mono">@{a.user}</div>
                 {user?.username === a.user && (
-                  <div className="mt-2 text-xs text-emerald-400 font-medium">
+                  <div className="mt-2 text-xs text-green-primary font-medium">
                     ● You
                   </div>
                 )}
               </div>
             ))}
           </div>
-          <p className="text-slate-600 text-xs mt-3">
+          <p className="text-gray-400 text-xs mt-3">
             To change passwords, update{" "}
-            <span className="font-mono text-slate-500">
+            <span className="font-mono text-gray-500">
               AdminAuthContext.jsx
             </span>
           </p>
@@ -281,8 +279,8 @@ export default function AdminSettings() {
             type="submit"
             className={`flex items-center gap-2 px-8 py-3 rounded-xl text-sm font-semibold shadow-lg transition-all ${
               saved
-                ? "bg-emerald-600 text-white shadow-emerald-500/20"
-                : "bg-emerald-500 hover:bg-emerald-400 text-white shadow-emerald-500/20"
+                ? "bg-green-dark text-white shadow-green-primary/20"
+                : "bg-green-primary hover:bg-green-dark text-white shadow-green-primary/20"
             }`}
           >
             {saved ? (

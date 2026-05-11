@@ -110,21 +110,21 @@ export default function Home() {
 
   const products = [
     {
-      img: "/normal.png",
+      img: "/normalnew.png",
       title: t.standardPack,
       desc: t.standardPackDesc,
       link: "/products/1",
       price: "LKR 250",
     },
     {
-      img: "/travel.png",
+      img: "/travelnew.png",
       title: t.travelKit,
       desc: t.travelKitDesc,
       link: "/products/2",
       price: "LKR 350",
     },
     {
-      img: "/interprise.png",
+      img: "/interprisenew.png",
       title: t.enterprisePack,
       desc: t.enterprisePackDesc,
       link: "/products/3",
@@ -495,12 +495,12 @@ export default function Home() {
         </Reveal>
         <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto mb-8">
           {[
-            "/normal.png",
-            "/travel.png",
-            "/interprise.png",
-            "/normal.png",
-            "/travel.png",
-            "/interprise.png",
+            "/normalnew.png",
+            "/travelnew.png",
+            "/interprisenew.png",
+            "/normalnew.png",
+            "/travelnew.png",
+            "/interprisenew.png",
           ].map((img, i) => (
             <Reveal key={i} delay={i * 50} variant="zoom">
               <div className="aspect-square overflow-hidden rounded-lg group cursor-pointer">

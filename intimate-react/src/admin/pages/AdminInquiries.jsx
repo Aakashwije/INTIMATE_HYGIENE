@@ -103,22 +103,22 @@ const STATUS_META = {
   new: {
     label: "New Lead",
     icon: Clock,
-    classes: "bg-blue-500/15 text-blue-400 border-blue-500/20",
+    classes: "bg-blue-50 text-blue-600 border-blue-200",
   },
   negotiating: {
     label: "Negotiating",
     icon: MessageSquare,
-    classes: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+    classes: "bg-amber-50 text-amber-600 border-amber-200",
   },
   closed_won: {
     label: "Won",
     icon: CheckCircle,
-    classes: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
+    classes: "bg-green-100 text-green-primary border-green-200",
   },
   closed_lost: {
     label: "Lost",
     icon: X,
-    classes: "bg-red-500/15 text-red-400 border-red-500/20",
+    classes: "bg-red-50 text-red-600 border-red-200",
   },
 };
 
@@ -141,8 +141,8 @@ export default function AdminInquiries() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white">B2B Inquiries</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">B2B Inquiries</h1>
+          <p className="text-gray-500 text-sm mt-1">
             Manage corporate and bulk buyer leads
           </p>
         </div>
@@ -169,7 +169,7 @@ export default function AdminInquiries() {
             <div className={`text-2xl font-bold text-${color}-400`}>
               {value}
             </div>
-            <div className="text-slate-400 text-xs mt-1">{label}</div>
+            <div className="text-gray-500 text-xs mt-1">{label}</div>
           </motion.div>
         ))}
       </div>
@@ -185,27 +185,27 @@ export default function AdminInquiries() {
               initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 + i * 0.07 }}
-              className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5 hover:border-slate-600/50 transition-colors"
+              className="bg-white border border-gray-200 rounded-2xl p-5 hover:border-green-primary/50 transition-colors"
             >
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Company info */}
                 <div className="flex items-center gap-3 flex-1">
-                  <div className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center shrink-0">
-                    <Building2 className="w-5 h-5 text-slate-400" />
+                  <div className="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+                    <Building2 className="w-5 h-5 text-gray-500" />
                   </div>
                   <div>
-                    <div className="text-white font-semibold">
+                    <div className="text-gray-900 font-semibold">
                       {inq.company}
                     </div>
-                    <div className="text-slate-400 text-xs">
+                    <div className="text-gray-500 text-xs">
                       {inq.contact} · {inq.role}
                     </div>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-slate-500 text-xs font-mono">
+                      <span className="text-gray-500 text-xs font-mono">
                         {inq.id}
                       </span>
-                      <span className="text-slate-700">·</span>
-                      <span className="text-slate-500 text-xs flex items-center gap-1">
+                      <span className="text-gray-400">·</span>
+                      <span className="text-gray-500 text-xs flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         {inq.city}
                       </span>
@@ -215,11 +215,11 @@ export default function AdminInquiries() {
 
                 {/* Product & qty */}
                 <div className="hidden sm:block text-right">
-                  <div className="text-white text-sm font-medium">
+                  <div className="text-gray-900 text-sm font-medium">
                     {inq.product}
                   </div>
-                  <div className="text-slate-400 text-xs">Qty: {inq.qty}</div>
-                  <div className="text-slate-600 text-xs">{inq.date}</div>
+                  <div className="text-gray-500 text-xs">Qty: {inq.qty}</div>
+                  <div className="text-gray-400 text-xs">{inq.date}</div>
                 </div>
 
                 {/* Status */}
@@ -234,7 +234,7 @@ export default function AdminInquiries() {
                     onClick={() =>
                       setSelected(selected?.id === inq.id ? null : inq)
                     }
-                    className="flex items-center gap-1 text-xs text-slate-400 hover:text-emerald-400 transition-colors bg-slate-800 hover:bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-slate-700 hover:border-emerald-500/20"
+                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-green-primary transition-colors bg-gray-100 hover:bg-green-50 px-2.5 py-1 rounded-lg border border-gray-200 hover:border-green-200"
                   >
                     <Eye className="w-3.5 h-3.5" />
                     Details
@@ -248,18 +248,18 @@ export default function AdminInquiries() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 pt-4 border-t border-slate-700/50 grid grid-cols-1 sm:grid-cols-3 gap-4"
+                  className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 sm:grid-cols-3 gap-4"
                 >
                   <div className="col-span-2">
-                    <p className="text-slate-400 text-xs font-medium uppercase tracking-wide mb-1">
+                    <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-1">
                       Note
                     </p>
-                    <p className="text-slate-300 text-sm">{inq.note}</p>
+                    <p className="text-gray-700 text-sm">{inq.note}</p>
                   </div>
                   <div className="space-y-2">
                     <a
                       href={`mailto:${inq.email}`}
-                      className="flex items-center gap-2 text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                      className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-700 transition-colors"
                     >
                       <Mail className="w-3.5 h-3.5" />
                       {inq.email}

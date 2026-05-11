@@ -122,8 +122,8 @@ export default function AdminNewsletter() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white">Newsletter</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Newsletter</h1>
+          <p className="text-gray-500 text-sm mt-1">
             Manage subscribers and email campaigns
           </p>
         </div>
@@ -145,14 +145,14 @@ export default function AdminNewsletter() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08 }}
-            className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3"
+            className="bg-white border border-gray-200 rounded-2xl p-4 flex items-center gap-3"
           >
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center text-green-primary shrink-0">
               <Icon className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-white font-bold text-lg">{value}</div>
-              <div className="text-slate-500 text-xs">{label}</div>
+              <div className="text-gray-900 font-bold text-lg">{value}</div>
+              <div className="text-gray-500 text-xs">{label}</div>
             </div>
           </motion.div>
         ))}
@@ -166,8 +166,8 @@ export default function AdminNewsletter() {
             onClick={() => setTab(t)}
             className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
               tab === t
-                ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                : "bg-slate-800/60 border-slate-700/50 text-slate-400 hover:text-white"
+                ? "bg-green-100 border-green-primary/30 text-green-primary"
+                : "bg-gray-50 border-gray-200 text-gray-500 hover:text-gray-900"
             }`}
           >
             {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -180,16 +180,16 @@ export default function AdminNewsletter() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl overflow-hidden"
+          className="bg-white border border-gray-200 rounded-2xl overflow-hidden"
         >
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-700/50">
+                <tr className="border-b border-gray-200">
                   {["Email", "Name", "City", "Joined", "Status"].map((h) => (
                     <th
                       key={h}
-                      className="text-left text-slate-400 text-xs font-medium px-5 py-4"
+                      className="text-left text-gray-500 text-xs font-medium px-5 py-4"
                     >
                       {h}
                     </th>
@@ -203,23 +203,23 @@ export default function AdminNewsletter() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.1 + i * 0.05 }}
-                    className="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors"
+                    className="border-b border-gray-100 hover:bg-gray-100/30 transition-colors"
                   >
-                    <td className="px-5 py-3 text-slate-300 text-xs font-mono">
+                    <td className="px-5 py-3 text-gray-700 text-xs font-mono">
                       {s.email}
                     </td>
-                    <td className="px-5 py-3 text-white text-xs font-medium">
+                    <td className="px-5 py-3 text-gray-900 text-xs font-medium">
                       {s.name}
                     </td>
-                    <td className="px-5 py-3 text-slate-400 text-xs">
+                    <td className="px-5 py-3 text-gray-500 text-xs">
                       {s.city}
                     </td>
-                    <td className="px-5 py-3 text-slate-500 text-xs">
+                    <td className="px-5 py-3 text-gray-500 text-xs">
                       {s.date}
                     </td>
                     <td className="px-5 py-3">
                       <span
-                        className={`text-xs px-2 py-0.5 rounded-lg border font-medium ${s.active ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/20" : "bg-slate-700/50 text-slate-500 border-slate-600/30"}`}
+                        className={`text-xs px-2 py-0.5 rounded-lg border font-medium ${s.active ? "bg-green-100 text-green-primary border-green-200" : "bg-gray-200 text-gray-500 border-gray-300"}`}
                       >
                         {s.active ? "Active" : "Unsubscribed"}
                       </span>
@@ -245,18 +245,18 @@ export default function AdminNewsletter() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+              className="bg-white border border-gray-200 rounded-2xl p-5"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
-                  <div className="text-white font-semibold text-sm">
+                  <div className="text-gray-900 font-semibold text-sm">
                     {c.subject}
                   </div>
-                  <div className="text-slate-500 text-xs mt-0.5">
+                  <div className="text-gray-500 text-xs mt-0.5">
                     Sent {c.date}
                   </div>
                 </div>
-                <span className="text-xs px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 font-medium self-start">
+                <span className="text-xs px-2 py-0.5 rounded-lg bg-green-100 text-green-primary border border-green-200 font-medium self-start">
                   Sent
                 </span>
               </div>
@@ -278,11 +278,11 @@ export default function AdminNewsletter() {
                 ].map(({ label, value, pct, color }) => (
                   <div
                     key={label}
-                    className="bg-slate-800/60 rounded-xl p-3 text-center"
+                    className="bg-gray-50 rounded-xl p-3 text-center"
                   >
                     <div className={`text-${color}-400 font-bold`}>{value}</div>
-                    {pct && <div className="text-slate-500 text-xs">{pct}</div>}
-                    <div className="text-slate-600 text-xs">{label}</div>
+                    {pct && <div className="text-gray-500 text-xs">{pct}</div>}
+                    <div className="text-gray-400 text-xs">{label}</div>
                   </div>
                 ))}
               </div>
@@ -296,12 +296,12 @@ export default function AdminNewsletter() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-6"
+          className="bg-white border border-gray-200 rounded-2xl p-6"
         >
-          <h2 className="text-white font-semibold mb-5">Compose Newsletter</h2>
+          <h2 className="text-gray-900 font-semibold mb-5">Compose Newsletter</h2>
           <form onSubmit={handleSend} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
                 Subject Line
               </label>
               <input
@@ -312,11 +312,11 @@ export default function AdminNewsletter() {
                 }
                 required
                 placeholder="e.g. 🎁 Special offer just for you!"
-                className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-primary/30"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1.5 uppercase tracking-wide">
+              <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
                 Message Body
               </label>
               <textarea
@@ -327,11 +327,11 @@ export default function AdminNewsletter() {
                 }
                 required
                 placeholder="Write your newsletter content here…"
-                className="w-full px-4 py-3 bg-slate-800/60 border border-slate-700/60 rounded-xl text-white text-sm placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 resize-none"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-primary/30 resize-none"
               />
             </div>
             <div className="flex items-center justify-between">
-              <p className="text-slate-500 text-xs">
+              <p className="text-gray-500 text-xs">
                 Will be sent to {active} active subscribers
               </p>
               <motion.button
@@ -340,8 +340,8 @@ export default function AdminNewsletter() {
                 type="submit"
                 className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg transition-all ${
                   sent
-                    ? "bg-emerald-600 text-white shadow-emerald-500/25"
-                    : "bg-emerald-500 hover:bg-emerald-400 text-white shadow-emerald-500/25"
+                    ? "bg-green-dark text-white shadow-green-primary/25"
+                    : "bg-green-primary hover:bg-green-dark text-white shadow-green-primary/25"
                 }`}
               >
                 {sent ? (

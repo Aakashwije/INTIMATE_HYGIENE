@@ -39,7 +39,7 @@ export default function Product1() {
       <ProductDetailLayout
         title="Single Use Pack"
         subtitle="Eco friendly covers designed for safe and hygienic use in public spaces."
-        image="/normal.png"
+        image="/normalnew.png"
         imageAlt="Disposable Seat Covers"
         price="LKR 250"
         priceNote="per pack · minimum order 10 packs"

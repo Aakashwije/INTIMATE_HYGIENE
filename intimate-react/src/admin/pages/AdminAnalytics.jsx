@@ -37,7 +37,7 @@ const monthlyData = [
 
 const channelData = [
   { channel: "WhatsApp", orders: 2840, revenue: 1420000, color: "#25d366" },
-  { channel: "Direct", orders: 1620, revenue: 810000, color: "#10b981" },
+  { channel: "Direct", orders: 1620, revenue: 810000, color: "#28a745" },
   { channel: "Referral", orders: 890, revenue: 445000, color: "#0ea5e9" },
   { channel: "B2B", orders: 480, revenue: 960000, color: "#8b5cf6" },
   { channel: "Social", orders: 220, revenue: 110000, color: "#f59e0b" },
@@ -65,8 +65,8 @@ const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-3 shadow-xl text-sm">
-      <p className="text-slate-300 font-medium mb-2">{label}</p>
+    <div className="bg-gray-100 border border-gray-200 rounded-xl p-3 shadow-xl text-sm">
+      <p className="text-gray-700 font-medium mb-2">{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ color: p.color }} className="font-semibold">
           {p.name}:{" "}
@@ -80,13 +80,13 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const HEAT_COLORS = [
-  "#0f172a",
-  "#064e3b",
-  "#065f46",
-  "#047857",
-  "#059669",
-  "#10b981",
-  "#34d399",
+  "#f3f4f6",
+  "#dcfce7",
+  "#bbf7d0",
+  "#86efac",
+  "#5cd65c",
+  "#28a745",
+  "#1d7a34",
 ];
 
 function getHeatColor(value) {
@@ -101,7 +101,7 @@ export default function AdminAnalytics() {
   const [metric, setMetric] = useState("revenue");
 
   const metricConfig = {
-    revenue: { label: "Revenue (LKR)", color: "#10b981", key: "revenue" },
+    revenue: { label: "Revenue (LKR)", color: "#28a745", key: "revenue" },
     orders: { label: "Orders", color: "#0ea5e9", key: "orders" },
     customers: { label: "New Customers", color: "#8b5cf6", key: "customers" },
     returns: { label: "Returns", color: "#ef4444", key: "returns" },
@@ -117,12 +117,12 @@ export default function AdminAnalytics() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white">Analytics</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+          <p className="text-gray-500 text-sm mt-1">
             Deep-dive performance metrics for Hygenc Covers
           </p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm hover:bg-emerald-500/20 transition-all">
+        <button className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-primary text-sm hover:bg-green-100 transition-all">
           <Download className="w-4 h-4" />
           Export Report
         </button>
@@ -149,8 +149,8 @@ export default function AdminAnalytics() {
               onClick={() => setMetric(key)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
                 metric === key
-                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
-                  : "bg-slate-800/60 border-slate-700/50 text-slate-400 hover:text-white hover:bg-slate-700/50"
+                  ? "bg-green-100 border-green-primary/30 text-green-primary"
+                  : "bg-gray-50 border-gray-200 text-gray-500 hover:text-gray-900 hover:bg-gray-100"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -165,10 +165,10 @@ export default function AdminAnalytics() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+        className="bg-white border border-gray-200 rounded-2xl p-5"
       >
-        <h2 className="text-white font-semibold mb-1">12-Month Trend</h2>
-        <p className="text-slate-500 text-xs mb-5">
+        <h2 className="text-gray-900 font-semibold mb-1">12-Month Trend</h2>
+        <p className="text-gray-500 text-xs mb-5">
           {m.label} over the past year
         </p>
         <ResponsiveContainer width="100%" height={300}>
@@ -182,15 +182,15 @@ export default function AdminAnalytics() {
                 <stop offset="95%" stopColor={m.color} stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="month"
-              tick={{ fill: "#64748b", fontSize: 11 }}
+              tick={{ fill: "#6b7280", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tick={{ fill: "#64748b", fontSize: 11 }}
+              tick={{ fill: "#6b7280", fontSize: 11 }}
               axisLine={false}
               tickLine={false}
               tickFormatter={(v) =>
@@ -227,10 +227,10 @@ export default function AdminAnalytics() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-1">Sales Channels</h2>
-          <p className="text-slate-500 text-xs mb-5">
+          <h2 className="text-gray-900 font-semibold mb-1">Sales Channels</h2>
+          <p className="text-gray-500 text-xs mb-5">
             Orders & revenue by acquisition channel
           </p>
           <div className="space-y-4">
@@ -247,20 +247,20 @@ export default function AdminAnalytics() {
                       className="w-2.5 h-2.5 rounded-full"
                       style={{ background: ch.color }}
                     />
-                    <span className="text-slate-300 text-sm font-medium">
+                    <span className="text-gray-700 text-sm font-medium">
                       {ch.channel}
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-white text-sm font-semibold">
+                    <span className="text-gray-900 text-sm font-semibold">
                       {ch.orders.toLocaleString()} orders
                     </span>
-                    <span className="text-slate-500 text-xs ml-2">
+                    <span className="text-gray-500 text-xs ml-2">
                       LKR {(ch.revenue / 1000).toFixed(0)}k
                     </span>
                   </div>
                 </div>
-                <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(ch.orders / 2840) * 100}%` }}
@@ -283,12 +283,12 @@ export default function AdminAnalytics() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-1">
+          <h2 className="text-gray-900 font-semibold mb-1">
             Month-over-Month Growth
           </h2>
-          <p className="text-slate-500 text-xs mb-5">Revenue growth rate (%)</p>
+          <p className="text-gray-500 text-xs mb-5">Revenue growth rate (%)</p>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart
               data={monthlyData.map((d, i) => ({
@@ -304,15 +304,15 @@ export default function AdminAnalytics() {
               }))}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis
                 dataKey="month"
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => `${v}%`}
@@ -320,10 +320,10 @@ export default function AdminAnalytics() {
               <Tooltip
                 formatter={(v) => [`${v}%`, "Growth"]}
                 contentStyle={{
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: 12,
-                  color: "#f8fafc",
+                  color: "#111827",
                 }}
               />
               <Line
@@ -344,12 +344,12 @@ export default function AdminAnalytics() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+        className="bg-white border border-gray-200 rounded-2xl p-5"
       >
-        <h2 className="text-white font-semibold mb-1">
+        <h2 className="text-gray-900 font-semibold mb-1">
           Order Activity Heatmap
         </h2>
-        <p className="text-slate-500 text-xs mb-5">
+        <p className="text-gray-500 text-xs mb-5">
           Hour-of-day × day-of-week order intensity
         </p>
         <div className="overflow-x-auto">
@@ -358,7 +358,7 @@ export default function AdminAnalytics() {
               {Array.from({ length: 24 }, (_, h) => (
                 <div
                   key={h}
-                  className="flex-1 text-center text-slate-600 text-[9px]"
+                  className="flex-1 text-center text-gray-400 text-[9px]"
                 >
                   {h % 4 === 0 ? `${h}:00` : ""}
                 </div>
@@ -366,7 +366,7 @@ export default function AdminAnalytics() {
             </div>
             {days.map((day, di) => (
               <div key={day} className="flex items-center gap-1 mb-1">
-                <div className="w-8 text-slate-500 text-xs text-right pr-2 shrink-0">
+                <div className="w-8 text-gray-500 text-xs text-right pr-2 shrink-0">
                   {day}
                 </div>
                 {Array.from({ length: 24 }, (_, h) => {
@@ -389,7 +389,7 @@ export default function AdminAnalytics() {
             ))}
             {/* Legend */}
             <div className="flex items-center gap-2 mt-3 ml-10">
-              <span className="text-slate-500 text-xs">Low</span>
+              <span className="text-gray-500 text-xs">Low</span>
               {HEAT_COLORS.map((c) => (
                 <div
                   key={c}
@@ -397,7 +397,7 @@ export default function AdminAnalytics() {
                   style={{ background: c }}
                 />
               ))}
-              <span className="text-slate-500 text-xs">High</span>
+              <span className="text-gray-500 text-xs">High</span>
             </div>
           </div>
         </div>
@@ -408,25 +408,25 @@ export default function AdminAnalytics() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+        className="bg-white border border-gray-200 rounded-2xl p-5"
       >
-        <h2 className="text-white font-semibold mb-1">
+        <h2 className="text-gray-900 font-semibold mb-1">
           Customer Retention Cohorts
         </h2>
-        <p className="text-slate-500 text-xs mb-5">
+        <p className="text-gray-500 text-xs mb-5">
           % of customers still active after N months
         </p>
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
               <tr>
-                <th className="text-left text-slate-400 text-xs font-medium pb-3 pr-4">
+                <th className="text-left text-gray-500 text-xs font-medium pb-3 pr-4">
                   Cohort
                 </th>
                 {["M+1", "M+2", "M+3", "M+4", "M+5", "M+6"].map((m) => (
                   <th
                     key={m}
-                    className="text-center text-slate-400 text-xs font-medium pb-3 px-2"
+                    className="text-center text-gray-500 text-xs font-medium pb-3 px-2"
                   >
                     {m}
                   </th>
@@ -438,7 +438,7 @@ export default function AdminAnalytics() {
                 const vals = [row.m1, row.m2, row.m3, row.m4, row.m5, row.m6];
                 return (
                   <tr key={row.name}>
-                    <td className="text-slate-300 text-xs pr-4 py-1.5 font-medium">
+                    <td className="text-gray-700 text-xs pr-4 py-1.5 font-medium">
                       {row.name}
                     </td>
                     {vals.map((v, ci) => (
@@ -448,16 +448,16 @@ export default function AdminAnalytics() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.6 + ri * 0.07 + ci * 0.03 }}
-                            className="inline-flex items-center justify-center w-12 h-7 rounded-lg text-xs font-semibold text-white"
+                            className="inline-flex items-center justify-center w-12 h-7 rounded-lg text-xs font-semibold text-gray-900"
                             style={{
-                              background: `rgba(16,185,129,${(v / 100) * 0.8})`,
-                              border: "1px solid rgba(16,185,129,0.15)",
+                              background: `rgba(40,167,69,${(v / 100) * 0.8})`,
+                              border: "1px solid rgba(40,167,69,0.2)",
                             }}
                           >
                             {v}%
                           </motion.div>
                         ) : (
-                          <span className="text-slate-700 text-xs">—</span>
+                          <span className="text-gray-400 text-xs">—</span>
                         )}
                       </td>
                     ))}

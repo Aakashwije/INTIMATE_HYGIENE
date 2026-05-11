@@ -51,7 +51,7 @@ const revenueData = [
 ];
 
 const productSales = [
-  { name: "Single Use Pack", value: 3240, color: "#10b981" },
+  { name: "Single Use Pack", value: 3240, color: "#28a745" },
   { name: "Travel Pack", value: 1870, color: "#0ea5e9" },
   { name: "Enterprise Pack", value: 940, color: "#8b5cf6" },
 ];
@@ -133,7 +133,7 @@ const topCities = [
 ];
 
 const statusData = [
-  { name: "Delivered", value: 78, fill: "#10b981" },
+  { name: "Delivered", value: 78, fill: "#28a745" },
   { name: "Shipped", value: 12, fill: "#0ea5e9" },
   { name: "Processing", value: 7, fill: "#f59e0b" },
   { name: "Cancelled", value: 3, fill: "#ef4444" },
@@ -177,18 +177,16 @@ function KpiCard({
   const positive = change >= 0;
   const colorMap = {
     emerald:
-      "from-emerald-500/20 to-emerald-600/10 border-emerald-500/20 text-emerald-400 shadow-emerald-500/10",
-    blue: "from-blue-500/20 to-blue-600/10 border-blue-500/20 text-blue-400 shadow-blue-500/10",
-    violet:
-      "from-violet-500/20 to-violet-600/10 border-violet-500/20 text-violet-400 shadow-violet-500/10",
-    amber:
-      "from-amber-500/20 to-amber-600/10 border-amber-500/20 text-amber-400 shadow-amber-500/10",
+      "from-green-50 to-white border-green-200 shadow-green-primary/10",
+    blue: "from-blue-50 to-white border-blue-200 shadow-blue-500/10",
+    violet: "from-violet-50 to-white border-violet-200 shadow-violet-500/10",
+    amber: "from-amber-50 to-white border-amber-200 shadow-amber-500/10",
   };
   const iconBg = {
-    emerald: "bg-emerald-500/20 text-emerald-400",
-    blue: "bg-blue-500/20 text-blue-400",
-    violet: "bg-violet-500/20 text-violet-400",
-    amber: "bg-amber-500/20 text-amber-400",
+    emerald: "bg-green-100 text-green-primary",
+    blue: "bg-blue-100 text-blue-600",
+    violet: "bg-violet-100 text-violet-600",
+    amber: "bg-amber-100 text-amber-600",
   };
 
   return (
@@ -197,7 +195,7 @@ function KpiCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.5 }}
       whileHover={{ y: -2, scale: 1.01 }}
-      className={`relative bg-gradient-to-br ${colorMap[color]} border rounded-2xl p-5 shadow-lg overflow-hidden`}
+      className={`relative bg-linear-to-br ${colorMap[color]} border rounded-2xl p-5 shadow-lg overflow-hidden`}
     >
       {/* Background glow */}
       <div
@@ -211,7 +209,7 @@ function KpiCard({
           <Icon className="w-5 h-5" />
         </div>
         <div
-          className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg ${positive ? "bg-emerald-500/15 text-emerald-400" : "bg-red-500/15 text-red-400"}`}
+          className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-lg ${positive ? "bg-green-100 text-green-primary" : "bg-red-50 text-red-600"}`}
         >
           {positive ? (
             <ArrowUpRight className="w-3 h-3" />
@@ -222,7 +220,7 @@ function KpiCard({
         </div>
       </div>
 
-      <div className="text-2xl font-bold text-white mb-1">
+      <div className="text-2xl font-bold text-gray-900 mb-1">
         <AnimatedNumber
           value={value}
           prefix={prefix}
@@ -230,8 +228,8 @@ function KpiCard({
           decimals={decimals}
         />
       </div>
-      <div className="text-slate-400 text-sm">{title}</div>
-      <div className="text-slate-600 text-xs mt-1">{changeLabel}</div>
+      <div className="text-gray-500 text-sm">{title}</div>
+      <div className="text-gray-400 text-xs mt-1">{changeLabel}</div>
     </motion.div>
   );
 }
@@ -239,10 +237,10 @@ function KpiCard({
 // ─── Status badge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }) {
   const map = {
-    delivered: "bg-emerald-500/15 text-emerald-400 border-emerald-500/20",
-    shipped: "bg-blue-500/15 text-blue-400 border-blue-500/20",
-    processing: "bg-amber-500/15 text-amber-400 border-amber-500/20",
-    cancelled: "bg-red-500/15 text-red-400 border-red-500/20",
+    delivered: "bg-green-100 text-green-primary border-green-200",
+    shipped: "bg-blue-50 text-blue-600 border-blue-200",
+    processing: "bg-amber-50 text-amber-600 border-amber-200",
+    cancelled: "bg-red-50 text-red-600 border-red-200",
   };
   const icons = {
     delivered: CheckCircle,
@@ -265,8 +263,8 @@ function StatusBadge({ status }) {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-slate-800 border border-slate-700 rounded-xl p-3 shadow-xl text-sm">
-      <p className="text-slate-300 font-medium mb-2">{label}</p>
+    <div className="bg-gray-100 border border-gray-200 rounded-xl p-3 shadow-xl text-sm">
+      <p className="text-gray-700 font-medium mb-2">{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ color: p.color }} className="font-semibold">
           {p.name}:{" "}
@@ -302,7 +300,7 @@ export default function AdminDashboard() {
         className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"
       >
         <div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-2xl font-bold text-gray-900">
             Good{" "}
             {now.getHours() < 12
               ? "morning"
@@ -311,7 +309,7 @@ export default function AdminDashboard() {
                 : "evening"}
             , {admin?.name?.split(" ")[0]} 👋
           </h1>
-          <p className="text-slate-400 text-sm mt-1">{timeStr}</p>
+          <p className="text-gray-500 text-sm mt-1">{timeStr}</p>
         </div>
         <div className="flex items-center gap-2">
           {["7d", "30d", "12m"].map((r) => (
@@ -320,8 +318,8 @@ export default function AdminDashboard() {
               onClick={() => setTimeRange(r)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 timeRange === r
-                  ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/30"
-                  : "bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700"
+                  ? "bg-green-primary text-white shadow-lg shadow-green-primary/30"
+                  : "bg-white text-gray-600 border border-gray-200 hover:text-green-primary hover:border-green-primary/40"
               }`}
             >
               {r}
@@ -410,16 +408,16 @@ export default function AdminDashboard() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 + i * 0.05 }}
-            className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-4 flex items-center gap-3"
+            className="bg-white border border-gray-200 rounded-2xl p-4 flex items-center gap-3"
           >
-            <div className="w-9 h-9 rounded-xl bg-slate-800 flex items-center justify-center text-slate-400">
+            <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500">
               <Icon className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-white font-bold text-base">{value}</div>
-              <div className="text-slate-500 text-xs">{label}</div>
+              <div className="text-gray-900 font-bold text-base">{value}</div>
+              <div className="text-gray-500 text-xs">{label}</div>
               <div
-                className={`text-xs font-medium ${pos ? "text-emerald-400" : "text-red-400"}`}
+                className={`text-xs font-medium ${pos ? "text-green-primary" : "text-red-500"}`}
               >
                 {delta}
               </div>
@@ -435,22 +433,22 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
-          className="xl:col-span-2 bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="xl:col-span-2 bg-white border border-gray-200 rounded-2xl p-5"
         >
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-white font-semibold">Revenue vs Target</h2>
-              <p className="text-slate-500 text-xs mt-0.5">
+              <h2 className="text-gray-900 font-semibold">Revenue vs Target</h2>
+              <p className="text-gray-500 text-xs mt-0.5">
                 Monthly performance (LKR)
               </p>
             </div>
-            <div className="flex items-center gap-3 text-xs text-slate-400">
+            <div className="flex items-center gap-3 text-xs text-gray-500">
               <span className="flex items-center gap-1">
-                <span className="w-3 h-0.5 bg-emerald-400 rounded inline-block" />
+                <span className="w-3 h-0.5 bg-green-primary rounded inline-block" />
                 Revenue
               </span>
               <span className="flex items-center gap-1">
-                <span className="w-3 h-0.5 bg-slate-600 rounded inline-block border-dashed" />
+                <span className="w-3 h-0.5 bg-gray-300 rounded inline-block border-dashed" />
                 Target
               </span>
             </div>
@@ -462,23 +460,23 @@ export default function AdminDashboard() {
             >
               <defs>
                 <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#28a745" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#28a745" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="targetGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#64748b" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#64748b" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#9ca3af" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="#9ca3af" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis
                 dataKey="month"
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
@@ -488,7 +486,7 @@ export default function AdminDashboard() {
                 type="monotone"
                 dataKey="target"
                 name="Target"
-                stroke="#475569"
+                stroke="#9ca3af"
                 strokeDasharray="4 4"
                 fill="url(#targetGrad)"
                 strokeWidth={1.5}
@@ -498,11 +496,11 @@ export default function AdminDashboard() {
                 type="monotone"
                 dataKey="revenue"
                 name="Revenue"
-                stroke="#10b981"
+                stroke="#28a745"
                 fill="url(#revenueGrad)"
                 strokeWidth={2.5}
-                dot={{ fill: "#10b981", r: 3, strokeWidth: 0 }}
-                activeDot={{ r: 5, fill: "#10b981" }}
+                dot={{ fill: "#28a745", r: 3, strokeWidth: 0 }}
+                activeDot={{ r: 5, fill: "#28a745" }}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -513,10 +511,10 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-1">Product Sales Mix</h2>
-          <p className="text-slate-500 text-xs mb-4">Units sold by product</p>
+          <h2 className="text-gray-900 font-semibold mb-1">Product Sales Mix</h2>
+          <p className="text-gray-500 text-xs mb-4">Units sold by product</p>
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
@@ -535,10 +533,10 @@ export default function AdminDashboard() {
               <Tooltip
                 formatter={(v) => [`${v.toLocaleString()} units`, ""]}
                 contentStyle={{
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: 12,
-                  color: "#f8fafc",
+                  color: "#111827",
                 }}
               />
             </PieChart>
@@ -550,10 +548,10 @@ export default function AdminDashboard() {
                   className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ background: p.color }}
                 />
-                <span className="text-slate-400 text-xs flex-1 truncate">
+                <span className="text-gray-500 text-xs flex-1 truncate">
                   {p.name}
                 </span>
-                <span className="text-white text-xs font-semibold">
+                <span className="text-gray-900 text-xs font-semibold">
                   {p.value.toLocaleString()}
                 </span>
               </div>
@@ -569,14 +567,14 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65 }}
-          className="xl:col-span-2 bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="xl:col-span-2 bg-white border border-gray-200 rounded-2xl p-5"
         >
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="text-white font-semibold">
+              <h2 className="text-gray-900 font-semibold">
                 Weekly Traffic & Conversions
               </h2>
-              <p className="text-slate-500 text-xs mt-0.5">
+              <p className="text-gray-500 text-xs mt-0.5">
                 Site visits and WhatsApp order conversions
               </p>
             </div>
@@ -587,15 +585,15 @@ export default function AdminDashboard() {
               barGap={4}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
               <XAxis
                 dataKey="day"
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
               <YAxis
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: "#6b7280", fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
@@ -610,7 +608,7 @@ export default function AdminDashboard() {
               <Bar
                 dataKey="conversions"
                 name="Conversions"
-                fill="#10b981"
+                fill="#28a745"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -622,10 +620,10 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-1">Order Status</h2>
-          <p className="text-slate-500 text-xs mb-3">
+          <h2 className="text-gray-900 font-semibold mb-1">Order Status</h2>
+          <p className="text-gray-500 text-xs mb-3">
             All-time distribution (%)
           </p>
           <ResponsiveContainer width="100%" height={180}>
@@ -642,10 +640,10 @@ export default function AdminDashboard() {
               <Tooltip
                 formatter={(v) => [`${v}%`, ""]}
                 contentStyle={{
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
                   borderRadius: 12,
-                  color: "#f8fafc",
+                  color: "#111827",
                 }}
               />
             </RadialBarChart>
@@ -657,8 +655,8 @@ export default function AdminDashboard() {
                   className="w-2 h-2 rounded-full shrink-0"
                   style={{ background: s.fill }}
                 />
-                <span className="text-slate-400 text-xs">{s.name}</span>
-                <span className="text-white text-xs font-bold ml-auto">
+                <span className="text-gray-500 text-xs">{s.name}</span>
+                <span className="text-gray-900 text-xs font-bold ml-auto">
                   {s.value}%
                 </span>
               </div>
@@ -674,13 +672,13 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.75 }}
-          className="xl:col-span-2 bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="xl:col-span-2 bg-white border border-gray-200 rounded-2xl p-5"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-semibold">Recent Orders</h2>
+            <h2 className="text-gray-900 font-semibold">Recent Orders</h2>
             <a
               href="/admin/orders"
-              className="text-emerald-400 text-xs hover:text-emerald-300 transition-colors font-medium"
+              className="text-green-primary text-xs hover:text-green-dark transition-colors font-medium"
             >
               View all →
             </a>
@@ -692,29 +690,29 @@ export default function AdminDashboard() {
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 + i * 0.05 }}
-                className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800/60 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
               >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center text-xs font-bold text-slate-300 shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-linear-to-br from-gray-300 to-gray-400 flex items-center justify-center text-xs font-bold text-gray-700 shrink-0">
                   {order.avatar}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-white text-xs font-semibold truncate">
+                    <span className="text-gray-900 text-xs font-semibold truncate">
                       {order.customer}
                     </span>
-                    <span className="text-slate-600 text-xs hidden sm:block">
+                    <span className="text-gray-400 text-xs hidden sm:block">
                       {order.id}
                     </span>
                   </div>
-                  <div className="text-slate-500 text-xs truncate">
+                  <div className="text-gray-500 text-xs truncate">
                     {order.product}
                   </div>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-white text-xs font-semibold">
+                  <div className="text-gray-900 text-xs font-semibold">
                     {order.amount}
                   </div>
-                  <div className="text-slate-600 text-xs">{order.time}</div>
+                  <div className="text-gray-400 text-xs">{order.time}</div>
                 </div>
                 <StatusBadge status={order.status} />
               </motion.div>
@@ -727,10 +725,10 @@ export default function AdminDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="bg-slate-900/60 border border-slate-700/50 rounded-2xl p-5"
+          className="bg-white border border-gray-200 rounded-2xl p-5"
         >
-          <h2 className="text-white font-semibold mb-1">Sales by City</h2>
-          <p className="text-slate-500 text-xs mb-4">Top delivery locations</p>
+          <h2 className="text-gray-900 font-semibold mb-1">Sales by City</h2>
+          <p className="text-gray-500 text-xs mb-4">Top delivery locations</p>
           <div className="space-y-3">
             {topCities.map((c, i) => (
               <motion.div
@@ -740,14 +738,14 @@ export default function AdminDashboard() {
                 transition={{ delay: 0.85 + i * 0.05 }}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-slate-300 text-xs font-medium">
+                  <span className="text-gray-700 text-xs font-medium">
                     {c.city}
                   </span>
-                  <span className="text-slate-400 text-xs">
+                  <span className="text-gray-500 text-xs">
                     {c.orders} orders
                   </span>
                 </div>
-                <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${c.pct}%` }}
@@ -756,7 +754,7 @@ export default function AdminDashboard() {
                       duration: 0.8,
                       ease: "easeOut",
                     }}
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400"
+                    className="h-full rounded-full bg-linear-to-r from-green-primary to-green-light"
                   />
                 </div>
               </motion.div>
@@ -764,8 +762,8 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick actions */}
-          <div className="mt-6 pt-4 border-t border-slate-700/50">
-            <p className="text-slate-500 text-xs mb-3 font-medium uppercase tracking-wide">
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <p className="text-gray-500 text-xs mb-3 font-medium uppercase tracking-wide">
               Quick Actions
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -778,9 +776,9 @@ export default function AdminDashboard() {
                 <a
                   key={label}
                   href={href}
-                  className="flex items-center justify-center gap-1 px-2 py-2 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 rounded-xl text-slate-300 hover:text-white text-xs font-medium transition-all"
+                  className="flex items-center justify-center gap-1 px-2 py-2 bg-gray-50 hover:bg-gray-200/80 border border-gray-200 rounded-xl text-gray-700 hover:text-gray-900 text-xs font-medium transition-all"
                 >
-                  <Zap className="w-3 h-3 text-emerald-400" />
+                  <Zap className="w-3 h-3 text-green-primary" />
                   {label}
                 </a>
               ))}

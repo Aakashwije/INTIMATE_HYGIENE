@@ -8,7 +8,7 @@ import { useLang } from "../context/LangContext";
 const productDefs = [
   {
     nameKey: "singleUse",
-    img: "/normal.png",
+    img: "/normalnew.png",
     price: "LKR 250",
     priceNote: "per pack",
     link: "/products/1",
@@ -17,7 +17,7 @@ const productDefs = [
   },
   {
     nameKey: "travelPack",
-    img: "/travel.png",
+    img: "/travelnew.png",
     price: "LKR 350",
     priceNote: "per 10-pack",
     link: "/products/2",
@@ -26,7 +26,7 @@ const productDefs = [
   },
   {
     nameKey: "enterprise",
-    img: "/interprise.png",
+    img: "/interprisenew.png",
     price: "LKR 750",
     priceNote: "per pack (bulk)",
     link: "/products/3",

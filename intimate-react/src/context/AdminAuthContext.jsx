@@ -6,7 +6,7 @@ const AdminAuthContext = createContext();
 const ADMIN_ACCOUNTS = {
   owner: {
     password: "Hygenc@Owner2025!",
-    name: "Aakash Perera",
+    name: "Aakash Wijesekara",
     role: "Super Admin",
     avatar: "AP",
   },
