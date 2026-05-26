@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "../lib/supabase";
+import { isSupabaseConfigured, supabase } from "../lib/supabase";
 
 const AdminAuthContext = createContext();
 
@@ -21,9 +21,13 @@ function adminFromUser(user) {
 export function AdminAuthProvider({ children }) {
   const [admin, setAdmin] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isSupabaseConfigured);
 
   useEffect(() => {
+    if (!isSupabaseConfigured) {
+      return undefined;
+    }
+
     let mounted = true;
 
     supabase.auth.getSession().then(({ data }) => {
@@ -50,6 +54,10 @@ export function AdminAuthProvider({ children }) {
   }, []);
 
   const login = async (username, password) => {
+    if (!isSupabaseConfigured) {
+      return { ok: false, error: "Supabase Auth is not configured." };
+    }
+
     const email = ADMIN_USERS[username.toLowerCase()];
     if (!email) return { ok: false, error: "Invalid credentials." };
 

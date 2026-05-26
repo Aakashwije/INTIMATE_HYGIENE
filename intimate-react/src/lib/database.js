@@ -1,8 +1,20 @@
 import { supabase } from "./supabase";
 
+function requireSupabase() {
+  if (!supabase) {
+    throw new Error("Supabase is not configured for this deployment.");
+  }
+  return supabase;
+}
+
+function emptySubscription() {
+  return { unsubscribe: () => {} };
+}
+
 export async function subscribeToNewsletter(email) {
+  const client = requireSupabase();
   const cleanEmail = email.trim().toLowerCase();
-  const { error } = await supabase
+  const { error } = await client
     .from("newsletter_subscribers")
     .insert({ email: cleanEmail });
 
@@ -11,7 +23,8 @@ export async function subscribeToNewsletter(email) {
 }
 
 export async function createInquiry(inquiry) {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("inquiries")
     .insert(inquiry)
     .select()
@@ -22,7 +35,8 @@ export async function createInquiry(inquiry) {
 }
 
 export async function createOrder({ order, items }) {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("orders")
     .insert(order)
     .select()
@@ -37,7 +51,7 @@ export async function createOrder({ order, items }) {
     price: item.price,
   }));
 
-  const { error: itemsError } = await supabase
+  const { error: itemsError } = await client
     .from("order_items")
     .insert(orderItems);
 
@@ -46,7 +60,8 @@ export async function createOrder({ order, items }) {
 }
 
 export async function fetchSubscribers() {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("newsletter_subscribers")
     .select("*")
     .order("created_at", { ascending: false });
@@ -56,7 +71,8 @@ export async function fetchSubscribers() {
 }
 
 export async function fetchProducts({ activeOnly = false } = {}) {
-  let query = supabase.from("products").select("*").order("created_at");
+  const client = requireSupabase();
+  let query = client.from("products").select("*").order("created_at");
   if (activeOnly) query = query.eq("active", true);
 
   const { data, error } = await query;
@@ -65,7 +81,8 @@ export async function fetchProducts({ activeOnly = false } = {}) {
 }
 
 export async function fetchProductBySlug(slug) {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("products")
     .select("*")
     .eq("slug", slug)
@@ -76,7 +93,8 @@ export async function fetchProductBySlug(slug) {
 }
 
 export async function updateProduct(id, product) {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("products")
     .update(product)
     .eq("id", id)
@@ -88,6 +106,7 @@ export async function updateProduct(id, product) {
 }
 
 export function subscribeToProducts(onChange) {
+  if (!supabase) return emptySubscription();
   return supabase
     .channel("products-feed")
     .on(
@@ -99,6 +118,7 @@ export function subscribeToProducts(onChange) {
 }
 
 export function subscribeToAdminData(onChange) {
+  if (!supabase) return emptySubscription();
   const tables = [
     "products",
     "orders",
@@ -120,7 +140,8 @@ export function subscribeToAdminData(onChange) {
 }
 
 export async function fetchInquiries() {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("inquiries")
     .select("*")
     .order("created_at", { ascending: false });
@@ -130,7 +151,8 @@ export async function fetchInquiries() {
 }
 
 export async function fetchOrders() {
-  const { data, error } = await supabase
+  const client = requireSupabase();
+  const { data, error } = await client
     .from("orders")
     .select("*, order_items(*)")
     .order("created_at", { ascending: false });
