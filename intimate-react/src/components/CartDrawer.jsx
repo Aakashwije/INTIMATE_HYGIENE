@@ -18,6 +18,7 @@ function buildWhatsAppMessage(items, subtotal, t, customer, orderRef) {
     `Hello%21 I%27d like to place this order via Hygenc Covers%3A%0A` +
     `Order Ref%3A ${encodeURIComponent(orderRef)}%0A%0A` +
     `Customer%3A ${encodeURIComponent(customer.name)}%0A` +
+    `Email%3A ${encodeURIComponent(customer.email)}%0A` +
     `Phone%3A ${encodeURIComponent(customer.phone)}%0A` +
     `City%3A ${encodeURIComponent(customer.city)}%0A` +
     `Address%3A ${encodeURIComponent(customer.address)}%0A` +
@@ -29,11 +30,25 @@ function buildWhatsAppMessage(items, subtotal, t, customer, orderRef) {
   return `https://wa.me/${PHONE}?text=${txt}`;
 }
 
+async function sendOrderEmail({ order, items }) {
+  const response = await fetch("/api/send-order-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ order, items }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || "Order email could not be sent.");
+  }
+}
+
 export default function CartDrawer() {
   const { items, updateQty, remove, subtotal, open, setOpen, clear } = useCart();
   const { t } = useLang();
   const [checkout, setCheckout] = useState({
     name: "",
+    email: "",
     phone: "",
     city: "",
     address: "",
@@ -54,35 +69,43 @@ export default function CartDrawer() {
     setSaving(true);
     setError("");
     const orderRef = buildOrderRef();
+    const orderItems = items.map((item) => ({
+      product_name: item.name,
+      quantity: item.qty,
+      price: item.price,
+    }));
+    const order = {
+      order_ref: orderRef,
+      customer_name: checkout.name,
+      customer_email: checkout.email.trim().toLowerCase(),
+      customer_phone: checkout.phone,
+      address: checkout.address,
+      city: checkout.city,
+      total: subtotal,
+      status: "pending",
+      payment_method: checkout.paymentMethod,
+      note: checkout.note || null,
+    };
+
     try {
       await createOrder({
-        order: {
-          order_ref: orderRef,
-          customer_name: checkout.name,
-          customer_phone: checkout.phone,
-          address: checkout.address,
-          city: checkout.city,
-          total: subtotal,
-          status: "pending",
-          payment_method: checkout.paymentMethod,
-          note: checkout.note || null,
-        },
-        items: items.map((item) => ({
-          product_name: item.name,
-          quantity: item.qty,
-          price: item.price,
-        })),
+        order,
+        items: orderItems,
       });
       await trackSiteEvent({
         event_type: "checkout_submit",
         label: "Cart checkout",
         metadata: { order_ref: orderRef, total: subtotal, item_count: items.length },
       });
+      sendOrderEmail({ order, items: orderItems }).catch((mailErr) => {
+        console.warn(mailErr.message || "Order email could not be sent.");
+      });
       window.open(buildWhatsAppMessage(items, subtotal, t, checkout, orderRef), "_blank");
       clear();
       setOpen(false);
       setCheckout({
         name: "",
+        email: "",
         phone: "",
         city: "",
         address: "",
@@ -211,6 +234,7 @@ export default function CartDrawer() {
                 <input required value={checkout.name} onChange={(e) => setCheckout((f) => ({ ...f, name: e.target.value }))} placeholder="Name" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
                 <input required value={checkout.phone} onChange={(e) => setCheckout((f) => ({ ...f, phone: e.target.value }))} placeholder="Phone / WhatsApp" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
               </div>
+              <input required type="email" value={checkout.email} onChange={(e) => setCheckout((f) => ({ ...f, email: e.target.value }))} placeholder="Email for order confirmation" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
               <input required value={checkout.city} onChange={(e) => setCheckout((f) => ({ ...f, city: e.target.value }))} placeholder="City / district" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
               <textarea required rows={2} value={checkout.address} onChange={(e) => setCheckout((f) => ({ ...f, address: e.target.value }))} placeholder="Delivery address" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm resize-none" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
