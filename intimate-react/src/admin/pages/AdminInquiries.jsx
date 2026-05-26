@@ -13,92 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { fetchInquiries } from "../../lib/database";
 
-const INQUIRIES = [
-  {
-    id: "B2B-042",
-    company: "Cinnamon Hotels Group",
-    contact: "Ruwan Jayasinghe",
-    role: "Operations Manager",
-    phone: "+94117890123",
-    email: "ruwan@cinnamon.com",
-    city: "Colombo",
-    product: "Enterprise Pack",
-    qty: "500/month",
-    status: "negotiating",
-    date: "2025-12-14",
-    note: "Interested in a 12-month contract. Requesting 15% bulk discount.",
-  },
-  {
-    id: "B2B-041",
-    company: "SriLankan Airlines",
-    contact: "Amara Perera",
-    role: "Procurement Head",
-    phone: "+94112345678",
-    email: "amara@srilankan.com",
-    city: "Katunayake",
-    product: "Travel Pack",
-    qty: "2000/month",
-    status: "new",
-    date: "2025-12-13",
-    note: "Needs custom branding on packaging.",
-  },
-  {
-    id: "B2B-040",
-    company: "Lanka Hospitals",
-    contact: "Dr. Nimal Fernando",
-    role: "Facilities Director",
-    phone: "+94112109876",
-    email: "facilities@lankahospitals.lk",
-    city: "Colombo 10",
-    product: "Enterprise Pack",
-    qty: "300/month",
-    status: "closed_won",
-    date: "2025-12-10",
-    note: "Contract signed. Monthly delivery arranged.",
-  },
-  {
-    id: "B2B-039",
-    company: "HSBC Sri Lanka",
-    contact: "Dilini Samarasinghe",
-    role: "Facilities Manager",
-    phone: "+94112233445",
-    email: "d.samarasinghe@hsbc.lk",
-    city: "Colombo 1",
-    product: "Enterprise Pack",
-    qty: "200/month",
-    status: "closed_won",
-    date: "2025-12-08",
-    note: "Quarterly invoicing preferred.",
-  },
-  {
-    id: "B2B-038",
-    company: "Keells Super",
-    contact: "Malik Rodrigo",
-    role: "Category Manager",
-    phone: "+94112887766",
-    email: "malik@keells.com",
-    city: "Colombo 3",
-    product: "All Products",
-    qty: "Retail",
-    status: "negotiating",
-    date: "2025-12-07",
-    note: "Wants to stock all 3 SKUs in 35 branches.",
-  },
-  {
-    id: "B2B-037",
-    company: "University of Kelaniya",
-    contact: "Prof. Surani K.",
-    role: "Admin Registrar",
-    phone: "+94114895623",
-    email: "admin@kln.ac.lk",
-    city: "Kelaniya",
-    product: "Single Use Pack",
-    qty: "1000/month",
-    status: "new",
-    date: "2025-12-06",
-    note: "Student welfare department inquiry.",
-  },
-];
+const INQUIRIES = [];
 
 const STATUS_META = {
   new: {
@@ -212,6 +127,11 @@ export default function AdminInquiries() {
 
       {/* Kanban-style cards */}
       <div className="space-y-3">
+        {inquiries.length === 0 && (
+          <div className="bg-white border border-gray-200 rounded-2xl p-10 text-center text-gray-400 text-sm">
+            No inquiries yet
+          </div>
+        )}
         {inquiries.map((inq, i) => {
           const meta = STATUS_META[inq.status];
           const Icon = meta.icon;

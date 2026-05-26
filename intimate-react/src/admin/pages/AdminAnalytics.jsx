@@ -21,37 +21,11 @@ import {
 } from "recharts";
 import { fetchOrders, fetchSiteEvents } from "../../lib/database";
 
-const monthlyData = [
-  { month: "Jan", revenue: 128000, orders: 48, customers: 38, returns: 2 },
-  { month: "Feb", revenue: 142000, orders: 54, customers: 44, returns: 1 },
-  { month: "Mar", revenue: 168000, orders: 67, customers: 58, returns: 3 },
-  { month: "Apr", revenue: 155000, orders: 61, customers: 50, returns: 4 },
-  { month: "May", revenue: 195000, orders: 78, customers: 67, returns: 2 },
-  { month: "Jun", revenue: 218000, orders: 89, customers: 76, returns: 1 },
-  { month: "Jul", revenue: 242000, orders: 97, customers: 82, returns: 3 },
-  { month: "Aug", revenue: 228000, orders: 91, customers: 79, returns: 2 },
-  { month: "Sep", revenue: 267000, orders: 108, customers: 95, returns: 2 },
-  { month: "Oct", revenue: 289000, orders: 116, customers: 103, returns: 3 },
-  { month: "Nov", revenue: 312000, orders: 125, customers: 114, returns: 1 },
-  { month: "Dec", revenue: 348000, orders: 139, customers: 128, returns: 2 },
-];
+const monthlyData = [];
 
-const channelData = [
-  { channel: "WhatsApp", orders: 2840, revenue: 1420000, color: "#25d366" },
-  { channel: "Direct", orders: 1620, revenue: 810000, color: "#28a745" },
-  { channel: "Referral", orders: 890, revenue: 445000, color: "#0ea5e9" },
-  { channel: "B2B", orders: 480, revenue: 960000, color: "#8b5cf6" },
-  { channel: "Social", orders: 220, revenue: 110000, color: "#f59e0b" },
-];
+const channelData = [];
 
-const cohortData = [
-  { name: "Jan cohort", m1: 100, m2: 68, m3: 52, m4: 44, m5: 40, m6: 38 },
-  { name: "Feb cohort", m1: 100, m2: 72, m3: 58, m4: 48, m5: 42 },
-  { name: "Mar cohort", m1: 100, m2: 74, m3: 60, m4: 52 },
-  { name: "Apr cohort", m1: 100, m2: 70, m3: 55 },
-  { name: "May cohort", m1: 100, m2: 75 },
-  { name: "Jun cohort", m1: 100 },
-];
+const cohortData = [];
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -295,6 +269,11 @@ export default function AdminAnalytics() {
             Orders & revenue by acquisition channel
           </p>
           <div className="space-y-4">
+            {channels.length === 0 && (
+              <div className="text-center text-gray-400 text-sm py-10">
+                No channel data yet
+              </div>
+            )}
             {channels.map((ch, i) => (
               <motion.div
                 key={ch.channel}
@@ -495,6 +474,16 @@ export default function AdminAnalytics() {
               </tr>
             </thead>
             <tbody>
+              {cohortData.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="text-center text-gray-400 text-sm py-10"
+                  >
+                    No retention data yet
+                  </td>
+                </tr>
+              )}
               {cohortData.map((row, ri) => {
                 const vals = [row.m1, row.m2, row.m3, row.m4, row.m5, row.m6];
                 return (

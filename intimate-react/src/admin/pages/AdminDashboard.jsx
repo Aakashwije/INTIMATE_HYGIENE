@@ -58,94 +58,15 @@ const revenueData = [
   { month: "Dec", revenue: 348000, orders: 139, target: 310000 },
 ];
 
-const productSales = [
-  { name: "Single Use Pack", value: 3240, color: "#28a745" },
-  { name: "Travel Pack", value: 1870, color: "#0ea5e9" },
-  { name: "Enterprise Pack", value: 940, color: "#8b5cf6" },
-];
+const productSales = [];
 
-const recentOrders = [
-  {
-    id: "#ORD-1082",
-    customer: "Dilshan Perera",
-    product: "Travel Pack × 5",
-    amount: "LKR 6,250",
-    status: "delivered",
-    time: "2 min ago",
-    avatar: "DP",
-  },
-  {
-    id: "#ORD-1081",
-    customer: "Priya Mendis",
-    product: "Single Use × 20",
-    amount: "LKR 5,000",
-    status: "processing",
-    time: "14 min ago",
-    avatar: "PM",
-  },
-  {
-    id: "#ORD-1080",
-    customer: "Ruwan Hotels",
-    product: "Enterprise × 10",
-    amount: "LKR 45,000",
-    status: "shipped",
-    time: "1 hr ago",
-    avatar: "RH",
-  },
-  {
-    id: "#ORD-1079",
-    customer: "Nimasha Silva",
-    product: "Single Use × 10",
-    amount: "LKR 2,500",
-    status: "delivered",
-    time: "2 hr ago",
-    avatar: "NS",
-  },
-  {
-    id: "#ORD-1078",
-    customer: "HSBC Lanka",
-    product: "Enterprise × 50",
-    amount: "LKR 225,000",
-    status: "delivered",
-    time: "3 hr ago",
-    avatar: "HL",
-  },
-  {
-    id: "#ORD-1077",
-    customer: "Kavinda A.",
-    product: "Travel Pack × 3",
-    amount: "LKR 3,750",
-    status: "cancelled",
-    time: "4 hr ago",
-    avatar: "KA",
-  },
-];
+const recentOrders = [];
 
-const weeklyTraffic = [
-  { day: "Mon", visits: 1240, conversions: 48 },
-  { day: "Tue", visits: 1680, conversions: 67 },
-  { day: "Wed", visits: 1420, conversions: 54 },
-  { day: "Thu", visits: 1890, conversions: 72 },
-  { day: "Fri", visits: 2240, conversions: 89 },
-  { day: "Sat", visits: 2680, conversions: 108 },
-  { day: "Sun", visits: 2100, conversions: 84 },
-];
+const weeklyTraffic = [];
 
-const topCities = [
-  { city: "Colombo", orders: 842, pct: 38 },
-  { city: "Kandy", orders: 421, pct: 19 },
-  { city: "Galle", orders: 312, pct: 14 },
-  { city: "Negombo", orders: 245, pct: 11 },
-  { city: "Jaffna", orders: 178, pct: 8 },
-  { city: "Others", orders: 222, pct: 10 },
-];
+const topCities = [];
 
-const statusData = [
-  { name: "Delivered", value: 78, fill: "#28a745" },
-  { name: "Shipped", value: 12, fill: "#0ea5e9" },
-  { name: "Processing", value: 7, fill: "#f59e0b" },
-  { name: "Cancelled", value: 3, fill: "#ef4444" },
-];
+const statusData = [];
 
 // ─── Animated counter ─────────────────────────────────────────────────────────
 function AnimatedNumber({ value, prefix = "", suffix = "", decimals = 0 }) {
@@ -348,13 +269,30 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
     return acc;
   }, {});
   const maxCity = Math.max(...Object.values(cityCounts), 1);
+  const weeklyEventTraffic = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+    (day, idx) => {
+      const jsDay = (idx + 1) % 7;
+      const dayEvents = events.filter(
+        (event) => new Date(event.created_at).getDay() === jsDay,
+      );
+      return {
+        day,
+        visits: dayEvents.filter((event) => event.event_type === "page_view").length,
+        conversions: dayEvents.filter((event) =>
+          ["checkout_submit", "quiz_complete", "whatsapp_click"].includes(
+            event.event_type,
+          ),
+        ).length,
+      };
+    },
+  );
 
   return {
     kpis: {
-      revenue: liveOrders ? revenue : 2692000,
-      orders: liveOrders ? orders.length : 6050,
-      customers: customers.size || 3842,
-      avgOrder: liveOrders ? avgOrder : 445,
+      revenue,
+      orders: orders.length,
+      customers: customers.size,
+      avgOrder,
     },
     revenueData: liveOrders ? revenueByMonth : revenueData,
     productSales:
@@ -404,6 +342,7 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
     conversions: events.filter((event) =>
       ["checkout_submit", "quiz_complete"].includes(event.event_type),
     ).length,
+    weeklyTraffic: events.length > 0 ? weeklyEventTraffic : weeklyTraffic,
   };
 }
 
@@ -721,6 +660,11 @@ export default function AdminDashboard() {
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-2.5 mt-2">
+            {dashboard.productSales.length === 0 && (
+              <div className="text-center text-gray-400 text-xs py-6">
+                No product sales yet
+              </div>
+            )}
             {dashboard.productSales.map((p) => (
               <div key={p.name} className="flex items-center gap-2">
                 <div
@@ -760,7 +704,7 @@ export default function AdminDashboard() {
           </div>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart
-              data={weeklyTraffic}
+              data={dashboard.weeklyTraffic}
               barGap={4}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
@@ -828,6 +772,11 @@ export default function AdminDashboard() {
             </RadialBarChart>
           </ResponsiveContainer>
           <div className="grid grid-cols-2 gap-2 mt-2">
+            {dashboard.statusData.length === 0 && (
+              <div className="col-span-2 text-center text-gray-400 text-xs py-6">
+                No order status data yet
+              </div>
+            )}
             {dashboard.statusData.map((s) => (
               <div key={s.name} className="flex items-center gap-1.5">
                 <div
@@ -863,6 +812,11 @@ export default function AdminDashboard() {
             </a>
           </div>
           <div className="space-y-2">
+            {dashboard.recentOrders.length === 0 && (
+              <div className="text-center text-gray-400 text-sm py-10">
+                No orders yet
+              </div>
+            )}
             {dashboard.recentOrders.map((order, i) => (
               <motion.div
                 key={order.id}
@@ -909,6 +863,11 @@ export default function AdminDashboard() {
           <h2 className="text-gray-900 font-semibold mb-1">Sales by City</h2>
           <p className="text-gray-500 text-xs mb-4">Top delivery locations</p>
           <div className="space-y-3">
+            {dashboard.topCities.length === 0 && (
+              <div className="text-center text-gray-400 text-sm py-10">
+                No city data yet
+              </div>
+            )}
             {dashboard.topCities.map((c, i) => (
               <motion.div
                 key={c.city}

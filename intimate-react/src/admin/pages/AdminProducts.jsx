@@ -16,58 +16,7 @@ import {
     updateProduct,
 } from "../../lib/database";
 
-const INITIAL_PRODUCTS = [
-  {
-    id: 1,
-    name: "Single Use Pack",
-    sku: "INE-001",
-    price: 250,
-    cost: 150,
-    stock: 1240,
-    sold: 3240,
-    rating: 4.9,
-    reviews: 128,
-    status: "active",
-    image: "/normalnew.png",
-    minOrder: 10,
-    description:
-      "Biodegradable single use toilet seat covers. Individually wrapped, eco-friendly.",
-    category: "Retail",
-  },
-  {
-    id: 2,
-    name: "Travel Pack",
-    sku: "INE-002",
-    price: 350,
-    cost: 250,
-    stock: 340,
-    sold: 1870,
-    rating: 4.8,
-    reviews: 94,
-    status: "active",
-    image: "/travelnew.png",
-    minOrder: 1,
-    description:
-      "Waterproof and anti-slip, ideal for families and frequent travelers.",
-    category: "Retail",
-  },
-  {
-    id: 3,
-    name: "Enterprise Pack",
-    sku: "INE-003",
-    price: 750,
-    cost: 550,
-    stock: 85,
-    sold: 940,
-    rating: 4.9,
-    reviews: 67,
-    status: "low_stock",
-    image: "/interprisenew.png",
-    minOrder: 5,
-    description: "Bulk packs for offices, hotels, and businesses.",
-    category: "B2B",
-  },
-];
+const INITIAL_PRODUCTS = [];
 
 function productFromRow(row) {
   return {
@@ -227,6 +176,11 @@ export default function AdminProducts() {
 
       {/* Product cards */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        {products.length === 0 && (
+          <div className="xl:col-span-3 bg-white border border-gray-200 rounded-2xl p-10 text-center text-gray-400 text-sm">
+            No products yet
+          </div>
+        )}
         {products.map((p, i) => {
           const margin = (((p.price - p.cost) / p.price) * 100).toFixed(0);
           const isLow = p.status === "low_stock";

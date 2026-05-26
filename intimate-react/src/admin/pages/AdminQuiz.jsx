@@ -14,72 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { fetchQuizResponses } from "../../lib/database";
 
-const QUIZ_RESULTS = [
-  {
-    id: 1,
-    date: "2025-12-15",
-    name: "Priya M.",
-    result: "Travel Pack",
-    answers: { q1: "travel", q2: "eco", q3: "solo" },
-    score: 8,
-  },
-  {
-    id: 2,
-    date: "2025-12-15",
-    name: "Dilshan P.",
-    result: "Enterprise Pack",
-    answers: { q1: "business", q2: "bulk", q3: "company" },
-    score: 10,
-  },
-  {
-    id: 3,
-    date: "2025-12-14",
-    name: "Sunethra W.",
-    result: "Single Use Pack",
-    answers: { q1: "daily", q2: "eco", q3: "solo" },
-    score: 6,
-  },
-  {
-    id: 4,
-    date: "2025-12-14",
-    name: "Kavinda A.",
-    result: "Travel Pack",
-    answers: { q1: "travel", q2: "quality", q3: "family" },
-    score: 9,
-  },
-  {
-    id: 5,
-    date: "2025-12-13",
-    name: "Chamari D.",
-    result: "Single Use Pack",
-    answers: { q1: "daily", q2: "price", q3: "solo" },
-    score: 7,
-  },
-  {
-    id: 6,
-    date: "2025-12-13",
-    name: "Ruchika F.",
-    result: "Travel Pack",
-    answers: { q1: "travel", q2: "eco", q3: "family" },
-    score: 8,
-  },
-  {
-    id: 7,
-    date: "2025-12-12",
-    name: "Lanka Hosp.",
-    result: "Enterprise Pack",
-    answers: { q1: "business", q2: "bulk", q3: "company" },
-    score: 10,
-  },
-  {
-    id: 8,
-    date: "2025-12-12",
-    name: "Nimasha S.",
-    result: "Single Use Pack",
-    answers: { q1: "daily", q2: "eco", q3: "solo" },
-    score: 6,
-  },
-];
+const QUIZ_RESULTS = [];
 
 function responseFromRow(row, idx) {
   return {
@@ -252,6 +187,16 @@ export default function AdminQuiz() {
               </tr>
             </thead>
             <tbody>
+              {responses.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-5 py-10 text-center text-gray-400 text-sm"
+                  >
+                    No quiz responses yet
+                  </td>
+                </tr>
+              )}
               {responses.map((r, i) => (
                 <motion.tr
                   key={r.id}

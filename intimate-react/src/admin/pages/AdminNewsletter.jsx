@@ -3,102 +3,9 @@ import { Check, Send, TrendingUp, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchSubscribers } from "../../lib/database";
 
-const SUBSCRIBERS = [
-  {
-    id: 1,
-    email: "dilshan.perera@gmail.com",
-    name: "Dilshan Perera",
-    city: "Colombo",
-    date: "2025-11-02",
-    active: true,
-  },
-  {
-    id: 2,
-    email: "priya.mendis@yahoo.com",
-    name: "Priya Mendis",
-    city: "Kandy",
-    date: "2025-11-05",
-    active: true,
-  },
-  {
-    id: 3,
-    email: "travel.nimasha@gmail.com",
-    name: "Nimasha Silva",
-    city: "Galle",
-    date: "2025-11-08",
-    active: true,
-  },
-  {
-    id: 4,
-    email: "chamari.d@outlook.com",
-    name: "Chamari Dias",
-    city: "Matara",
-    date: "2025-11-10",
-    active: true,
-  },
-  {
-    id: 5,
-    email: "ruchika.f@gmail.com",
-    name: "Ruchika Fernando",
-    city: "Jaffna",
-    date: "2025-11-12",
-    active: false,
-  },
-  {
-    id: 6,
-    email: "office.kavinda@gmail.com",
-    name: "Kavinda Almeida",
-    city: "Negombo",
-    date: "2025-11-18",
-    active: true,
-  },
-  {
-    id: 7,
-    email: "hotel.ruwan@cinnamon.com",
-    name: "Ruwan Hotels",
-    city: "Colombo",
-    date: "2025-11-20",
-    active: true,
-  },
-  {
-    id: 8,
-    email: "sunethra.w@gmail.com",
-    name: "Sunethra W.",
-    city: "Colombo 5",
-    date: "2025-11-25",
-    active: true,
-  },
-];
+const SUBSCRIBERS = [];
 
-const CAMPAIGNS = [
-  {
-    id: 1,
-    subject: "✨ December Sale – 20% off all packs!",
-    sent: 340,
-    opened: 218,
-    clicked: 89,
-    date: "2025-12-01",
-    status: "sent",
-  },
-  {
-    id: 2,
-    subject: "🎁 Refer a friend & earn 10% off",
-    sent: 312,
-    opened: 184,
-    clicked: 72,
-    date: "2025-11-15",
-    status: "sent",
-  },
-  {
-    id: 3,
-    subject: "🌿 Why eco-friendly matters for you",
-    sent: 289,
-    opened: 201,
-    clicked: 95,
-    date: "2025-11-01",
-    status: "sent",
-  },
-];
+const CAMPAIGNS = [];
 
 export default function AdminNewsletter() {
   const [tab, setTab] = useState("subscribers");
@@ -168,7 +75,7 @@ export default function AdminNewsletter() {
             icon: Users,
           },
           { label: "Active", value: loading ? "..." : active, icon: Check },
-          { label: "Avg. Open Rate", value: "64%", icon: TrendingUp },
+          { label: "Avg. Open Rate", value: "N/A", icon: TrendingUp },
         ].map(({ label, value, icon: Icon }, i) => (
           <motion.div
             key={label}
@@ -227,6 +134,16 @@ export default function AdminNewsletter() {
                 </tr>
               </thead>
               <tbody>
+                {subscribers.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      className="px-5 py-10 text-center text-gray-400 text-sm"
+                    >
+                      No subscribers yet
+                    </td>
+                  </tr>
+                )}
                 {subscribers.map((s, i) => (
                   <motion.tr
                     key={s.id}
@@ -269,6 +186,11 @@ export default function AdminNewsletter() {
           animate={{ opacity: 1 }}
           className="space-y-3"
         >
+          {CAMPAIGNS.length === 0 && (
+            <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center text-gray-500 text-sm">
+              No campaign data yet
+            </div>
+          )}
           {CAMPAIGNS.map((c, i) => (
             <motion.div
               key={c.id}
