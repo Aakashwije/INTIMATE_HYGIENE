@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import SEO from "../components/SEO";
 import ScrollToTop from "../components/ScrollToTop";
+import { createQuizResponse, trackSiteEvent } from "../lib/database";
 
 const QUESTIONS = [
   {
@@ -124,6 +125,12 @@ function getRecommendation(answers) {
   };
 }
 
+function scoreRecommendation(result) {
+  if (result.id === 3) return 10;
+  if (result.id === 2) return 8;
+  return 6;
+}
+
 export default function Quiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -132,13 +139,24 @@ export default function Quiz() {
   const question = QUESTIONS[step];
   const progress = Math.round((step / QUESTIONS.length) * 100);
 
-  const handleAnswer = (value) => {
+  const handleAnswer = async (value) => {
     const newAnswers = { ...answers, [question.id]: value };
     setAnswers(newAnswers);
     if (step < QUESTIONS.length - 1) {
       setStep(step + 1);
     } else {
-      setResult(getRecommendation(newAnswers));
+      const recommendation = getRecommendation(newAnswers);
+      setResult(recommendation);
+      createQuizResponse({
+        answers: newAnswers,
+        result: recommendation.name,
+        score: scoreRecommendation(recommendation),
+      }).catch(() => {});
+      trackSiteEvent({
+        event_type: "quiz_complete",
+        label: recommendation.name,
+        metadata: { answers: newAnswers },
+      });
     }
   };
 

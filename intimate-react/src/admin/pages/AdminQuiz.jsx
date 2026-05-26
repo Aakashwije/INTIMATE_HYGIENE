@@ -11,6 +11,8 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import { useEffect, useState } from "react";
+import { fetchQuizResponses } from "../../lib/database";
 
 const QUIZ_RESULTS = [
   {
@@ -79,33 +81,47 @@ const QUIZ_RESULTS = [
   },
 ];
 
-const resultDist = [
-  {
-    name: "Single Use Pack",
-    value: QUIZ_RESULTS.filter((r) => r.result === "Single Use Pack").length,
-    color: "#28a745",
-  },
-  {
-    name: "Travel Pack",
-    value: QUIZ_RESULTS.filter((r) => r.result === "Travel Pack").length,
-    color: "#0ea5e9",
-  },
-  {
-    name: "Enterprise Pack",
-    value: QUIZ_RESULTS.filter((r) => r.result === "Enterprise Pack").length,
-    color: "#8b5cf6",
-  },
-];
+function responseFromRow(row, idx) {
+  return {
+    id: idx + 1,
+    date: new Date(row.created_at).toISOString().slice(0, 10),
+    name: row.name || "Website visitor",
+    result: row.result,
+    answers: row.answers || {},
+    score: row.score || 0,
+  };
+}
 
-const scoreData = [
-  { score: "6", count: 2 },
-  { score: "7", count: 1 },
-  { score: "8", count: 2 },
-  { score: "9", count: 1 },
-  { score: "10", count: 2 },
-];
+function buildResultDist(rows) {
+  const names = ["Single Use Pack", "Travel Pack", "Enterprise Pack"];
+  return names.map((name, idx) => ({
+    name,
+    value: rows.filter((r) => r.result.includes(name)).length,
+    color: ["#28a745", "#0ea5e9", "#8b5cf6"][idx],
+  }));
+}
+
+function buildScoreData(rows) {
+  return [6, 7, 8, 9, 10].map((score) => ({
+    score: String(score),
+    count: rows.filter((r) => r.score === score).length,
+  }));
+}
 
 export default function AdminQuiz() {
+  const [responses, setResponses] = useState(QUIZ_RESULTS);
+
+  useEffect(() => {
+    fetchQuizResponses()
+      .then((rows) => {
+        if (rows.length > 0) setResponses(rows.map(responseFromRow));
+      })
+      .catch(() => setResponses(QUIZ_RESULTS));
+  }, []);
+
+  const liveResultDist = buildResultDist(responses);
+  const liveScoreData = buildScoreData(responses);
+
   return (
     <div className="p-6 space-y-5 max-w-[1600px] mx-auto">
       <motion.div
@@ -130,7 +146,7 @@ export default function AdminQuiz() {
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
-                data={resultDist}
+                data={liveResultDist}
                 cx="50%"
                 cy="50%"
                 innerRadius={50}
@@ -138,7 +154,7 @@ export default function AdminQuiz() {
                 paddingAngle={3}
                 dataKey="value"
               >
-                {resultDist.map((e, i) => (
+                {liveResultDist.map((e, i) => (
                   <Cell key={i} fill={e.color} />
                 ))}
               </Pie>
@@ -153,7 +169,7 @@ export default function AdminQuiz() {
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-2">
-            {resultDist.map((r) => (
+            {liveResultDist.map((r) => (
               <div key={r.name} className="flex items-center gap-2">
                 <div
                   className="w-2.5 h-2.5 rounded-full"
@@ -177,7 +193,7 @@ export default function AdminQuiz() {
           <h2 className="text-gray-900 font-semibold mb-4">Score Distribution</h2>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart
-              data={scoreData}
+              data={liveScoreData}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
@@ -236,7 +252,7 @@ export default function AdminQuiz() {
               </tr>
             </thead>
             <tbody>
-              {QUIZ_RESULTS.map((r, i) => (
+              {responses.map((r, i) => (
                 <motion.tr
                   key={r.id}
                   initial={{ opacity: 0 }}

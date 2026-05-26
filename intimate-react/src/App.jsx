@@ -10,6 +10,7 @@ import AdminOrders from "./admin/pages/AdminOrders";
 import AdminProducts from "./admin/pages/AdminProducts";
 import AdminQuiz from "./admin/pages/AdminQuiz";
 import AdminSettings from "./admin/pages/AdminSettings";
+import AnalyticsTracker from "./components/AnalyticsTracker";
 import AnnouncementBar from "./components/AnnouncementBar";
 import CartDrawer from "./components/CartDrawer";
 import DiscountPopup from "./components/DiscountPopup";
@@ -40,6 +41,7 @@ import Splash from "./pages/Splash";
 function CustomerApp() {
   return (
     <>
+      <AnalyticsTracker />
       <AnnouncementBar />
       <WhatsAppButton />
       <DiscountPopup />

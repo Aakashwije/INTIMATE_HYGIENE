@@ -11,6 +11,17 @@ function emptySubscription() {
   return { unsubscribe: () => {} };
 }
 
+function makeId() {
+  if (globalThis.crypto?.randomUUID) return globalThis.crypto.randomUUID();
+  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
+    (
+      Number(c) ^
+      (globalThis.crypto.getRandomValues(new Uint8Array(1))[0] &
+        (15 >> (Number(c) / 4)))
+    ).toString(16),
+  );
+}
+
 export async function subscribeToNewsletter(email) {
   const client = requireSupabase();
   const cleanEmail = email.trim().toLowerCase();
@@ -24,28 +35,26 @@ export async function subscribeToNewsletter(email) {
 
 export async function createInquiry(inquiry) {
   const client = requireSupabase();
-  const { data, error } = await client
+  const { error } = await client
     .from("inquiries")
-    .insert(inquiry)
-    .select()
-    .single();
+    .insert(inquiry);
 
   if (error) throw error;
-  return data;
+  return inquiry;
 }
 
 export async function createOrder({ order, items }) {
   const client = requireSupabase();
-  const { data, error } = await client
+  const orderId = order.id || makeId();
+  const nextOrder = { ...order, id: orderId };
+  const { error } = await client
     .from("orders")
-    .insert(order)
-    .select()
-    .single();
+    .insert(nextOrder);
 
   if (error) throw error;
 
   const orderItems = items.map((item) => ({
-    order_id: data.id,
+    order_id: orderId,
     product_name: item.product_name,
     quantity: item.quantity,
     price: item.price,
@@ -56,7 +65,7 @@ export async function createOrder({ order, items }) {
     .insert(orderItems);
 
   if (itemsError) throw itemsError;
-  return data;
+  return nextOrder;
 }
 
 export async function fetchSubscribers() {
@@ -125,6 +134,8 @@ export function subscribeToAdminData(onChange) {
     "order_items",
     "inquiries",
     "newsletter_subscribers",
+    "quiz_responses",
+    "site_events",
   ];
 
   let channel = supabase.channel("admin-dashboard-feed");
@@ -155,6 +166,53 @@ export async function fetchOrders() {
   const { data, error } = await client
     .from("orders")
     .select("*, order_items(*)")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createQuizResponse(response) {
+  const client = requireSupabase();
+  const { error } = await client
+    .from("quiz_responses")
+    .insert(response);
+
+  if (error) throw error;
+  return response;
+}
+
+export async function fetchQuizResponses() {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("quiz_responses")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function trackSiteEvent(event) {
+  if (!supabase) return null;
+  const { error } = await supabase
+    .from("site_events")
+    .insert({
+      event_type: event.event_type,
+      path: event.path || window.location.pathname,
+      label: event.label || null,
+      metadata: event.metadata || {},
+    });
+
+  if (error) return null;
+  return event;
+}
+
+export async function fetchSiteEvents() {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("site_events")
+    .select("*")
     .order("created_at", { ascending: false });
 
   if (error) throw error;

@@ -6,7 +6,7 @@ import {
     TrendingUp,
     Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Area,
     Bar,
@@ -19,6 +19,7 @@ import {
     XAxis,
     YAxis
 } from "recharts";
+import { fetchOrders, fetchSiteEvents } from "../../lib/database";
 
 const monthlyData = [
   { month: "Jan", revenue: 128000, orders: 48, customers: 38, returns: 2 },
@@ -51,14 +52,6 @@ const cohortData = [
   { name: "May cohort", m1: 100, m2: 75 },
   { name: "Jun cohort", m1: 100 },
 ];
-
-const heatmapHours = Array.from({ length: 7 }, (_, day) =>
-  Array.from({ length: 24 }, (_, h) => ({
-    day,
-    hour: h,
-    value: Math.floor(Math.random() * 50 + (h >= 9 && h <= 21 ? 30 : 0)),
-  })),
-).flat();
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -99,6 +92,74 @@ function getHeatColor(value) {
 
 export default function AdminAnalytics() {
   const [metric, setMetric] = useState("revenue");
+  const [data, setData] = useState(monthlyData);
+  const [events, setEvents] = useState([]);
+  const [channels, setChannels] = useState(channelData);
+
+  useEffect(() => {
+    Promise.all([fetchOrders(), fetchSiteEvents()])
+      .then(([orders, siteEvents]) => {
+        if (orders.length > 0 || siteEvents.length > 0) {
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          const monthly = months.map((month) => ({
+            month,
+            revenue: 0,
+            orders: 0,
+            customers: 0,
+            returns: 0,
+          }));
+          const customersByMonth = new Map();
+          orders.forEach((order) => {
+            const date = new Date(order.created_at);
+            const month = date.toLocaleString("en-US", { month: "short" });
+            const bucket = monthly.find((item) => item.month === month);
+            if (!bucket) return;
+            bucket.revenue += Number(order.total || 0);
+            bucket.orders += 1;
+            if (order.status === "cancelled") bucket.returns += 1;
+            const key = `${month}:${order.customer_email || order.customer_phone}`;
+            if (!customersByMonth.has(key)) {
+              customersByMonth.set(key, true);
+              bucket.customers += 1;
+            }
+          });
+          setData(monthly);
+          setEvents(siteEvents);
+          const checkoutEvents = siteEvents.filter((event) => event.event_type === "checkout_submit");
+          setChannels([
+            {
+              channel: "WhatsApp",
+              orders: checkoutEvents.length || orders.length,
+              revenue: orders.reduce((sum, order) => sum + Number(order.total || 0), 0),
+              color: "#25d366",
+            },
+            {
+              channel: "Quiz",
+              orders: siteEvents.filter((event) => event.event_type === "quiz_complete").length,
+              revenue: 0,
+              color: "#0ea5e9",
+            },
+            {
+              channel: "Cart Adds",
+              orders: siteEvents.filter((event) => event.event_type === "cart_add").length,
+              revenue: 0,
+              color: "#8b5cf6",
+            },
+          ]);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const heatmapHours = Array.from({ length: 7 }, (_, day) =>
+    Array.from({ length: 24 }, (_, hour) => {
+      const value = events.filter((event) => {
+        const date = new Date(event.created_at);
+        return date.getDay() === (day + 1) % 7 && date.getHours() === hour;
+      }).length;
+      return { day, hour, value };
+    }),
+  ).flat();
 
   const metricConfig = {
     revenue: { label: "Revenue (LKR)", color: "#28a745", key: "revenue" },
@@ -173,7 +234,7 @@ export default function AdminAnalytics() {
         </p>
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart
-            data={monthlyData}
+            data={data}
             margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
           >
             <defs>
@@ -234,7 +295,7 @@ export default function AdminAnalytics() {
             Orders & revenue by acquisition channel
           </p>
           <div className="space-y-4">
-            {channelData.map((ch, i) => (
+            {channels.map((ch, i) => (
               <motion.div
                 key={ch.channel}
                 initial={{ opacity: 0, x: -10 }}
@@ -263,7 +324,7 @@ export default function AdminAnalytics() {
                 <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${(ch.orders / 2840) * 100}%` }}
+                    animate={{ width: `${Math.min(100, (ch.orders / Math.max(...channels.map((c) => c.orders), 1)) * 100)}%` }}
                     transition={{
                       delay: 0.4 + i * 0.07,
                       duration: 0.8,
@@ -291,14 +352,14 @@ export default function AdminAnalytics() {
           <p className="text-gray-500 text-xs mb-5">Revenue growth rate (%)</p>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart
-              data={monthlyData.map((d, i) => ({
+              data={data.map((d, i) => ({
                 month: d.month,
                 growth:
                   i === 0
                     ? 0
                     : +(
-                        ((d.revenue - monthlyData[i - 1].revenue) /
-                          monthlyData[i - 1].revenue) *
+                        ((d.revenue - data[i - 1].revenue) /
+                          Math.max(data[i - 1].revenue, 1)) *
                         100
                       ).toFixed(1),
               }))}

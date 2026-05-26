@@ -67,11 +67,32 @@ create table if not exists public.order_items (
   created_at timestamptz default now()
 );
 
+create table if not exists public.quiz_responses (
+  id uuid primary key default gen_random_uuid(),
+  name text,
+  phone text,
+  answers jsonb not null,
+  result text not null,
+  score integer not null default 0,
+  created_at timestamptz default now()
+);
+
+create table if not exists public.site_events (
+  id uuid primary key default gen_random_uuid(),
+  event_type text not null,
+  path text,
+  label text,
+  metadata jsonb not null default '{}'::jsonb,
+  created_at timestamptz default now()
+);
+
 alter table public.newsletter_subscribers enable row level security;
 alter table public.inquiries enable row level security;
 alter table public.products enable row level security;
 alter table public.orders enable row level security;
 alter table public.order_items enable row level security;
+alter table public.quiz_responses enable row level security;
+alter table public.site_events enable row level security;
 
 alter table public.newsletter_subscribers add column if not exists active boolean not null default true;
 alter table public.inquiries add column if not exists company text;
@@ -99,21 +120,21 @@ drop policy if exists "Anyone can subscribe" on public.newsletter_subscribers;
 create policy "Anyone can subscribe"
 on public.newsletter_subscribers
 for insert
-to anon
+to anon, authenticated
 with check (true);
 
 drop policy if exists "Anyone can send inquiry" on public.inquiries;
 create policy "Anyone can send inquiry"
 on public.inquiries
 for insert
-to anon
+to anon, authenticated
 with check (true);
 
 drop policy if exists "Anyone can view active products" on public.products;
 create policy "Anyone can view active products"
 on public.products
 for select
-to anon
+to anon, authenticated
 using (active = true);
 
 drop policy if exists "Authenticated can read products" on public.products;
@@ -142,14 +163,28 @@ drop policy if exists "Anyone can create order" on public.orders;
 create policy "Anyone can create order"
 on public.orders
 for insert
-to anon
+to anon, authenticated
 with check (true);
 
 drop policy if exists "Anyone can create order items" on public.order_items;
 create policy "Anyone can create order items"
 on public.order_items
 for insert
-to anon
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Anyone can submit quiz" on public.quiz_responses;
+create policy "Anyone can submit quiz"
+on public.quiz_responses
+for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Anyone can track site event" on public.site_events;
+create policy "Anyone can track site event"
+on public.site_events
+for insert
+to anon, authenticated
 with check (true);
 
 drop policy if exists "Admin ui can read subscribers" on public.newsletter_subscribers;
@@ -176,6 +211,20 @@ using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 drop policy if exists "Admin ui can read order items" on public.order_items;
 create policy "Admin ui can read order items"
 on public.order_items
+for select
+to authenticated
+using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+drop policy if exists "Admin ui can read quiz responses" on public.quiz_responses;
+create policy "Admin ui can read quiz responses"
+on public.quiz_responses
+for select
+to authenticated
+using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
+drop policy if exists "Admin ui can read site events" on public.site_events;
+create policy "Admin ui can read site events"
+on public.site_events
 for select
 to authenticated
 using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
@@ -267,7 +316,9 @@ begin
     'orders',
     'order_items',
     'inquiries',
-    'newsletter_subscribers'
+    'newsletter_subscribers',
+    'quiz_responses',
+    'site_events'
   ]
   loop
     begin

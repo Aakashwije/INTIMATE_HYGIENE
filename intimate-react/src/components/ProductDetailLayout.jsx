@@ -7,6 +7,7 @@ import { useLang } from "../context/LangContext";
 import {
   fetchProductBySlug,
   subscribeToProducts,
+  trackSiteEvent,
 } from "../lib/database";
 
 const certs = [
@@ -69,6 +70,11 @@ export default function ProductDetailLayout({
   const effectiveQty = Math.max(minQty, qty);
 
   const handleOrder = () => {
+    trackSiteEvent({
+      event_type: "whatsapp_click",
+      label: displayTitle,
+      metadata: { source: "product_detail", quantity: effectiveQty },
+    });
     const msg = encodeURIComponent(
       `${whatsappMsg || `Hello! I want to order ${displayTitle}.`}\n\nQuantity: ${effectiveQty} pack(s)\n\nPlease share availability and delivery details.`,
     );

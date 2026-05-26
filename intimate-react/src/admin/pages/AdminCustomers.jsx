@@ -8,7 +8,8 @@ import {
     TrendingUp,
     Users,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchOrders } from "../../lib/database";
 
 const CUSTOMERS = [
   {
@@ -166,11 +167,79 @@ const SEGMENT_COLORS = {
 
 const SEGMENTS = ["all", "VIP", "B2B", "Regular", "New"];
 
+function initials(name = "") {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function segmentFor(customer) {
+  if (customer.totalSpent >= 100000 || customer.name.toLowerCase().includes("hotel") || customer.orders >= 10) {
+    return "B2B";
+  }
+  if (customer.totalSpent >= 20000 || customer.orders >= 5) return "VIP";
+  if (customer.orders === 1) return "New";
+  return "Regular";
+}
+
+function customersFromOrders(orders) {
+  const map = new Map();
+  orders.forEach((order) => {
+    const key = order.customer_email || order.customer_phone;
+    if (!key) return;
+    const existing =
+      map.get(key) ||
+      {
+        id: key,
+        name: order.customer_name,
+        phone: order.customer_phone,
+        email: order.customer_email,
+        city: order.city || "-",
+        orders: 0,
+        totalSpent: 0,
+        lastOrder: order.created_at,
+        rating: 5,
+      };
+
+    existing.orders += 1;
+    existing.totalSpent += Number(order.total || 0);
+    if (new Date(order.created_at) > new Date(existing.lastOrder)) {
+      existing.lastOrder = order.created_at;
+      existing.name = order.customer_name;
+      existing.phone = order.customer_phone;
+      existing.city = order.city || existing.city;
+    }
+    map.set(key, existing);
+  });
+
+  return Array.from(map.values())
+    .map((customer) => ({
+      ...customer,
+      segment: segmentFor(customer),
+      avatar: initials(customer.name),
+      lastOrder: new Date(customer.lastOrder).toISOString().slice(0, 10),
+    }))
+    .sort((a, b) => b.totalSpent - a.totalSpent);
+}
+
 export default function AdminCustomers() {
   const [search, setSearch] = useState("");
   const [segment, setSegment] = useState("all");
+  const [customers, setCustomers] = useState(CUSTOMERS);
 
-  const filtered = CUSTOMERS.filter((c) => {
+  useEffect(() => {
+    fetchOrders()
+      .then((orders) => {
+        const liveCustomers = customersFromOrders(orders);
+        if (liveCustomers.length > 0) setCustomers(liveCustomers);
+      })
+      .catch(() => setCustomers(CUSTOMERS));
+  }, []);
+
+  const filtered = customers.filter((c) => {
     const matchSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.city.toLowerCase().includes(search.toLowerCase());
@@ -178,9 +247,9 @@ export default function AdminCustomers() {
     return matchSearch && matchSegment;
   });
 
-  const totalLTV = CUSTOMERS.reduce((s, c) => s + c.totalSpent, 0);
-  const avgLTV = Math.round(totalLTV / CUSTOMERS.length);
-  const vip = CUSTOMERS.filter(
+  const totalLTV = customers.reduce((s, c) => s + c.totalSpent, 0);
+  const avgLTV = customers.length ? Math.round(totalLTV / customers.length) : 0;
+  const vip = customers.filter(
     (c) => c.segment === "VIP" || c.segment === "B2B",
   ).length;
 
@@ -203,7 +272,7 @@ export default function AdminCustomers() {
       {/* Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Customers", value: CUSTOMERS.length, icon: Users },
+          { label: "Total Customers", value: customers.length, icon: Users },
           { label: "VIP / B2B", value: vip, icon: Star },
           {
             label: "Avg. LTV",

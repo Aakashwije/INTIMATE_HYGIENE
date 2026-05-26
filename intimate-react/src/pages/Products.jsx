@@ -10,7 +10,11 @@ import SEO from "../components/SEO";
 import TrustBadges from "../components/TrustBadges";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
-import { fetchProducts, subscribeToProducts } from "../lib/database";
+import {
+  fetchProducts,
+  subscribeToProducts,
+  trackSiteEvent,
+} from "../lib/database";
 
 const productDefs = [
   {
@@ -113,6 +117,11 @@ export default function Products() {
     });
     setJustAdded(p.id);
     setTimeout(() => setJustAdded(null), 1800);
+    trackSiteEvent({
+      event_type: "cart_add",
+      label: p.title || t[p.titleKey],
+      metadata: { product_id: p.id, price: p.price },
+    });
   };
 
   const cartTotal = items.reduce((sum, i) => sum + i.qty * i.price, 0);
@@ -264,6 +273,13 @@ export default function Products() {
                       href={`https://wa.me/94707018171?text=${encodeURIComponent(p.whatsappMsg)}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() =>
+                        trackSiteEvent({
+                          event_type: "whatsapp_click",
+                          label: p.title || t[p.titleKey],
+                          metadata: { source: "product_grid" },
+                        })
+                      }
                       className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#25D366] text-white font-semibold rounded-xl hover:bg-[#1ea952] transition-colors text-sm"
                     >
                       <svg

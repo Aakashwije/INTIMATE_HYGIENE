@@ -1,15 +1,28 @@
 import { Minus, PartyPopper, Plus, ShoppingBag, ShoppingCart, Truck, X } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
+import { createOrder, trackSiteEvent } from "../lib/database";
 
 const PHONE = "94707018171";
 
-function buildWhatsAppMessage(items, subtotal, t) {
+function buildOrderRef() {
+  return `IHE-${new Date().getTime().toString(36).toUpperCase().slice(-6)}`;
+}
+
+function buildWhatsAppMessage(items, subtotal, t, customer, orderRef) {
   const lines = items
     .map((i, idx) => `${idx + 1}. ${i.name} × ${i.qty} — LKR ${(i.price * i.qty).toLocaleString()}`)
     .join("%0A");
   const txt =
-    `Hello%21 I%27d like to place this order via Hygenc Covers%3A%0A%0A` +
+    `Hello%21 I%27d like to place this order via Hygenc Covers%3A%0A` +
+    `Order Ref%3A ${encodeURIComponent(orderRef)}%0A%0A` +
+    `Customer%3A ${encodeURIComponent(customer.name)}%0A` +
+    `Phone%3A ${encodeURIComponent(customer.phone)}%0A` +
+    `City%3A ${encodeURIComponent(customer.city)}%0A` +
+    `Address%3A ${encodeURIComponent(customer.address)}%0A` +
+    `Payment%3A ${encodeURIComponent(customer.paymentMethod)}%0A` +
+    `${customer.note ? `Note%3A ${encodeURIComponent(customer.note)}%0A` : ""}%0A` +
     `${lines}%0A%0A` +
     `${t.cartSubtotal || "Subtotal"}%3A LKR ${subtotal.toLocaleString()}%0A%0A` +
     `Please confirm availability and delivery%2C thank you%21`;
@@ -19,13 +32,69 @@ function buildWhatsAppMessage(items, subtotal, t) {
 export default function CartDrawer() {
   const { items, updateQty, remove, subtotal, open, setOpen, clear } = useCart();
   const { t } = useLang();
+  const [checkout, setCheckout] = useState({
+    name: "",
+    phone: "",
+    city: "",
+    address: "",
+    note: "",
+    paymentMethod: "Cash on Delivery",
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   if (!open) return null;
 
-  const checkoutUrl = buildWhatsAppMessage(items, subtotal, t);
   const freeDeliveryThreshold = 3000;
   const remaining = Math.max(0, freeDeliveryThreshold - subtotal);
   const progress = Math.min(100, (subtotal / freeDeliveryThreshold) * 100);
+
+  const handleCheckout = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+    const orderRef = buildOrderRef();
+    try {
+      await createOrder({
+        order: {
+          order_ref: orderRef,
+          customer_name: checkout.name,
+          customer_phone: checkout.phone,
+          address: checkout.address,
+          city: checkout.city,
+          total: subtotal,
+          status: "pending",
+          payment_method: checkout.paymentMethod,
+          note: checkout.note || null,
+        },
+        items: items.map((item) => ({
+          product_name: item.name,
+          quantity: item.qty,
+          price: item.price,
+        })),
+      });
+      await trackSiteEvent({
+        event_type: "checkout_submit",
+        label: "Cart checkout",
+        metadata: { order_ref: orderRef, total: subtotal, item_count: items.length },
+      });
+      window.open(buildWhatsAppMessage(items, subtotal, t, checkout, orderRef), "_blank");
+      clear();
+      setOpen(false);
+      setCheckout({
+        name: "",
+        phone: "",
+        city: "",
+        address: "",
+        note: "",
+        paymentMethod: "Cash on Delivery",
+      });
+    } catch (err) {
+      setError(err.message || "Could not save order. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[150] flex justify-end">
@@ -137,17 +206,30 @@ export default function CartDrawer() {
               <span className="text-sm text-gray-600">{t.cartSubtotal || "Subtotal"}</span>
               <span className="text-xl font-bold text-gray-800">LKR {subtotal.toLocaleString()}</span>
             </div>
-            <a
-              href={checkoutUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-shimmer flex items-center justify-center gap-2 w-full py-3.5 bg-[#25D366] text-white font-bold rounded-xl hover:bg-[#1ea952] transition-colors shadow-lg"
-            >
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current shrink-0">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-              </svg>
-              {t.cartCheckout || "Checkout via WhatsApp"}
-            </a>
+            <form onSubmit={handleCheckout} className="space-y-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input required value={checkout.name} onChange={(e) => setCheckout((f) => ({ ...f, name: e.target.value }))} placeholder="Name" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+                <input required value={checkout.phone} onChange={(e) => setCheckout((f) => ({ ...f, phone: e.target.value }))} placeholder="Phone / WhatsApp" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+              </div>
+              <input required value={checkout.city} onChange={(e) => setCheckout((f) => ({ ...f, city: e.target.value }))} placeholder="City / district" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+              <textarea required rows={2} value={checkout.address} onChange={(e) => setCheckout((f) => ({ ...f, address: e.target.value }))} placeholder="Delivery address" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm resize-none" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <select value={checkout.paymentMethod} onChange={(e) => setCheckout((f) => ({ ...f, paymentMethod: e.target.value }))} className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm bg-white">
+                  <option>Cash on Delivery</option>
+                  <option>Bank Transfer</option>
+                  <option>eZ Cash / mCash</option>
+                </select>
+                <input value={checkout.note} onChange={(e) => setCheckout((f) => ({ ...f, note: e.target.value }))} placeholder="Optional note" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+              </div>
+              {error && <p className="text-xs text-red-500">{error}</p>}
+              <button
+                type="submit"
+                disabled={saving}
+                className="btn-shimmer flex items-center justify-center gap-2 w-full py-3.5 bg-[#25D366] text-white font-bold rounded-xl hover:bg-[#1ea952] transition-colors shadow-lg disabled:opacity-70"
+              >
+                {saving ? "Saving order..." : t.cartCheckout || "Checkout via WhatsApp"}
+              </button>
+            </form>
             <button
               onClick={clear}
               className="w-full text-xs text-gray-400 hover:text-gray-700 underline"

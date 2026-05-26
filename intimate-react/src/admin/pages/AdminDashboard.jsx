@@ -37,6 +37,7 @@ import {
     fetchInquiries,
     fetchOrders,
     fetchProducts,
+    fetchSiteEvents,
     fetchSubscribers,
     subscribeToAdminData,
 } from "../../lib/database";
@@ -298,7 +299,7 @@ function initials(name = "") {
     .toUpperCase();
 }
 
-function buildDashboardData({ orders, products, subscribers, inquiries }) {
+function buildDashboardData({ orders, products, subscribers, inquiries, events = [] }) {
   const liveOrders = orders.length > 0;
   const revenue = orders
     .filter((order) => order.status !== "cancelled")
@@ -398,6 +399,11 @@ function buildDashboardData({ orders, products, subscribers, inquiries }) {
               pct: Math.round((count / maxCity) * 100),
             }))
         : topCities,
+    lowStock: products.filter((product) => product.stock < 100).length,
+    pageViews: events.filter((event) => event.event_type === "page_view").length,
+    conversions: events.filter((event) =>
+      ["checkout_submit", "quiz_complete"].includes(event.event_type),
+    ).length,
   };
 }
 
@@ -411,6 +417,7 @@ export default function AdminDashboard() {
       products: [],
       subscribers: [],
       inquiries: [],
+      events: [],
     }),
   );
 
@@ -420,9 +427,10 @@ export default function AdminDashboard() {
       fetchProducts(),
       fetchSubscribers(),
       fetchInquiries(),
+      fetchSiteEvents(),
     ])
-      .then(([orders, products, subscribers, inquiries]) => {
-        setDashboard(buildDashboardData({ orders, products, subscribers, inquiries }));
+      .then(([orders, products, subscribers, inquiries, events]) => {
+        setDashboard(buildDashboardData({ orders, products, subscribers, inquiries, events }));
       })
       .catch(() => {
         setDashboard(
@@ -431,6 +439,7 @@ export default function AdminDashboard() {
             products: [],
             subscribers: [],
             inquiries: [],
+            events: [],
           }),
         );
       });
@@ -537,9 +546,11 @@ export default function AdminDashboard() {
         {[
           {
             label: "Conversion Rate",
-            value: "4.8%",
+            value: dashboard.pageViews
+              ? `${((dashboard.conversions / dashboard.pageViews) * 100).toFixed(1)}%`
+              : "0%",
             icon: Target,
-            delta: "+0.6%",
+            delta: "live",
             pos: true,
           },
           {
@@ -558,10 +569,17 @@ export default function AdminDashboard() {
           },
           {
             label: "Page Views / Day",
-            value: "2,340",
+            value: dashboard.pageViews.toLocaleString(),
             icon: Eye,
-            delta: "+18%",
+            delta: "tracked",
             pos: true,
+          },
+          {
+            label: "Low Stock SKUs",
+            value: dashboard.lowStock,
+            icon: Zap,
+            delta: "live",
+            pos: dashboard.lowStock === 0,
           },
         ].map(({ label, value, icon: Icon, delta, pos }, i) => (
           <motion.div
