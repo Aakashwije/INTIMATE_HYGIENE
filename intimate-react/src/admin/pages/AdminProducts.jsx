@@ -9,7 +9,12 @@ import {
     TrendingUp,
     X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+    fetchProducts,
+    subscribeToProducts,
+    updateProduct,
+} from "../../lib/database";
 
 const INITIAL_PRODUCTS = [
   {
@@ -64,6 +69,27 @@ const INITIAL_PRODUCTS = [
   },
 ];
 
+function productFromRow(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    sku: row.sku || "-",
+    price: Number(row.price),
+    cost: Number(row.cost || 0),
+    stock: row.stock || 0,
+    sold: row.sold || 0,
+    rating: Number(row.rating || 4.9),
+    reviews: row.reviews || 0,
+    status: row.active ? (row.stock < 100 ? "low_stock" : "active") : "inactive",
+    image: row.image_url || "/normalnew.png",
+    minOrder: row.min_order || 1,
+    description: row.description || "",
+    category: row.category || "Retail",
+    active: row.active,
+  };
+}
+
 function StockBar({ stock, max = 1500 }) {
   const pct = Math.min((stock / max) * 100, 100);
   const color = pct < 15 ? "#ef4444" : pct < 35 ? "#f59e0b" : "#10b981";
@@ -84,26 +110,53 @@ export default function AdminProducts() {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const loadProducts = () => {
+    fetchProducts()
+      .then((rows) => {
+        if (rows.length > 0) setProducts(rows.map(productFromRow));
+      })
+      .catch((err) => setError(err.message || "Could not load products."))
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadProducts();
+    const channel = subscribeToProducts(() => loadProducts());
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const startEdit = (p) => {
     setEditing(p.id);
     setForm({ ...p });
   };
-  const saveEdit = () => {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === editing
-          ? {
-              ...p,
-              ...form,
-              price: +form.price,
-              cost: +form.cost,
-              stock: +form.stock,
-            }
-          : p,
-      ),
-    );
-    setEditing(null);
+  const saveEdit = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      const updated = await updateProduct(editing, {
+        name: form.name,
+        description: form.description,
+        price: Number(form.price),
+        cost: Number(form.cost),
+        stock: Number(form.stock),
+        min_order: Number(form.minOrder),
+        active: form.status !== "inactive",
+      });
+      setProducts((prev) =>
+        prev.map((p) => (p.id === editing ? productFromRow(updated) : p)),
+      );
+      setEditing(null);
+    } catch (err) {
+      setError(err.message || "Could not save product.");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const totalRevenue = products.reduce((s, p) => s + p.sold * p.price, 0);
@@ -121,7 +174,9 @@ export default function AdminProducts() {
           <h1 className="text-2xl font-bold text-gray-900">Products</h1>
           <p className="text-gray-500 text-sm mt-1">
             Manage your product catalog and inventory
+            {loading ? "..." : ""}
           </p>
+          {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
         </div>
         <button className="flex items-center gap-2 px-4 py-2 bg-green-primary hover:bg-green-dark rounded-xl text-white text-sm font-semibold shadow-lg shadow-green-primary/25 transition-all self-start">
           <Plus className="w-4 h-4" />
@@ -370,10 +425,11 @@ export default function AdminProducts() {
                     </button>
                     <button
                       onClick={saveEdit}
+                      disabled={saving}
                       className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-primary hover:bg-green-dark rounded-xl text-white text-sm font-semibold shadow-lg shadow-green-primary/25 transition-all"
                     >
                       <Check className="w-4 h-4" />
-                      Save Changes
+                      {saving ? "Saving..." : "Save Changes"}
                     </button>
                   </div>
                 </div>

@@ -37,6 +37,7 @@ export default function Product1() {
         path="/products/1"
       />
       <ProductDetailLayout
+        slug="single-use-pack"
         title="Single Use Pack"
         subtitle="Eco friendly covers designed for safe and hygienic use in public spaces."
         image="/normalnew.png"

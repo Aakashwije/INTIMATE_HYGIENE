@@ -1,23 +1,28 @@
 import { CheckCircle, Gift } from "lucide-react";
 import { useState } from "react";
 import { useLang } from "../context/LangContext";
+import { subscribeToNewsletter } from "../lib/database";
 
 export default function NewsletterSignup() {
   const { t } = useLang();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !email.includes("@")) return;
+    setSubmitting(true);
+    setError("");
     try {
-      const list = JSON.parse(localStorage.getItem("newsletter") || "[]");
-      list.push({ email, ts: Date.now() });
-      localStorage.setItem("newsletter", JSON.stringify(list));
-    } catch {
-      // ignore
+      await subscribeToNewsletter(email);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || "Could not subscribe right now.");
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitted(true);
   };
 
   return (
@@ -53,13 +58,15 @@ export default function NewsletterSignup() {
             />
             <button
               type="submit"
+              disabled={submitting}
               className="btn-shimmer px-6 py-3.5 bg-white text-[#28a745] font-bold rounded-xl hover:bg-gray-100 hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 whitespace-nowrap"
             >
-              {t.newsletterCta || "Get My Discount →"}
+              {submitting ? "Saving..." : t.newsletterCta || "Get My Discount →"}
             </button>
           </form>
         )}
 
+        {error && <p className="text-sm text-red-100 mt-3">{error}</p>}
         <p className="text-xs text-white/70 mt-4">{t.newsletterPrivacy || "No spam. Unsubscribe anytime."}</p>
       </div>
     </section>

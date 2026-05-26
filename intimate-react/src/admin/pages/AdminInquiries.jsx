@@ -10,7 +10,8 @@ import {
     Phone,
     X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchInquiries } from "../../lib/database";
 
 const INQUIRIES = [
   {
@@ -124,11 +125,46 @@ const STATUS_META = {
 
 export default function AdminInquiries() {
   const [selected, setSelected] = useState(null);
+  const [inquiries, setInquiries] = useState(INQUIRIES);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchInquiries()
+      .then((rows) => {
+        if (!mounted || rows.length === 0) return;
+        setInquiries(
+          rows.map((row, idx) => ({
+            id: `B2B-${String(rows.length - idx).padStart(3, "0")}`,
+            company: row.company || "Website Inquiry",
+            contact: row.name,
+            role: row.subject || "Customer",
+            phone: row.phone || "",
+            email: row.email || "",
+            city: "-",
+            product: row.product || row.subject || "General",
+            qty: row.volume || "-",
+            status: STATUS_META[row.status] ? row.status : "new",
+            date: new Date(row.created_at).toISOString().slice(0, 10),
+            note: row.message,
+          })),
+        );
+      })
+      .catch(() => {
+        if (mounted) setInquiries(INQUIRIES);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const stats = {
-    total: INQUIRIES.length,
-    won: INQUIRIES.filter((i) => i.status === "closed_won").length,
-    active: INQUIRIES.filter(
+    total: inquiries.length,
+    won: inquiries.filter((i) => i.status === "closed_won").length,
+    active: inquiries.filter(
       (i) => i.status === "negotiating" || i.status === "new",
     ).length,
   };
@@ -151,13 +187,13 @@ export default function AdminInquiries() {
       {/* Summary */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Total Inquiries", value: stats.total, color: "blue" },
+          { label: "Total Inquiries", value: loading ? "..." : stats.total, color: "blue" },
           {
             label: "Active / In Progress",
-            value: stats.active,
+            value: loading ? "..." : stats.active,
             color: "amber",
           },
-          { label: "Deals Won", value: stats.won, color: "emerald" },
+          { label: "Deals Won", value: loading ? "..." : stats.won, color: "emerald" },
         ].map(({ label, value, color }, i) => (
           <motion.div
             key={label}
@@ -176,7 +212,7 @@ export default function AdminInquiries() {
 
       {/* Kanban-style cards */}
       <div className="space-y-3">
-        {INQUIRIES.map((inq, i) => {
+        {inquiries.map((inq, i) => {
           const meta = STATUS_META[inq.status];
           const Icon = meta.icon;
           return (
@@ -259,13 +295,18 @@ export default function AdminInquiries() {
                   <div className="space-y-2">
                     <a
                       href={`mailto:${inq.email}`}
+                      aria-disabled={!inq.email}
                       className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-700 transition-colors"
                     >
                       <Mail className="w-3.5 h-3.5" />
                       {inq.email}
                     </a>
                     <a
-                      href={`https://wa.me/${inq.phone.replace(/\D/g, "")}?text=Hello%20${encodeURIComponent(inq.contact)}%2C%20regarding%20your%20B2B%20inquiry%20${inq.id}`}
+                      href={
+                        inq.phone
+                          ? `https://wa.me/${inq.phone.replace(/\D/g, "")}?text=Hello%20${encodeURIComponent(inq.contact)}%2C%20regarding%20your%20B2B%20inquiry%20${inq.id}`
+                          : "#"
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-xs text-green-400 hover:text-green-300 transition-colors"

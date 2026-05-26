@@ -11,6 +11,7 @@ import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import { useLang } from "../context/LangContext";
+import { createInquiry } from "../lib/database";
 
 export default function Contact() {
   const { t } = useLang();
@@ -20,6 +21,8 @@ export default function Contact() {
     subject: "",
     message: "",
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [formStatus, setFormStatus] = useState("");
 
   const infoCards = [
     {
@@ -51,10 +54,25 @@ export default function Contact() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(t.messageSent);
-    setForm({ name: "", email: "", subject: "", message: "" });
+    setSubmitting(true);
+    setFormStatus("");
+    try {
+      await createInquiry({
+        name: form.name,
+        email: form.email,
+        subject: form.subject,
+        message: form.message,
+        status: "new",
+      });
+      setFormStatus(t.messageSent || "Message sent successfully.");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      setFormStatus(err.message || "Could not send your message right now.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -161,10 +179,14 @@ export default function Contact() {
           />
           <button
             type="submit"
+            disabled={submitting}
             className="w-full bg-[#28a745] text-white font-bold py-3 rounded-lg hover:bg-[#218838] transition-colors"
           >
-            {t.send}
+            {submitting ? "Sending..." : t.send}
           </button>
+          {formStatus && (
+            <p className="text-sm text-center text-gray-600">{formStatus}</p>
+          )}
         </form>
       </section>
 

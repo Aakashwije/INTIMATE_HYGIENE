@@ -33,16 +33,17 @@ const navItems = [
 ];
 
 export default function AdminLayout() {
-  const { admin, logout, isLoggedIn } = useAdminAuth();
+  const { admin, logout, isLoggedIn, loading } = useAdminAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifications] = useState(3);
 
+  if (loading) return null;
   if (!isLoggedIn) return <Navigate to="/admin" replace />;
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate("/admin", { replace: true });
   };
 

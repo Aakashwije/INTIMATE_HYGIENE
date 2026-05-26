@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Check, Send, TrendingUp, Users } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchSubscribers } from "../../lib/database";
 
 const SUBSCRIBERS = [
   {
@@ -103,8 +104,37 @@ export default function AdminNewsletter() {
   const [tab, setTab] = useState("subscribers");
   const [compose, setCompose] = useState({ subject: "", body: "" });
   const [sent, setSent] = useState(false);
+  const [subscribers, setSubscribers] = useState(SUBSCRIBERS);
+  const [loading, setLoading] = useState(true);
 
-  const active = SUBSCRIBERS.filter((s) => s.active).length;
+  useEffect(() => {
+    let mounted = true;
+    fetchSubscribers()
+      .then((rows) => {
+        if (!mounted || rows.length === 0) return;
+        setSubscribers(
+          rows.map((row) => ({
+            id: row.id,
+            email: row.email,
+            name: "-",
+            city: "-",
+            date: new Date(row.created_at).toISOString().slice(0, 10),
+            active: row.active,
+          })),
+        );
+      })
+      .catch(() => {
+        if (mounted) setSubscribers(SUBSCRIBERS);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const active = subscribers.filter((s) => s.active).length;
 
   const handleSend = (e) => {
     e.preventDefault();
@@ -134,10 +164,10 @@ export default function AdminNewsletter() {
         {[
           {
             label: "Total Subscribers",
-            value: SUBSCRIBERS.length,
+            value: loading ? "..." : subscribers.length,
             icon: Users,
           },
-          { label: "Active", value: active, icon: Check },
+          { label: "Active", value: loading ? "..." : active, icon: Check },
           { label: "Avg. Open Rate", value: "64%", icon: TrendingUp },
         ].map(({ label, value, icon: Icon }, i) => (
           <motion.div
@@ -197,7 +227,7 @@ export default function AdminNewsletter() {
                 </tr>
               </thead>
               <tbody>
-                {SUBSCRIBERS.map((s, i) => (
+                {subscribers.map((s, i) => (
                   <motion.tr
                     key={s.id}
                     initial={{ opacity: 0 }}

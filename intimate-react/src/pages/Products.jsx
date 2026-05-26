@@ -1,5 +1,5 @@
 import { Building2, Check, ShoppingCart, Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DeliveryProgressBar from "../components/DeliveryProgressBar";
 import Footer from "../components/Footer";
@@ -10,6 +10,7 @@ import SEO from "../components/SEO";
 import TrustBadges from "../components/TrustBadges";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
+import { fetchProducts, subscribeToProducts } from "../lib/database";
 
 const productDefs = [
   {
@@ -56,13 +57,60 @@ const productDefs = [
   },
 ];
 
+const productLinks = {
+  "single-use-pack": "/products/1",
+  "travel-pack": "/products/2",
+  "enterprise-pack": "/products/3",
+};
+
+function productFromRow(row) {
+  return {
+    id: row.slug,
+    img: row.image_url || "/normalnew.png",
+    title: row.name,
+    desc: row.description,
+    badge: row.badge || row.category || "Product",
+    urgency: row.urgency,
+    price: Number(row.price),
+    priceLabel: `LKR ${Number(row.price).toLocaleString()}`,
+    priceNote:
+      row.price_note ||
+      `per pack · min ${row.min_order || 1} pack${row.min_order > 1 ? "s" : ""}`,
+    whatsappMsg: `Hello! I want to order the ${row.name}. Please share pricing and availability.`,
+    link: productLinks[row.slug] || "/products",
+    rating: Number(row.rating || 4.9),
+  };
+}
+
 export default function Products() {
   const { t } = useLang();
   const { add, items } = useCart();
   const [justAdded, setJustAdded] = useState(null);
+  const [products, setProducts] = useState(productDefs);
+
+  const loadProducts = () => {
+    fetchProducts({ activeOnly: true })
+      .then((rows) => {
+        if (rows.length > 0) setProducts(rows.map(productFromRow));
+      })
+      .catch(() => setProducts(productDefs));
+  };
+
+  useEffect(() => {
+    loadProducts();
+    const channel = subscribeToProducts(() => loadProducts());
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const handleAdd = (p) => {
-    add({ id: p.id, name: t[p.titleKey], price: p.price, img: p.img });
+    add({
+      id: p.id,
+      name: p.title || t[p.titleKey],
+      price: p.price,
+      img: p.img,
+    });
     setJustAdded(p.id);
     setTimeout(() => setJustAdded(null), 1800);
   };
@@ -144,33 +192,33 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {productDefs.map((p, i) => (
-            <Reveal key={p.titleKey} delay={i * 120}>
+          {products.map((p, i) => (
+            <Reveal key={p.id || p.titleKey} delay={i * 120}>
               <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group h-full flex flex-col border border-gray-100">
                 <div className="relative overflow-hidden">
                   <img
                     src={p.img}
-                    alt={t[p.titleKey]}
+                    alt={p.title || t[p.titleKey]}
                     loading="lazy"
                     className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(124,179,66,0.15),transparent_70%)] group-hover:opacity-80 opacity-0 transition-opacity duration-500" />
                   <span className="absolute top-3 right-3 bg-gradient-to-br from-[#7CB342] to-[#28a745] text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md animate-floatBadge">
-                    {t[p.badge]}
+                    {p.badge && t[p.badge] ? t[p.badge] : p.badge}
                   </span>
-                  {p.urgencyKey && (
+                  {(p.urgency || p.urgencyKey) && (
                     <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md animate-pulse">
-                      {t[p.urgencyKey]}
+                      {p.urgency || t[p.urgencyKey]}
                     </div>
                   )}
                 </div>
 
                 <div className="flex flex-col flex-1 p-6 text-center">
                   <h2 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-[#28a745] transition-colors">
-                    {t[p.titleKey]}
+                    {p.title || t[p.titleKey]}
                   </h2>
                   <p className="text-gray-500 mb-4 flex-1 text-sm leading-relaxed">
-                    {t[p.descKey]}
+                    {p.desc || t[p.descKey]}
                   </p>
 
                   <div className="flex justify-center gap-0.5 text-yellow-400 mb-3">
@@ -178,7 +226,7 @@ export default function Products() {
                       <Star key={j} className="w-4 h-4 fill-current" />
                     ))}
                     <span className="text-gray-400 text-xs ml-1 self-center">
-                      (4.9)
+                      ({p.rating || 4.9})
                     </span>
                   </div>
 

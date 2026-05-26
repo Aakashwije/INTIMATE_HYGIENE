@@ -12,7 +12,8 @@ import {
     Truck,
     X
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchOrders } from "../../lib/database";
 
 const ALL_ORDERS = [
   {
@@ -208,13 +209,57 @@ function StatusBadge({ status }) {
 }
 
 export default function AdminOrders() {
+  const [orders, setOrders] = useState(ALL_ORDERS);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const PER_PAGE = 8;
 
-  const filtered = ALL_ORDERS.filter((o) => {
+  useEffect(() => {
+    let mounted = true;
+    fetchOrders()
+      .then((rows) => {
+        if (!mounted || rows.length === 0) return;
+        setOrders(
+          rows.map((row, idx) => {
+            const firstItem = row.order_items?.[0];
+            return {
+              id: row.order_ref || `#ORD-${String(rows.length - idx).padStart(4, "0")}`,
+              customer: row.customer_name,
+              phone: row.customer_phone,
+              city: row.city || "-",
+              product: firstItem?.product_name || "Order",
+              qty:
+                row.order_items?.reduce((sum, item) => sum + item.quantity, 0) ||
+                1,
+              amount: Number(row.total),
+              status: STATUS_META[row.status] ? row.status : "processing",
+              date: new Date(row.created_at).toISOString().slice(0, 10),
+              avatar: row.customer_name
+                .split(" ")
+                .map((part) => part[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase(),
+              payMethod: row.payment_method || "WhatsApp",
+            };
+          }),
+        );
+      })
+      .catch(() => {
+        if (mounted) setOrders(ALL_ORDERS);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const filtered = orders.filter((o) => {
     const matchSearch =
       o.customer.toLowerCase().includes(search.toLowerCase()) ||
       o.id.toLowerCase().includes(search.toLowerCase());
@@ -226,10 +271,10 @@ export default function AdminOrders() {
   const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const stats = {
-    total: ALL_ORDERS.length,
-    delivered: ALL_ORDERS.filter((o) => o.status === "delivered").length,
-    processing: ALL_ORDERS.filter((o) => o.status === "processing").length,
-    revenue: ALL_ORDERS.filter((o) => o.status !== "cancelled").reduce(
+    total: orders.length,
+    delivered: orders.filter((o) => o.status === "delivered").length,
+    processing: orders.filter((o) => o.status === "processing").length,
+    revenue: orders.filter((o) => o.status !== "cancelled").reduce(
       (s, o) => s + o.amount,
       0,
     ),
@@ -247,6 +292,7 @@ export default function AdminOrders() {
           <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
           <p className="text-gray-500 text-sm mt-1">
             Manage and track all customer orders
+            {loading ? "..." : ""}
           </p>
         </div>
         <button className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-primary text-sm hover:bg-green-100 transition-all self-start">

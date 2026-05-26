@@ -37,6 +37,7 @@ export default function Product2() {
         path="/products/2"
       />
       <ProductDetailLayout
+        slug="travel-pack"
         title="Travel Pack (Waterproof)"
         subtitle="Waterproof, anti‑slip, and hygienic covers for safe use in public spaces."
         image="/travelnew.png"

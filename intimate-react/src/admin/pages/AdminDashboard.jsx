@@ -33,6 +33,13 @@ import {
     YAxis
 } from "recharts";
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import {
+    fetchInquiries,
+    fetchOrders,
+    fetchProducts,
+    fetchSubscribers,
+    subscribeToAdminData,
+} from "../../lib/database";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const revenueData = [
@@ -278,10 +285,164 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
+function monthKey(dateValue) {
+  return new Date(dateValue).toLocaleString("en-US", { month: "short" });
+}
+
+function initials(name = "") {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function buildDashboardData({ orders, products, subscribers, inquiries }) {
+  const liveOrders = orders.length > 0;
+  const revenue = orders
+    .filter((order) => order.status !== "cancelled")
+    .reduce((sum, order) => sum + Number(order.total || 0), 0);
+  const avgOrder = orders.length ? Math.round(revenue / orders.length) : 0;
+  const customers = new Set(
+    orders.map((order) => order.customer_phone || order.customer_email),
+  );
+  subscribers.forEach((subscriber) => customers.add(subscriber.email));
+  inquiries.forEach((inquiry) => customers.add(inquiry.email || inquiry.phone));
+
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const revenueByMonth = months.map((month) => ({
+    month,
+    revenue: 0,
+    orders: 0,
+    target: 200000,
+  }));
+  orders.forEach((order) => {
+    const month = monthKey(order.created_at);
+    const bucket = revenueByMonth.find((item) => item.month === month);
+    if (bucket) {
+      bucket.revenue += Number(order.total || 0);
+      bucket.orders += 1;
+    }
+  });
+
+  const statuses = ["delivered", "shipped", "processing", "cancelled"];
+  const statusCounts = statuses.map((status) => ({
+    name: status.charAt(0).toUpperCase() + status.slice(1),
+    value: orders.filter((order) => order.status === status).length,
+    fill:
+      status === "delivered"
+        ? "#28a745"
+        : status === "shipped"
+          ? "#0ea5e9"
+          : status === "processing"
+            ? "#f59e0b"
+            : "#ef4444",
+  }));
+  const statusTotal = statusCounts.reduce((sum, item) => sum + item.value, 0);
+
+  const cityCounts = orders.reduce((acc, order) => {
+    const city = order.city || "Unknown";
+    acc[city] = (acc[city] || 0) + 1;
+    return acc;
+  }, {});
+  const maxCity = Math.max(...Object.values(cityCounts), 1);
+
+  return {
+    kpis: {
+      revenue: liveOrders ? revenue : 2692000,
+      orders: liveOrders ? orders.length : 6050,
+      customers: customers.size || 3842,
+      avgOrder: liveOrders ? avgOrder : 445,
+    },
+    revenueData: liveOrders ? revenueByMonth : revenueData,
+    productSales:
+      products.length > 0
+        ? products.map((product, idx) => ({
+            name: product.name,
+            value: product.sold || 0,
+            color: ["#28a745", "#0ea5e9", "#8b5cf6", "#f59e0b"][idx % 4],
+          }))
+        : productSales,
+    statusData:
+      statusTotal > 0
+        ? statusCounts.map((item) => ({
+            ...item,
+            value: Math.round((item.value / statusTotal) * 100),
+          }))
+        : statusData,
+    recentOrders:
+      liveOrders
+        ? orders.slice(0, 6).map((order) => ({
+            id: order.order_ref || order.id,
+            customer: order.customer_name,
+            product:
+              order.order_items?.map((item) => `${item.product_name} x ${item.quantity}`).join(", ") ||
+              "Order",
+            amount: `LKR ${Number(order.total || 0).toLocaleString()}`,
+            status: ["delivered", "shipped", "processing", "cancelled"].includes(order.status)
+              ? order.status
+              : "processing",
+            time: new Date(order.created_at).toLocaleDateString("en-LK"),
+            avatar: initials(order.customer_name),
+          }))
+        : recentOrders,
+    topCities:
+      liveOrders
+        ? Object.entries(cityCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 6)
+            .map(([city, count]) => ({
+              city,
+              orders: count,
+              pct: Math.round((count / maxCity) * 100),
+            }))
+        : topCities,
+  };
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { admin } = useAdminAuth();
   const [timeRange, setTimeRange] = useState("12m");
+  const [dashboard, setDashboard] = useState(() =>
+    buildDashboardData({
+      orders: [],
+      products: [],
+      subscribers: [],
+      inquiries: [],
+    }),
+  );
+
+  const loadDashboard = () => {
+    Promise.all([
+      fetchOrders(),
+      fetchProducts(),
+      fetchSubscribers(),
+      fetchInquiries(),
+    ])
+      .then(([orders, products, subscribers, inquiries]) => {
+        setDashboard(buildDashboardData({ orders, products, subscribers, inquiries }));
+      })
+      .catch(() => {
+        setDashboard(
+          buildDashboardData({
+            orders: [],
+            products: [],
+            subscribers: [],
+            inquiries: [],
+          }),
+        );
+      });
+  };
+
+  useEffect(() => {
+    loadDashboard();
+    const channel = subscribeToAdminData(() => loadDashboard());
+    return () => {
+      channel.unsubscribe();
+    };
+  }, []);
 
   const now = new Date();
   const timeStr = now.toLocaleString("en-LK", {
@@ -332,7 +493,7 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <KpiCard
           title="Total Revenue"
-          value={2692000}
+          value={dashboard.kpis.revenue}
           prefix="LKR "
           change={18.4}
           changeLabel="vs last year"
@@ -342,7 +503,7 @@ export default function AdminDashboard() {
         />
         <KpiCard
           title="Total Orders"
-          value={6050}
+          value={dashboard.kpis.orders}
           suffix=""
           change={12.7}
           changeLabel="vs last year"
@@ -352,7 +513,7 @@ export default function AdminDashboard() {
         />
         <KpiCard
           title="Customers"
-          value={3842}
+          value={dashboard.kpis.customers}
           change={24.1}
           changeLabel="vs last year"
           icon={Users}
@@ -361,7 +522,7 @@ export default function AdminDashboard() {
         />
         <KpiCard
           title="Avg. Order Value"
-          value={445}
+          value={dashboard.kpis.avgOrder}
           prefix="LKR "
           change={5.3}
           changeLabel="vs last year"
@@ -455,7 +616,7 @@ export default function AdminDashboard() {
           </div>
           <ResponsiveContainer width="100%" height={260}>
             <AreaChart
-              data={revenueData}
+              data={dashboard.revenueData}
               margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
             >
               <defs>
@@ -518,7 +679,7 @@ export default function AdminDashboard() {
           <ResponsiveContainer width="100%" height={180}>
             <PieChart>
               <Pie
-                data={productSales}
+                data={dashboard.productSales}
                 cx="50%"
                 cy="50%"
                 innerRadius={55}
@@ -526,7 +687,7 @@ export default function AdminDashboard() {
                 paddingAngle={3}
                 dataKey="value"
               >
-                {productSales.map((entry, i) => (
+                {dashboard.productSales.map((entry, i) => (
                   <Cell key={i} fill={entry.color} />
                 ))}
               </Pie>
@@ -542,7 +703,7 @@ export default function AdminDashboard() {
             </PieChart>
           </ResponsiveContainer>
           <div className="space-y-2.5 mt-2">
-            {productSales.map((p) => (
+            {dashboard.productSales.map((p) => (
               <div key={p.name} className="flex items-center gap-2">
                 <div
                   className="w-2.5 h-2.5 rounded-full shrink-0"
@@ -632,7 +793,7 @@ export default function AdminDashboard() {
               cy="50%"
               innerRadius="20%"
               outerRadius="90%"
-              data={statusData}
+              data={dashboard.statusData}
               startAngle={180}
               endAngle={-180}
             >
@@ -649,7 +810,7 @@ export default function AdminDashboard() {
             </RadialBarChart>
           </ResponsiveContainer>
           <div className="grid grid-cols-2 gap-2 mt-2">
-            {statusData.map((s) => (
+            {dashboard.statusData.map((s) => (
               <div key={s.name} className="flex items-center gap-1.5">
                 <div
                   className="w-2 h-2 rounded-full shrink-0"
@@ -684,7 +845,7 @@ export default function AdminDashboard() {
             </a>
           </div>
           <div className="space-y-2">
-            {recentOrders.map((order, i) => (
+            {dashboard.recentOrders.map((order, i) => (
               <motion.div
                 key={order.id}
                 initial={{ opacity: 0, x: -10 }}
@@ -730,7 +891,7 @@ export default function AdminDashboard() {
           <h2 className="text-gray-900 font-semibold mb-1">Sales by City</h2>
           <p className="text-gray-500 text-xs mb-4">Top delivery locations</p>
           <div className="space-y-3">
-            {topCities.map((c, i) => (
+            {dashboard.topCities.map((c, i) => (
               <motion.div
                 key={c.city}
                 initial={{ opacity: 0, x: 10 }}

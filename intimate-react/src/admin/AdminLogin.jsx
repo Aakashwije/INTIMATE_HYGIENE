@@ -10,8 +10,16 @@ import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAdminAuth } from "../context/AdminAuthContext";
 
+const particles = Array.from({ length: 12 }, (_, i) => ({
+  id: i,
+  left: `${((i * 37 + 11) % 100).toFixed(0)}%`,
+  top: `${((i * 53 + 19) % 100).toFixed(0)}%`,
+  duration: 3 + (i % 5),
+  delay: (i % 4) * 0.45,
+}));
+
 export default function AdminLogin() {
-  const { login, isLoggedIn } = useAdminAuth();
+  const { login, isLoggedIn, loading: authLoading } = useAdminAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
@@ -19,14 +27,14 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [shake, setShake] = useState(false);
 
+  if (authLoading) return null;
   if (isLoggedIn) return <Navigate to="/admin/dashboard" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 600));
-    const result = login(username.trim(), password);
+    const result = await login(username.trim(), password);
     setLoading(false);
     if (!result.ok) {
       setError(result.error);
@@ -67,19 +75,19 @@ export default function AdminLogin() {
       </div>
 
       {/* Floating particles */}
-      {[...Array(12)].map((_, i) => (
+      {particles.map((particle) => (
         <motion.div
-          key={i}
+          key={particle.id}
           className="absolute w-1 h-1 rounded-full bg-green-primary/40"
           style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            left: particle.left,
+            top: particle.top,
           }}
           animate={{ y: [-10, 10, -10], opacity: [0.2, 0.6, 0.2] }}
           transition={{
-            duration: 3 + Math.random() * 4,
+            duration: particle.duration,
             repeat: Infinity,
-            delay: Math.random() * 3,
+            delay: particle.delay,
           }}
         />
       ))}

@@ -37,6 +37,7 @@ export default function Product3() {
         path="/products/3"
       />
       <ProductDetailLayout
+        slug="enterprise-pack"
         title="Enterprise Pack (Flushable)"
         subtitle="Safe, eco friendly, and water soluble covers with a <strong>free plastic dispenser included!</strong>"
         image="/interprisenew.png"
