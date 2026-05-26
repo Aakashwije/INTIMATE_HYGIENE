@@ -208,6 +208,13 @@ for select
 to authenticated
 using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
 
+drop policy if exists "Admin ui can delete orders" on public.orders;
+create policy "Admin ui can delete orders"
+on public.orders
+for delete
+to authenticated
+using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin');
+
 drop policy if exists "Admin ui can read order items" on public.order_items;
 create policy "Admin ui can read order items"
 on public.order_items

@@ -172,6 +172,17 @@ export async function fetchOrders() {
   return data;
 }
 
+export async function deleteOrder(orderId) {
+  const client = requireSupabase();
+  const { error } = await client
+    .from("orders")
+    .delete()
+    .eq("id", orderId);
+
+  if (error) throw error;
+  return orderId;
+}
+
 export async function createQuizResponse(response) {
   const client = requireSupabase();
   const { error } = await client

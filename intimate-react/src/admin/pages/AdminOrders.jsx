@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
+    AlertTriangle,
     CheckCircle,
     Clock,
     Download,
@@ -9,11 +10,12 @@ import {
     Phone,
     RotateCcw,
     Search,
+    Trash2,
     Truck,
     X
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { fetchOrders } from "../../lib/database";
+import { useCallback, useEffect, useState } from "react";
+import { deleteOrder, fetchOrders } from "../../lib/database";
 
 const ALL_ORDERS = [];
 
@@ -54,26 +56,31 @@ function StatusBadge({ status }) {
 export default function AdminOrders() {
   const [orders, setOrders] = useState(ALL_ORDERS);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState("");
+  const [deleteError, setDeleteError] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const PER_PAGE = 8;
 
-  useEffect(() => {
-    let mounted = true;
-    fetchOrders()
+  const loadOrders = useCallback((mounted = true) => {
+    return fetchOrders()
       .then((rows) => {
-        if (!mounted || rows.length === 0) return;
+        if (!mounted) return;
         setOrders(
           rows.map((row, idx) => {
             const firstItem = row.order_items?.[0];
             return {
+              dbId: row.id,
               id: row.order_ref || `#ORD-${String(rows.length - idx).padStart(4, "0")}`,
               customer: row.customer_name,
+              email: row.customer_email,
               phone: row.customer_phone,
               city: row.city || "-",
+              address: row.address || "-",
               product: firstItem?.product_name || "Order",
+              items: row.order_items || [],
               qty:
                 row.order_items?.reduce((sum, item) => sum + item.quantity, 0) ||
                 1,
@@ -97,10 +104,34 @@ export default function AdminOrders() {
       .finally(() => {
         if (mounted) setLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    loadOrders(mounted);
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadOrders]);
+
+  const handleDeleteOrder = async (order) => {
+    const ok = window.confirm(
+      `Delete order ${order.id}? This will also remove all items in this order.`,
+    );
+    if (!ok) return;
+
+    setDeletingId(order.dbId);
+    setDeleteError("");
+    try {
+      await deleteOrder(order.dbId);
+      setSelected((current) => (current?.dbId === order.dbId ? null : current));
+      await loadOrders(true);
+    } catch (err) {
+      setDeleteError(err.message || "Could not delete order. Please try again.");
+    } finally {
+      setDeletingId("");
+    }
+  };
 
   const filtered = orders.filter((o) => {
     const matchSearch =
@@ -111,7 +142,8 @@ export default function AdminOrders() {
   });
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const currentPage = totalPages ? Math.min(page, totalPages) : 1;
+  const paged = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
 
   const stats = {
     total: orders.length,
@@ -193,6 +225,13 @@ export default function AdminOrders() {
       </div>
 
       {/* Filters */}
+      {deleteError && (
+        <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{deleteError}</span>
+        </div>
+      )}
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -313,12 +352,22 @@ export default function AdminOrders() {
                     {order.date}
                   </td>
                   <td className="px-5 py-4">
-                    <button
-                      onClick={() => setSelected(order)}
-                      className="flex items-center gap-1 text-xs text-gray-500 hover:text-green-primary transition-colors opacity-0 group-hover:opacity-100 hover:bg-green-50 px-2 py-1 rounded-lg"
-                    >
-                      <Eye className="w-3.5 h-3.5" /> View
-                    </button>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => setSelected(order)}
+                        className="flex items-center gap-1 text-xs text-gray-500 hover:text-green-primary transition-colors hover:bg-green-50 px-2 py-1 rounded-lg"
+                      >
+                        <Eye className="w-3.5 h-3.5" /> View
+                      </button>
+                      <button
+                        onClick={() => handleDeleteOrder(order)}
+                        disabled={deletingId === order.dbId}
+                        className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition-colors hover:bg-red-50 px-2 py-1 rounded-lg disabled:opacity-60"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        {deletingId === order.dbId ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
                   </td>
                 </motion.tr>
               ))}
@@ -340,15 +389,15 @@ export default function AdminOrders() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-5 py-3 border-t border-gray-200">
             <span className="text-gray-500 text-xs">
-              Showing {(page - 1) * PER_PAGE + 1}–
-              {Math.min(page * PER_PAGE, filtered.length)} of {filtered.length}
+              Showing {(currentPage - 1) * PER_PAGE + 1}–
+              {Math.min(currentPage * PER_PAGE, filtered.length)} of {filtered.length}
             </span>
             <div className="flex gap-1">
               {Array.from({ length: totalPages }, (_, i) => (
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${page === i + 1 ? "bg-green-primary text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
+                  className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${currentPage === i + 1 ? "bg-green-primary text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
                 >
                   {i + 1}
                 </button>
@@ -413,6 +462,11 @@ export default function AdminOrders() {
                           <Phone className="w-3 h-3" />
                           {selected.phone}
                         </div>
+                        {selected.email && (
+                          <div className="text-gray-500 text-xs">
+                            {selected.email}
+                          </div>
+                        )}
                         <div className="text-gray-500 text-xs flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
                           {selected.city}
@@ -427,7 +481,7 @@ export default function AdminOrders() {
                     </h3>
                     <div className="flex justify-between">
                       <span className="text-gray-500 text-sm">Product</span>
-                      <span className="text-gray-900 text-sm font-medium">
+                      <span className="text-gray-900 text-sm font-medium text-right">
                         {selected.product}
                       </span>
                     </div>
@@ -469,6 +523,14 @@ export default function AdminOrders() {
                     <Phone className="w-4 h-4" />
                     Contact via WhatsApp
                   </a>
+                  <button
+                    onClick={() => handleDeleteOrder(selected)}
+                    disabled={deletingId === selected.dbId}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-red-50 border border-red-200 text-red-600 rounded-xl hover:bg-red-100 transition-all font-medium text-sm disabled:opacity-60"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {deletingId === selected.dbId ? "Deleting order..." : "Delete Order"}
+                  </button>
                 </div>
               </div>
             </motion.div>
