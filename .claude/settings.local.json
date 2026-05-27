@@ -16,7 +16,9 @@
       "Bash(node -e \"const l = require\\('lucide-react'\\); console.log\\(Object.keys\\(l\\).slice\\(0,20\\).join\\(', '\\)\\); console.log\\('Total:', Object.keys\\(l\\).length\\)\")",
       "Bash(node -e \"const l = require\\('lucide-react'\\); const icons = ['Lock','Truck','ShieldCheck','Star','Gift','Timer','PartyPopper','CheckCircle','ShoppingCart','ShoppingBag','Hotel','HeartPulse','Plane','Building2','GraduationCap','Landmark','Bug','Sparkles','ArrowLeftRight','Newspaper','Leaf','Shield','Backpack','Recycle','Check','Smartphone','MapPin','Microscope','Briefcase','Baby','X','Minus','Plus','Banknote','Package','Trophy','Clock','CreditCard','MessageCircle','Sprout','CircleCheck']; icons.forEach\\(i => console.log\\(i, l[i] ? 'OK' : 'MISSING'\\)\\)\")",
       "Bash(xargs sed -i '' -e 's|/normal\\\\.png|/normalnew.png|g' -e 's|/travel\\\\.png|/travelnew.png|g' -e 's|/interprise\\\\.png|/interprisenew.png|g')",
-      "Bash(/plugin marketplace *)"
+      "Bash(/plugin marketplace *)",
+      "Bash(npx eslint *)",
+      "Bash(npx vite *)"
     ],
     "additionalDirectories": [
       "/Users/aakash/Documents/GitHub/INTIMATE_HYGIENE/intimate-react/src"

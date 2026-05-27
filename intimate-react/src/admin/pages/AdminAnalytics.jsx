@@ -20,6 +20,7 @@ import {
     YAxis
 } from "recharts";
 import { fetchOrders, fetchSiteEvents } from "../../lib/database";
+import { exportAnalytics } from "../../lib/adminExport";
 
 const monthlyData = [];
 
@@ -157,7 +158,18 @@ export default function AdminAnalytics() {
             Deep-dive performance metrics for Hygenc Covers
           </p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-primary text-sm hover:bg-green-100 transition-all">
+        <button
+          onClick={() =>
+            exportAnalytics({
+              monthly: data,
+              channels,
+              metricLabel: m.label,
+            })
+          }
+          disabled={data.every((row) => !row.revenue && !row.orders)}
+          className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-green-primary to-green-dark border border-green-primary/30 rounded-xl text-white text-sm font-semibold shadow-lg shadow-green-primary/20 hover:shadow-green-primary/40 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:hover:scale-100"
+          title="Download CSV and open a styled report"
+        >
           <Download className="w-4 h-4" />
           Export Report
         </button>

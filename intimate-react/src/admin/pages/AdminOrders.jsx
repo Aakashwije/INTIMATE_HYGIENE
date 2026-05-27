@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { deleteOrder, fetchOrders } from "../../lib/database";
+import { exportOrders } from "../../lib/adminExport";
 
 const ALL_ORDERS = [];
 
@@ -184,7 +185,12 @@ export default function AdminOrders() {
             {loading ? "..." : ""}
           </p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-xl text-green-primary text-sm hover:bg-green-100 transition-all self-start">
+        <button
+          onClick={() => exportOrders(filtered.length ? filtered : orders)}
+          disabled={loading || orders.length === 0}
+          className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-green-primary to-green-dark border border-green-primary/30 rounded-xl text-white text-sm font-semibold shadow-lg shadow-green-primary/20 hover:shadow-green-primary/40 hover:scale-[1.02] transition-all self-start disabled:opacity-50 disabled:hover:scale-100"
+          title="Download CSV and open a styled report"
+        >
           <Download className="w-4 h-4" />
           Export CSV
         </button>

@@ -41,6 +41,30 @@ import {
     fetchSubscribers,
     subscribeToAdminData,
 } from "../../lib/database";
+import { exportOrders } from "../../lib/adminExport";
+
+const STATUS_KEYS = ["delivered", "shipped", "processing", "cancelled"];
+
+function toExportOrder(row, idx, total) {
+  const firstItem = row.order_items?.[0];
+  return {
+    dbId: row.id,
+    id: row.order_ref || `#ORD-${String(total - idx).padStart(4, "0")}`,
+    customer: row.customer_name || "",
+    email: row.customer_email || "",
+    phone: row.customer_phone || "",
+    city: row.city || "",
+    address: row.address || "",
+    product: firstItem?.product_name || "Order",
+    items: row.order_items || [],
+    qty:
+      row.order_items?.reduce((sum, item) => sum + item.quantity, 0) || 1,
+    amount: Number(row.total || 0),
+    status: STATUS_KEYS.includes(row.status) ? row.status : "processing",
+    date: new Date(row.created_at).toISOString().slice(0, 10),
+    payMethod: row.payment_method || "WhatsApp",
+  };
+}
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 const revenueData = [
@@ -350,6 +374,7 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
 export default function AdminDashboard() {
   const { admin } = useAdminAuth();
   const [timeRange, setTimeRange] = useState("12m");
+  const [rawOrders, setRawOrders] = useState([]);
   const [dashboard, setDashboard] = useState(() =>
     buildDashboardData({
       orders: [],
@@ -369,6 +394,7 @@ export default function AdminDashboard() {
       fetchSiteEvents(),
     ])
       .then(([orders, products, subscribers, inquiries, events]) => {
+        setRawOrders(orders);
         setDashboard(buildDashboardData({ orders, products, subscribers, inquiries, events }));
       })
       .catch(() => {
@@ -908,18 +934,42 @@ export default function AdminDashboard() {
               {[
                 { label: "Add Product", href: "/admin/products" },
                 { label: "View Orders", href: "/admin/orders" },
-                { label: "Export CSV", href: "#" },
+                {
+                  label: "Export CSV",
+                  onClick: () => {
+                    const total = rawOrders.length;
+                    if (!total) return;
+                    exportOrders(
+                      rawOrders.map((row, i) => toExportOrder(row, i, total)),
+                    );
+                  },
+                  disabled: rawOrders.length === 0,
+                },
                 { label: "Send Newsletter", href: "/admin/newsletter" },
-              ].map(({ label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  className="flex items-center justify-center gap-1 px-2 py-2 bg-gray-50 hover:bg-gray-200/80 border border-gray-200 rounded-xl text-gray-700 hover:text-gray-900 text-xs font-medium transition-all"
-                >
-                  <Zap className="w-3 h-3 text-green-primary" />
-                  {label}
-                </a>
-              ))}
+              ].map(({ label, href, onClick, disabled }) => {
+                const className =
+                  "flex items-center justify-center gap-1 px-2 py-2 bg-gray-50 hover:bg-gray-200/80 border border-gray-200 rounded-xl text-gray-700 hover:text-gray-900 text-xs font-medium transition-all disabled:opacity-50 disabled:hover:bg-gray-50";
+                if (onClick) {
+                  return (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={onClick}
+                      disabled={disabled}
+                      className={className}
+                    >
+                      <Zap className="w-3 h-3 text-green-primary" />
+                      {label}
+                    </button>
+                  );
+                }
+                return (
+                  <a key={label} href={href} className={className}>
+                    <Zap className="w-3 h-3 text-green-primary" />
+                    {label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </motion.div>
