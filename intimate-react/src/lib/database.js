@@ -174,21 +174,12 @@ export async function fetchOrders() {
 
 export async function deleteOrder(orderId) {
   const client = requireSupabase();
-  const { error: itemsError } = await client
-    .from("order_items")
-    .delete()
-    .eq("order_id", orderId);
-
-  if (itemsError) throw itemsError;
-
-  const { data, error } = await client
-    .from("orders")
-    .delete()
-    .eq("id", orderId)
-    .select("id");
+  const { data, error } = await client.rpc("delete_order_admin", {
+    target_order_id: orderId,
+  });
 
   if (error) throw error;
-  if (!data?.length) {
+  if (data !== true) {
     throw new Error("Order was not deleted. Please check admin permissions.");
   }
   return orderId;
