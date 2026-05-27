@@ -58,6 +58,7 @@ export default function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState("");
   const [deleteError, setDeleteError] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState(null);
@@ -114,23 +115,36 @@ export default function AdminOrders() {
     };
   }, [loadOrders]);
 
-  const handleDeleteOrder = async (order) => {
-    const ok = window.confirm(
-      `Delete order ${order.id}? This will also remove all items in this order.`,
-    );
-    if (!ok) return;
+  const requestDeleteOrder = (order) => {
+    setDeleteError("");
+    setDeleteTarget(order);
+  };
 
-    setDeletingId(order.dbId);
+  const confirmDeleteOrder = async () => {
+    if (!deleteTarget) return;
+
+    setDeletingId(deleteTarget.dbId);
     setDeleteError("");
     try {
-      await deleteOrder(order.dbId);
-      setSelected((current) => (current?.dbId === order.dbId ? null : current));
+      await deleteOrder(deleteTarget.dbId);
+      setOrders((current) =>
+        current.filter((order) => order.dbId !== deleteTarget.dbId),
+      );
+      setSelected((current) =>
+        current?.dbId === deleteTarget.dbId ? null : current,
+      );
+      setDeleteTarget(null);
       await loadOrders(true);
     } catch (err) {
       setDeleteError(err.message || "Could not delete order. Please try again.");
     } finally {
       setDeletingId("");
     }
+  };
+
+  const closeDeleteDialog = () => {
+    if (deletingId) return;
+    setDeleteTarget(null);
   };
 
   const filtered = orders.filter((o) => {
@@ -360,7 +374,7 @@ export default function AdminOrders() {
                         <Eye className="w-3.5 h-3.5" /> View
                       </button>
                       <button
-                        onClick={() => handleDeleteOrder(order)}
+                        onClick={() => requestDeleteOrder(order)}
                         disabled={deletingId === order.dbId}
                         className="flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition-colors hover:bg-red-50 px-2 py-1 rounded-lg disabled:opacity-60"
                       >
@@ -524,7 +538,7 @@ export default function AdminOrders() {
                     Contact via WhatsApp
                   </a>
                   <button
-                    onClick={() => handleDeleteOrder(selected)}
+                    onClick={() => requestDeleteOrder(selected)}
                     disabled={deletingId === selected.dbId}
                     className="flex items-center justify-center gap-2 w-full py-3 bg-red-50 border border-red-200 text-red-600 rounded-xl hover:bg-red-100 transition-all font-medium text-sm disabled:opacity-60"
                   >
@@ -532,6 +546,93 @@ export default function AdminOrders() {
                     {deletingId === selected.dbId ? "Deleting order..." : "Delete Order"}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {deleteTarget && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeDeleteDialog}
+              className="fixed inset-0 bg-black/50 z-[70] backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.18 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="delete-order-title"
+              className="fixed left-1/2 top-1/2 z-[80] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                  <Trash2 className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <h2
+                    id="delete-order-title"
+                    className="text-lg font-bold text-gray-900"
+                  >
+                    Delete order?
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                    This will permanently remove order{" "}
+                    <span className="font-semibold text-gray-900">
+                      {deleteTarget.id}
+                    </span>{" "}
+                    and all items in it from the database.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-xl bg-gray-50 p-4 text-sm">
+                <div className="flex justify-between gap-4">
+                  <span className="text-gray-500">Customer</span>
+                  <span className="font-semibold text-gray-900 text-right">
+                    {deleteTarget.customer}
+                  </span>
+                </div>
+                <div className="mt-2 flex justify-between gap-4">
+                  <span className="text-gray-500">Total</span>
+                  <span className="font-semibold text-gray-900">
+                    LKR {deleteTarget.amount.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              {deleteError && (
+                <div className="mt-4 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>{deleteError}</span>
+                </div>
+              )}
+
+              <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={closeDeleteDialog}
+                  disabled={!!deletingId}
+                  className="rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDeleteOrder}
+                  disabled={deletingId === deleteTarget.dbId}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  {deletingId === deleteTarget.dbId ? "Deleting..." : "Delete order"}
+                </button>
               </div>
             </motion.div>
           </>
