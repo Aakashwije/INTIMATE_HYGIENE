@@ -96,10 +96,18 @@ export default function Footer() {
       {/* Footer Bottom */}
       <div className="border-t border-gray-600 mt-8 pt-4 flex flex-col items-center text-center text-sm text-gray-400 gap-1">
         <p>&copy; 2025 Intimate Hygiene. {t.footerRights}</p>
-        <div>
-          <a href="#" className="text-gray-400 hover:text-[#28a745] mx-2">Privacy Policy</a>
-          |
-          <a href="#" className="text-gray-400 hover:text-[#28a745] mx-2">Terms of Service</a>
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+          <Link to="/refund-policy" className="text-gray-400 hover:text-[#28a745]">
+            Refund Policy
+          </Link>
+          <span>|</span>
+          <Link to="/privacy-policy" className="text-gray-400 hover:text-[#28a745]">
+            Privacy Policy
+          </Link>
+          <span>|</span>
+          <Link to="/terms-and-conditions" className="text-gray-400 hover:text-[#28a745]">
+            Terms & Conditions
+          </Link>
         </div>
       </div>
     </footer>

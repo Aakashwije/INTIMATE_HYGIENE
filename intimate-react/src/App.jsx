@@ -30,6 +30,7 @@ import Delivery from "./pages/Delivery";
 import FAQ from "./pages/FAQ";
 import Home from "./pages/Home";
 import OrderTemplate from "./pages/OrderTemplate";
+import { PrivacyPolicy, RefundPolicy, TermsAndConditions } from "./pages/PolicyPages";
 import Product1 from "./pages/Product1";
 import Product2 from "./pages/Product2";
 import Product3 from "./pages/Product3";
@@ -65,6 +66,9 @@ function CustomerApp() {
         <Route path="/b2b" element={<B2B />} />
         <Route path="/referral" element={<Referral />} />
         <Route path="/delivery" element={<Delivery />} />
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
         <Route path="/order" element={<OrderTemplate />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="*" element={<Navigate to="/splash" replace />} />
