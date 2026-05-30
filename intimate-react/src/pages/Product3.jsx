@@ -1,127 +1,58 @@
 import ProductDetailLayout from "../components/ProductDetailLayout";
 import SEO from "../components/SEO";
+import {
+  enterpriseReviews as reviews,
+  enterpriseSections as sections,
+} from "../data/productContent";
 
-const reviews = [
+const addOnReferenceSections = sections.slice(2).map((section) => ({
+  ...section,
+  items: section.items?.filter(
+    (item) => !item.toLowerCase().includes("free dispenser"),
+  ),
+  text: section.text?.replace(
+    " Each pack comes with a free plastic dispenser that makes usage and storage convenient.",
+    "",
+  ),
+}));
+
+const addOnSections = [
   {
-    author: "Roshan M.",
-    location: "Hotel Operator, Colombo",
-    rating: 5,
-    comment:
-      "We've installed these in all 45 rooms. Guest satisfaction scores improved noticeably. The free dispenser is a great touch.",
-    avatar: "RM",
+    heading: "Add-On Details",
+    items: [
+      "Extra flushable enterprise pack",
+      "Designed to top up the Enterprise 10-Pack dispenser offer",
+      "Water-soluble and easy to dispose",
+      "Ideal for offices, hotels, clinics, and high-traffic restrooms",
+    ],
   },
   {
-    author: "Dr. Lakmali W.",
-    location: "Private Clinic, Kandy",
-    rating: 5,
-    comment:
-      "As a healthcare provider, hygiene is everything. These covers are exactly what we needed for our patient bathrooms. Flushable makes cleanup effortless.",
-    avatar: "LW",
+    heading: "Why Add More?",
+    text: "Use these add-on packs when your restroom needs more stock beyond the Enterprise 10-Pack offer. The free dispenser and printed instructions are included with the 10-pack bundle.",
   },
-  {
-    author: "Suresh B.",
-    location: "Corporate Office, Colombo 2",
-    rating: 5,
-    comment:
-      "Ordered 500 packs for our office. Pricing was excellent, delivery was on time, and the team loved having them. Reordering soon.",
-    avatar: "SB",
-  },
+  ...addOnReferenceSections,
 ];
 
 export default function Product3() {
   return (
     <>
       <SEO
-        title="Enterprise Pack (Flushable) – LKR 750"
-        description="Flushable paper toilet seat covers with free dispenser. Bulk B2B orders for hotels, hospitals & offices in Sri Lanka. Minimum 100 packs."
+        title="Enterprise Add-On Pack – LKR 950"
+        description="Add extra flushable enterprise toilet seat cover packs for LKR 950 each when you need more than the 10-pack offer."
         path="/products/3"
       />
       <ProductDetailLayout
         slug="enterprise-pack"
-        title="Enterprise Pack (Flushable)"
-        subtitle="Safe, eco friendly, and water soluble covers with a <strong>free plastic dispenser included!</strong>"
+        title="Enterprise Add-On Pack"
+        subtitle="Extra flushable enterprise packs for offices, hotels, and businesses that need more than the 10-pack offer."
         image="/interprisenew.png"
         imageAlt="Flushable Paper Toilet Seat Covers"
-        highlight="★ Comes with a FREE plastic dispenser with instructions"
-        price="LKR 750"
-        priceNote="per pack · bulk rate · minimum order 100 packs"
-        whatsappMsg="Hello! I want to enquire about the Enterprise Pack bulk pricing. Please share details and availability."
+        highlight="★ Add-on packs pair with the Enterprise 10-Pack dispenser offer"
+        price="LKR 950"
+        priceNote="Extra enterprise pack"
+        whatsappMsg="Hello! I want to add Enterprise packs at LKR 950 each. Please share availability and delivery details."
         reviews={reviews}
-        sections={[
-          {
-            heading: "Features",
-            items: [
-              "Biodegradable, water-soluble, and eco-friendly",
-              "Pocket-size compact travel packs",
-              "Safe for all skin types, including pregnant women",
-              "Prevents cross-contamination and germs",
-              "Comes with a free plastic dispenser with instructions",
-            ],
-            highlightItem: 4,
-          },
-          {
-            heading: "Why Choose This?",
-            text: "Our flushable toilet seat covers are made of 100% natural virgin wood pulp. They dissolve quickly in water, preventing drain blockages, while providing a hygienic barrier between you and the toilet seat. Each pack comes with a free plastic dispenser that makes usage and storage convenient.",
-          },
-          {
-            heading: "Quick Details",
-            items: [
-              "Place of Origin: Henan, China (Mainland)",
-              "Brand Name: Hygiene +",
-              "Model Number: INE-003",
-              "Feature: Disposable, Eco-Friendly, Flushable",
-            ],
-          },
-          {
-            heading: "Packaging & Delivery",
-            items: [
-              "Packaging: 200 pcs/pack, carton box (25 × packs)",
-              "Delivery: On time",
-            ],
-          },
-          {
-            heading: "Specifications",
-            items: [
-              "Fold: 1/4 fold",
-              "Material: 100% natural & original wood / Virgin pulp",
-              "Thickness: 14–15 gsm",
-              "Size: 430×355 mm",
-              "Color: White",
-            ],
-            text: "Reduces risk of skin or other diseases from public toilets. Pocket-size packs are easy to carry and dispose.",
-          },
-          {
-            heading: "Benefits",
-            items: [
-              "Made of 100% virgin pulp: flexible, safe, and clean",
-              "Prevents direct contact with toilet seats",
-              "Anti-bacterial, great for pregnant women",
-              "Water-soluble, flushable without clogging drains",
-              "Free dispenser included for easy storage and usage",
-            ],
-          },
-          {
-            heading: "Application",
-            items: [
-              "Good protection for skin to avoid bacteria",
-              "Used in offices, gyms, pubs, restaurants, schools, clinics, hospitals, and other public areas",
-            ],
-          },
-          {
-            heading: "Usage Instructions",
-            items: [
-              "Tear the center while keeping one point connected",
-              "Pull the paper seat cover from the dispenser",
-              "Place the paper seat cover on the toilet; the center will drop automatically to prevent water spray",
-              "Sit on the paper seat cover",
-              "Flush after use; it dissolves in water without blocking drains",
-            ],
-          },
-          {
-            heading: "Storage",
-            text: "Keep away from moisture to maintain product quality.",
-          },
-        ]}
+        sections={addOnSections}
       />
     </>
   );

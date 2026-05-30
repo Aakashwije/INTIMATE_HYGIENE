@@ -1,5 +1,5 @@
 import { Building2, Check, ShoppingCart, Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import DeliveryProgressBar from "../components/DeliveryProgressBar";
 import Footer from "../components/Footer";
@@ -10,103 +10,39 @@ import SEO from "../components/SEO";
 import TrustBadges from "../components/TrustBadges";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
-import {
-  fetchProducts,
-  subscribeToProducts,
-  trackSiteEvent,
-} from "../lib/database";
+import { addOnProducts, bundleProducts, formatLkr } from "../data/catalog";
+import { trackSiteEvent } from "../lib/database";
 
-const productDefs = [
-  {
-    id: "single",
-    img: "/normalnew.png",
-    titleKey: "singleUse",
-    descKey: "singleUseDesc",
-    badge: "singleUseLabel",
-    urgencyKey: "lowStock",
-    price: 150,
-    priceLabel: "LKR 150",
-    priceNote: "per pack · min 10 packs",
-    whatsappMsg:
-      "Hello! I want to order the Single Use Pack. Please share pricing and availability.",
-    link: "/products/1",
-  },
-  {
-    id: "travel",
-    img: "/travelnew.png",
-    titleKey: "travelPack",
-    descKey: "travelPackDesc",
-    badge: "budgetFriendly",
-    urgencyKey: "sellingFast",
-    price: 300,
-    priceLabel: "LKR 300",
-    priceNote: "per 10-pack · min 5 packs",
-    whatsappMsg:
-      "Hello! I want to order the Travel Pack (Waterproof). Please share pricing and availability.",
-    link: "/products/2",
-  },
-  {
-    id: "enterprise",
-    img: "/interprisenew.png",
-    titleKey: "enterprise",
-    descKey: "enterpriseDesc",
-    badge: "bestSeller",
-    urgencyKey: null,
-    price: 120,
-    priceLabel: "LKR 120",
-    priceNote: "per pack · bulk rate · min 100 packs",
-    whatsappMsg:
-      "Hello! I want to enquire about the Enterprise Pack bulk pricing. Please share details.",
-    link: "/products/3",
-  },
-];
-
-const productLinks = {
-  "single-use-pack": "/products/1",
-  "travel-pack": "/products/2",
-  "enterprise-pack": "/products/3",
-};
-
-function productFromRow(row) {
+function productCardFromCatalog(product, rating = 4.9) {
   return {
-    id: row.slug,
-    img: row.image_url || "/normalnew.png",
-    title: row.name,
-    desc: row.description,
-    badge: row.badge || row.category || "Product",
-    urgency: row.urgency,
-    price: Number(row.price),
-    priceLabel: `LKR ${Number(row.price).toLocaleString()}`,
-    priceNote:
-      row.price_note ||
-      `per pack · min ${row.min_order || 1} pack${row.min_order > 1 ? "s" : ""}`,
-    whatsappMsg: `Hello! I want to order the ${row.name}. Please share pricing and availability.`,
-    link: productLinks[row.slug] || "/products",
-    rating: Number(row.rating || 4.9),
+    id: product.slug,
+    slug: product.slug,
+    img: product.image,
+    title: product.name,
+    desc: product.description,
+    badge: product.badge,
+    urgency: product.urgency,
+    price: product.price,
+    priceLabel: formatLkr(product.price),
+    priceNote: product.priceNote,
+    rating,
+    whatsappMsg: product.whatsappMsg,
+    link: product.link,
   };
 }
+
+const bundleCards = bundleProducts.map((product, index) =>
+  productCardFromCatalog(product, [4.9, 4.8, 4.9][index]),
+);
+
+const addOnCards = addOnProducts.map((product, index) =>
+  productCardFromCatalog(product, [4.9, 4.8, 4.9][index]),
+);
 
 export default function Products() {
   const { t } = useLang();
   const { add, items } = useCart();
   const [justAdded, setJustAdded] = useState(null);
-  const [products, setProducts] = useState(productDefs);
-
-  const loadProducts = () => {
-    fetchProducts({ activeOnly: true })
-      .then((rows) => {
-        if (rows.length > 0) setProducts(rows.map(productFromRow));
-      })
-      .catch(() => setProducts(productDefs));
-  };
-
-  useEffect(() => {
-    loadProducts();
-    const channel = subscribeToProducts(() => loadProducts());
-    return () => {
-      channel.unsubscribe();
-    };
-  }, []);
 
   const handleAdd = (p) => {
     add({
@@ -130,7 +66,7 @@ export default function Products() {
     <>
       <SEO
         title="Shop All Products"
-        description="Browse our full range of eco-friendly disposable toilet seat covers. Single Use (LKR 250), Travel Pack (LKR 350), Enterprise Pack (LKR 750). Free delivery available."
+        description="Browse bundle packs and add-ons: Non-Waterproof 5-Pack (LKR 1,099), Waterproof 5-Pack (LKR 1,499), and Enterprise 10-Pack with free dispenser (LKR 8,700)."
         path="/products"
       />
       <Navbar />
@@ -201,7 +137,7 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {products.map((p, i) => (
+          {bundleCards.map((p, i) => (
             <Reveal key={p.id || p.titleKey} delay={i * 120}>
               <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group h-full flex flex-col border border-gray-100">
                 <div className="relative overflow-hidden">
@@ -298,6 +234,56 @@ export default function Products() {
                       {t.viewDetails}
                     </Link>
                   </div>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal>
+          <div className="mt-14 mb-6 text-center">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              Need extra packs?
+            </h3>
+            <p className="text-gray-500 text-sm">
+              Add these only when you need more than the bundle quantity.
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {addOnCards.map((p, i) => (
+            <Reveal key={p.id} delay={i * 90}>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col h-full">
+                <div className="flex items-center gap-4 text-left">
+                  <img
+                    src={p.img}
+                    alt={p.title}
+                    loading="lazy"
+                    className="w-20 h-20 object-cover rounded-lg bg-gray-50 shrink-0"
+                  />
+                  <div>
+                    <span className="inline-block bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">
+                      Add-On
+                    </span>
+                    <h4 className="font-bold text-gray-800 leading-tight">
+                      {p.title}
+                    </h4>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {p.priceNote}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  <span className="text-2xl font-bold text-[#28a745]">
+                    {p.priceLabel}
+                  </span>
+                  <button
+                    onClick={() => handleAdd(p)}
+                    className="px-4 py-2 bg-[#28a745] text-white font-bold rounded-lg hover:bg-[#1e8c38] transition-colors text-xs"
+                  >
+                    {justAdded === p.id ? "Added" : "Add"}
+                  </button>
                 </div>
               </div>
             </Reveal>

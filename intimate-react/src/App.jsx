@@ -34,6 +34,9 @@ import { PrivacyPolicy, RefundPolicy, TermsAndConditions } from "./pages/PolicyP
 import Product1 from "./pages/Product1";
 import Product2 from "./pages/Product2";
 import Product3 from "./pages/Product3";
+import Product4 from "./pages/Product4";
+import Product5 from "./pages/Product5";
+import Product6 from "./pages/Product6";
 import Products from "./pages/Products";
 import Quiz from "./pages/Quiz";
 import Referral from "./pages/Referral";
@@ -58,6 +61,9 @@ function CustomerApp() {
         <Route path="/products/1" element={<Product1 />} />
         <Route path="/products/2" element={<Product2 />} />
         <Route path="/products/3" element={<Product3 />} />
+        <Route path="/products/4" element={<Product4 />} />
+        <Route path="/products/5" element={<Product5 />} />
+        <Route path="/products/6" element={<Product6 />} />
         <Route path="/compare" element={<Compare />} />
         <Route path="/benefits" element={<Benefits />} />
         <Route path="/faq" element={<FAQ />} />

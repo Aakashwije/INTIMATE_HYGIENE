@@ -15,26 +15,60 @@ import {
     subscribeToProducts,
     updateProduct,
 } from "../../lib/database";
+import {
+    findCatalogProduct,
+    shopProducts,
+    sortProductsByCatalogOrder,
+} from "../../data/catalog";
 
-const INITIAL_PRODUCTS = [];
+function productFromCatalog(product) {
+  return {
+    id: product.slug,
+    name: product.name,
+    slug: product.slug,
+    sku: product.slug.toUpperCase(),
+    price: product.price,
+    cost: product.cost,
+    stock: 0,
+    sold: 0,
+    rating: 4.9,
+    reviews: 0,
+    status: "active",
+    image: product.image,
+    minOrder: 1,
+    description: product.description,
+    priceNote: product.priceNote,
+    category: product.badge === "Add-On" ? "Add-On" : "Bundle",
+    active: true,
+  };
+}
+
+const INITIAL_PRODUCTS = shopProducts.map(productFromCatalog);
 
 function productFromRow(row) {
+  const catalogProduct = findCatalogProduct(row.slug);
   return {
     id: row.id,
-    name: row.name,
+    name: catalogProduct?.name || row.name,
     slug: row.slug,
     sku: row.sku || "-",
-    price: Number(row.price),
-    cost: Number(row.cost || 0),
+    price: catalogProduct?.price ?? Number(row.price),
+    cost: catalogProduct?.cost ?? Number(row.cost || 0),
     stock: row.stock || 0,
     sold: row.sold || 0,
     rating: Number(row.rating || 4.9),
     reviews: row.reviews || 0,
     status: row.active ? (row.stock < 100 ? "low_stock" : "active") : "inactive",
-    image: row.image_url || "/normalnew.png",
+    image: catalogProduct?.image || row.image_url || "/normalnew.png",
     minOrder: row.min_order || 1,
-    description: row.description || "",
-    category: row.category || "Retail",
+    description: catalogProduct?.description || row.description || "",
+    priceNote: catalogProduct?.priceNote || row.price_note || "",
+    category:
+      catalogProduct?.badge === "Add-On"
+        ? "Add-On"
+        : catalogProduct
+          ? "Bundle"
+          : row.category || "Retail",
     active: row.active,
   };
 }
@@ -66,9 +100,26 @@ export default function AdminProducts() {
   const loadProducts = () => {
     fetchProducts()
       .then((rows) => {
-        if (rows.length > 0) setProducts(rows.map(productFromRow));
+        if (rows.length > 0) {
+          const productsFromDb = rows.map(productFromRow);
+          const existingSlugs = new Set(productsFromDb.map((p) => p.slug));
+          const missingCatalogProducts = INITIAL_PRODUCTS.filter(
+            (p) => !existingSlugs.has(p.slug),
+          );
+          setProducts(
+            sortProductsByCatalogOrder([
+              ...productsFromDb,
+              ...missingCatalogProducts,
+            ]),
+          );
+        } else {
+          setProducts(INITIAL_PRODUCTS);
+        }
       })
-      .catch((err) => setError(err.message || "Could not load products."))
+      .catch((err) => {
+        setProducts(INITIAL_PRODUCTS);
+        setError(err.message || "Could not load products.");
+      })
       .finally(() => setLoading(false));
   };
 
@@ -95,6 +146,7 @@ export default function AdminProducts() {
         cost: Number(form.cost),
         stock: Number(form.stock),
         min_order: Number(form.minOrder),
+        price_note: form.priceNote,
         active: form.status !== "inactive",
       });
       setProducts((prev) =>
@@ -245,6 +297,11 @@ export default function AdminProducts() {
                     <div className="text-gray-400 text-xs">
                       Cost: LKR {p.cost.toLocaleString()}
                     </div>
+                    {p.priceNote && (
+                      <div className="text-gray-500 text-xs mt-0.5">
+                        {p.priceNote}
+                      </div>
+                    )}
                   </div>
                   <div className="text-right">
                     <div className="text-gray-900 font-semibold">{margin}%</div>
@@ -342,6 +399,7 @@ export default function AdminProducts() {
                     { label: "Cost (LKR)", key: "cost", type: "number" },
                     { label: "Stock (units)", key: "stock", type: "number" },
                     { label: "Min Order Qty", key: "minOrder", type: "number" },
+                    { label: "Price Note", key: "priceNote", type: "text" },
                   ].map(({ label, key, type }) => (
                     <div key={key}>
                       <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">

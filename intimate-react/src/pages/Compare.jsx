@@ -4,60 +4,41 @@ import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import { useLang } from "../context/LangContext";
+import { bundleProducts, formatLkr } from "../data/catalog";
 
-const productDefs = [
-  {
-    nameKey: "singleUse",
-    img: "/normalnew.png",
-    price: "LKR 250",
-    priceNote: "per pack",
-    link: "/products/1",
-    whatsapp:
-      "Hello! I want to order the Single Use Pack. Please share availability.",
-  },
-  {
-    nameKey: "travelPack",
-    img: "/travelnew.png",
-    price: "LKR 350",
-    priceNote: "per 10-pack",
-    link: "/products/2",
-    whatsapp:
-      "Hello! I want to order the Travel Pack. Please share availability.",
-  },
-  {
-    nameKey: "enterprise",
-    img: "/interprisenew.png",
-    price: "LKR 750",
-    priceNote: "per pack (bulk)",
-    link: "/products/3",
-    whatsapp: "Hello! I want to enquire about Enterprise Pack bulk pricing.",
-  },
-];
+const productDefs = bundleProducts.map((product) => ({
+  name: product.name,
+  img: product.image,
+  price: formatLkr(product.price),
+  priceNote: product.priceNote,
+  link: product.link,
+  whatsapp: product.whatsappMsg,
+}));
 
 const rows = [
   {
     label: "Price",
-    values: ["LKR 150 / pack", "LKR 300 / 10-pack", "LKR 120 / pack"],
-    best: 2,
+    values: ["LKR 1,099", "LKR 1,499", "LKR 8,700"],
+    best: null,
   },
+  { label: "Bundle Size", values: ["5 packs", "5 packs", "10 packs"], best: 2 },
   {
-    label: "Minimum Order",
-    values: ["10 packs", "5 packs", "100 packs"],
+    label: "Extra Add-On Price",
+    values: ["LKR 250", "LKR 350", "LKR 950"],
     best: null,
   },
   { label: "Waterproof Layer", values: ["✗", "✔", "✗"], best: 1 },
-  { label: "Anti-Slip Grip", values: ["✗", "✔", "✔"], best: null },
-  { label: "Flushable / Dissolvable", values: ["✗", "✗", "✔"], best: 2 },
+  { label: "Anti-Slip Grip", values: ["✗", "✔", "✗"], best: 1 },
+  { label: "Flushable / Dissolvable", values: ["✔", "✗", "✔"], best: null },
   { label: "Free Dispenser", values: ["✗", "✗", "✔"], best: 2 },
+  { label: "Instructions Included", values: ["✗", "✗", "✔"], best: 2 },
   { label: "Eco-Friendly Material", values: ["✔", "✔", "✔"], best: null },
   { label: "Anti-Bacterial Coating", values: ["✔", "✔", "✔"], best: null },
-  { label: "Compact / Pocket Size", values: ["✔", "✔", "✗"], best: null },
   {
     label: "Best For",
-    values: ["Daily commuters", "Travelers", "Hotels & offices"],
+    values: ["Daily use", "Travelers", "Hotels & offices"],
     best: null,
   },
-  { label: "Bulk Discount Available", values: ["✗", "✗", "✔"], best: 2 },
 ];
 
 export default function Compare() {
@@ -66,7 +47,7 @@ export default function Compare() {
     <>
       <SEO
         title="Compare Products"
-        description="Compare Single Use, Travel and Enterprise toilet seat cover packs side by side. Find the best fit for your home, travel, or business needs."
+        description="Compare Non-Waterproof 5-Pack, Waterproof 5-Pack, and Enterprise 10-Pack toilet seat cover offers side by side."
         path="/compare"
       />
       <Navbar />
@@ -98,15 +79,15 @@ export default function Compare() {
               <tr>
                 <th className="w-28 sm:w-40 md:w-52" />
                 {productDefs.map((p) => (
-                  <th key={p.nameKey} className="pb-6 px-1.5 sm:px-3 align-top">
+                  <th key={p.name} className="pb-6 px-1.5 sm:px-3 align-top">
                     <div className="bg-white rounded-2xl shadow-md p-3 sm:p-4 flex flex-col items-center gap-1.5 sm:gap-2">
                       <img
                         src={p.img}
-                        alt={t[p.nameKey]}
+                        alt={p.name}
                         className="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-xl"
                       />
                       <p className="font-bold text-gray-800 text-xs sm:text-base leading-tight">
-                        {t[p.nameKey]}
+                        {p.name}
                       </p>
                       <p className="text-lg sm:text-2xl font-bold text-[#28a745]">
                         {p.price}

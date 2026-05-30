@@ -27,6 +27,7 @@ import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import TrustBadges from "../components/TrustBadges";
 import { useLang } from "../context/LangContext";
+import { bundleProducts, formatLkr } from "../data/catalog";
 
 const usedBy = [
   { icon: Hotel, labelKey: "usedByHotels", count: "50+" },
@@ -108,35 +109,19 @@ export default function Home() {
     },
   ];
 
-  const products = [
-    {
-      img: "/normalnew.png",
-      title: t.standardPack,
-      desc: t.standardPackDesc,
-      link: "/products/1",
-      price: "LKR 250",
-    },
-    {
-      img: "/travelnew.png",
-      title: t.travelKit,
-      desc: t.travelKitDesc,
-      link: "/products/2",
-      price: "LKR 350",
-    },
-    {
-      img: "/interprisenew.png",
-      title: t.enterprisePack,
-      desc: t.enterprisePackDesc,
-      link: "/products/3",
-      price: "LKR 750",
-    },
-  ];
+  const products = bundleProducts.map((product) => ({
+    img: product.image,
+    title: product.name,
+    desc: `${product.description} ${product.addOnNote}`,
+    link: product.link,
+    price: formatLkr(product.price),
+  }));
 
   return (
     <>
       <SEO
         title="Eco-Friendly Disposable Toilet Seat Covers Sri Lanka"
-        description="Buy premium disposable toilet seat covers online in Sri Lanka. Eco-friendly, hygienic, biodegradable. Single Use, Travel & Enterprise packs available."
+        description="Buy premium disposable toilet seat cover bundles online in Sri Lanka. Non-Waterproof 5-Pack, Waterproof 5-Pack, and Enterprise 10-Pack offers available."
         path="/home"
       />
       <Navbar />
@@ -364,7 +349,7 @@ export default function Home() {
             {t.ourBestsellers}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto mb-12">
-            Three packs, one mission — protect what matters wherever you go.
+            Three bundle offers, one mission — protect what matters wherever you go.
           </p>
         </Reveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">

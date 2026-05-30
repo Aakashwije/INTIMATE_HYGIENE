@@ -56,7 +56,7 @@ const articles = [
       "2. Wash hands for at least 20 seconds. Many traveler illnesses start with improper handwashing after using restrooms.",
       "3. Sanitize your phone and wallet regularly. We place these on restroom surfaces unconsciously.",
       "4. Avoid touching your face after handling surfaces in public spaces. Pathogens enter through mucous membranes.",
-      "5. Stay hydrated and maintain your immune system. Our Travel Pack is specifically designed for frequent travelers — waterproof, anti-slip, and compact.",
+      "5. Stay hydrated and maintain your immune system. Our Waterproof 5-Pack is specifically designed for frequent travelers — waterproof, anti-slip, and compact.",
     ],
   },
   {
@@ -74,7 +74,7 @@ const articles = [
       "Hotels that provide disposable seat covers see a measurable improvement in guest satisfaction scores. 72% said they felt more comfortable where hygiene accessories were provided.",
       "The eco-friendly angle matters too. Our biodegradable, water-soluble covers check all ESG boxes.",
       "Several 5-star properties in Colombo have already made the switch. Operational overhead is minimal — one dispenser per bathroom.",
-      "Our Enterprise Pack includes bulk pricing that makes financial sense for any property with 20+ rooms.",
+      "Our Enterprise 10-Pack offer includes a free dispenser and instructions, making it practical for properties with 20+ rooms.",
     ],
   },
   {
@@ -109,7 +109,7 @@ const articles = [
       "Hospital-acquired infections (HAIs) are responsible for thousands of preventable deaths. Bathrooms are a significant vector for pathogen transmission.",
       "Post-operative and immunocompromised patients are particularly vulnerable. A simple UTI can escalate into life-threatening sepsis.",
       "Progressive hospitals now include disposable toilet seat covers as part of standard patient bathroom supplies.",
-      "Our Enterprise Pack is available with hospital-grade packaging, custom branding, and volume discounts starting at 100 packs.",
+      "Our Enterprise 10-Pack offer is available for immediate setup, with custom branding and volume options available for larger orders.",
       "Healthcare hygiene isn't just about the operating theatre. Every touchpoint matters — including the bathroom.",
     ],
   },
@@ -128,7 +128,7 @@ const articles = [
       "Children under 5 are especially vulnerable because their immune systems are not yet fully developed.",
       "Common illnesses linked to unsanitary restroom contact include gastroenteritis, E. coli infections, and skin infections.",
       "A disposable toilet seat cover provides a clean barrier for small children. It takes less than 10 seconds to place.",
-      "Our Single Use Pack is perfect for families — compact, individually wrapped, and biodegradable.",
+      "Our Non-Waterproof 5-Pack is perfect for families — compact, individually wrapped, and biodegradable.",
     ],
   },
   {
@@ -164,7 +164,7 @@ const articles = [
       "Employee absenteeism due to gastrointestinal illness costs Sri Lankan businesses millions per year in lost productivity.",
       "Progressive companies have begun providing disposable toilet seat covers in employee bathrooms as part of wellness programs.",
       "Providing hygiene accessories communicates that the company values its people — a low-cost investment in employee satisfaction.",
-      "Our Enterprise Pack is ideal for offices: easy to stock, minimal storage space, and available with custom branding.",
+      "Our Enterprise 10-Pack offer is ideal for offices: easy to stock, includes a free dispenser, and can be extended with add-on packs.",
     ],
   },
 ];
@@ -518,7 +518,7 @@ export default function Blog() {
               </h4>
               <p className="text-gray-500 text-sm">
                 Get bulk pricing, free dispensers, and custom branding with our
-                Enterprise Pack.
+                Enterprise 10-Pack offer.
               </p>
             </div>
             <Link

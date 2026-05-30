@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useLang } from "../context/LangContext";
 
 const recentPurchases = [
-  { name: "Nimesha", city: "Colombo 5", product: "Travel Pack", time: 2 },
-  { name: "Dilshan", city: "Kandy", product: "Standard Pack", time: 4 },
-  { name: "Ayesha", city: "Galle", product: "Enterprise Pack (50)", time: 5 },
-  { name: "Ruwan", city: "Negombo", product: "Travel Pack", time: 7 },
-  { name: "Priya", city: "Jaffna", product: "Standard Pack", time: 9 },
-  { name: "Sahan", city: "Matara", product: "Enterprise Pack (100)", time: 11 },
-  { name: "Kasun", city: "Nuwara Eliya", product: "Travel Pack", time: 13 },
-  { name: "Tharushi", city: "Anuradhapura", product: "Standard Pack", time: 16 },
+  { name: "Nimesha", city: "Colombo 5", product: "Waterproof 5-Pack", time: 2 },
+  { name: "Dilshan", city: "Kandy", product: "Non-Waterproof 5-Pack", time: 4 },
+  { name: "Ayesha", city: "Galle", product: "Enterprise 10-Pack", time: 5 },
+  { name: "Ruwan", city: "Negombo", product: "Waterproof 5-Pack", time: 7 },
+  { name: "Priya", city: "Jaffna", product: "Non-Waterproof 5-Pack", time: 9 },
+  { name: "Sahan", city: "Matara", product: "Enterprise 10-Pack", time: 11 },
+  { name: "Kasun", city: "Nuwara Eliya", product: "Waterproof 5-Pack", time: 13 },
+  { name: "Tharushi", city: "Anuradhapura", product: "Non-Waterproof 5-Pack", time: 16 },
   { name: "Hotel Cinnamon", city: "Colombo", product: "Bulk B2B Order", time: 21 },
   { name: "Office HSBC", city: "Colombo 3", product: "B2B 500 packs", time: 28 },
 ];

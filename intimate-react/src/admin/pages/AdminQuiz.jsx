@@ -27,11 +27,22 @@ function responseFromRow(row, idx) {
   };
 }
 
+function matchesResult(result, name) {
+  if (name === "Waterproof 5-Pack") {
+    return result.includes("Waterproof 5-Pack") && !result.includes("Non-Waterproof");
+  }
+  return result.includes(name);
+}
+
 function buildResultDist(rows) {
-  const names = ["Single Use Pack", "Travel Pack", "Enterprise Pack"];
+  const names = [
+    "Non-Waterproof 5-Pack",
+    "Waterproof 5-Pack",
+    "Enterprise 10-Pack",
+  ];
   return names.map((name, idx) => ({
     name,
-    value: rows.filter((r) => r.result.includes(name)).length,
+    value: rows.filter((r) => matchesResult(r.result, name)).length,
     color: ["#28a745", "#0ea5e9", "#8b5cf6"][idx],
   }));
 }
@@ -212,9 +223,10 @@ export default function AdminQuiz() {
                   <td className="px-5 py-3">
                     <span
                       className={`text-xs px-2 py-0.5 rounded-lg border font-medium ${
-                        r.result === "Enterprise Pack"
+                        r.result.includes("Enterprise")
                           ? "bg-violet-50 text-violet-600 border-violet-200"
-                          : r.result === "Travel Pack"
+                          : r.result.includes("Waterproof 5-Pack") &&
+                              !r.result.includes("Non-Waterproof")
                             ? "bg-blue-50 text-blue-600 border-blue-200"
                             : "bg-green-100 text-green-primary border-green-200"
                       }`}

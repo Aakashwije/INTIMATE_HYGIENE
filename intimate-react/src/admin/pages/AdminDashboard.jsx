@@ -33,6 +33,7 @@ import {
     YAxis
 } from "recharts";
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import { findCatalogProduct } from "../../data/catalog";
 import {
     fetchInquiries,
     fetchOrders,
@@ -322,7 +323,7 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
     productSales:
       products.length > 0
         ? products.map((product, idx) => ({
-            name: product.name,
+            name: findCatalogProduct(product.slug)?.name || product.name,
             value: product.sold || 0,
             color: ["#28a745", "#0ea5e9", "#8b5cf6", "#f59e0b"][idx % 4],
           }))

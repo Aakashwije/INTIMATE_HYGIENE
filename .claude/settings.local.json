@@ -18,7 +18,8 @@
       "Bash(xargs sed -i '' -e 's|/normal\\\\.png|/normalnew.png|g' -e 's|/travel\\\\.png|/travelnew.png|g' -e 's|/interprise\\\\.png|/interprisenew.png|g')",
       "Bash(/plugin marketplace *)",
       "Bash(npx eslint *)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(grep -rni \"per pack\\\\|per 10-pack\\\\|/ pack\\\\|/ 10-pack\\\\|min order\\\\|minimum order\\\\|min [0-9]\\\\|minOrder\\\\|min_order\\\\|/ \\\\${.*unit\\\\|pack\\(s\\)\" src --include=\"*.jsx\" --include=\"*.js\")"
     ],
     "additionalDirectories": [
       "/Users/aakash/Documents/GitHub/INTIMATE_HYGIENE/intimate-react/src"

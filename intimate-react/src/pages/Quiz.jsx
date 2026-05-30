@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import SEO from "../components/SEO";
 import ScrollToTop from "../components/ScrollToTop";
+import { findCatalogProduct, formatLkr } from "../data/catalog";
 import { createQuizResponse, trackSiteEvent } from "../lib/database";
 
 const QUESTIONS = [
@@ -49,6 +50,10 @@ const QUESTIONS = [
   },
 ];
 
+const nonWaterproofBundle = findCatalogProduct("non-waterproof-5-pack");
+const waterproofBundle = findCatalogProduct("waterproof-5-pack");
+const enterpriseBundle = findCatalogProduct("enterprise-10-pack");
+
 function getRecommendation(answers) {
   const { usage, people, priority, frequency } = answers;
 
@@ -61,20 +66,19 @@ function getRecommendation(answers) {
     frequency === "ongoing"
   ) {
     return {
-      id: 3,
-      name: "Enterprise Pack (Flushable)",
-      desc: "With a free plastic dispenser included, this flushable pack is designed for high-traffic environments. Perfect for hotels, hospitals, offices and any large operation.",
-      price: "LKR 750 / pack",
+      id: enterpriseBundle.slug,
+      name: enterpriseBundle.name,
+      desc: `${enterpriseBundle.description} ${enterpriseBundle.addOnNote}`,
+      price: formatLkr(enterpriseBundle.price),
       badge: "🏆 Best for Business",
-      img: "/interprisenew.png",
-      link: "/products/3",
-      whatsapp:
-        "Hello! I completed the product quiz and was recommended the Enterprise Pack. Please share bulk pricing and availability.",
+      img: enterpriseBundle.image,
+      link: enterpriseBundle.link,
+      whatsapp: `Hello! I completed the product quiz and was recommended the ${enterpriseBundle.name} (${formatLkr(enterpriseBundle.price)}). Please share availability and delivery details.`,
       perks: [
+        "10-pack offer",
         "Flushable — no bin required",
-        "Free plastic dispenser",
-        "Custom branding available",
-        "Bulk discounts",
+        "Free dispenser with instructions",
+        "Add extra packs for LKR 950 each",
       ],
     };
   }
@@ -87,47 +91,45 @@ function getRecommendation(answers) {
     frequency === "occasional"
   ) {
     return {
-      id: 2,
-      name: "Travel Pack (Waterproof)",
-      desc: "Compact, waterproof and anti-slip — the ideal companion for commuters, travellers and anyone who is always on the move.",
-      price: "LKR 350 / 10-pack",
+      id: waterproofBundle.slug,
+      name: waterproofBundle.name,
+      desc: `${waterproofBundle.description} ${waterproofBundle.addOnNote}`,
+      price: formatLkr(waterproofBundle.price),
       badge: "✈️ Best for Travellers",
-      img: "/travelnew.png",
-      link: "/products/2",
-      whatsapp:
-        "Hello! I completed the product quiz and was recommended the Travel Pack. Please share availability and delivery details.",
+      img: waterproofBundle.image,
+      link: waterproofBundle.link,
+      whatsapp: `Hello! I completed the product quiz and was recommended the ${waterproofBundle.name} (${formatLkr(waterproofBundle.price)}). Please share availability and delivery details.`,
       perks: [
+        "5-pack bundle",
         "Waterproof & anti-slip",
         "Compact pocket size",
-        "Great for travel",
-        "Minimum order 5 packs",
+        "Add extra packs for LKR 350 each",
       ],
     };
   }
 
-  // Default — Single Use
+  // Default - Non-Waterproof 5-Pack
   return {
-    id: 1,
-    name: "Single Use Pack",
-    desc: "Biodegradable, individually wrapped and affordable — our most popular pack for everyday home and family use.",
-    price: "LKR 250 / pack",
+    id: nonWaterproofBundle.slug,
+    name: nonWaterproofBundle.name,
+    desc: `${nonWaterproofBundle.description} ${nonWaterproofBundle.addOnNote}`,
+    price: formatLkr(nonWaterproofBundle.price),
     badge: "🌿 Most Popular",
-    img: "/normalnew.png",
-    link: "/products/1",
-    whatsapp:
-      "Hello! I completed the product quiz and was recommended the Single Use Pack. Please share availability and delivery details.",
+    img: nonWaterproofBundle.image,
+    link: nonWaterproofBundle.link,
+    whatsapp: `Hello! I completed the product quiz and was recommended the ${nonWaterproofBundle.name} (${formatLkr(nonWaterproofBundle.price)}). Please share availability and delivery details.`,
     perks: [
+      "5-pack bundle",
       "100% biodegradable",
       "Individually wrapped",
-      "Safe for all skin types",
-      "Minimum order 10 packs",
+      "Add extra packs for LKR 250 each",
     ],
   };
 }
 
 function scoreRecommendation(result) {
-  if (result.id === 3) return 10;
-  if (result.id === 2) return 8;
+  if (result.id === "enterprise-10-pack") return 10;
+  if (result.id === "waterproof-5-pack") return 8;
   return 6;
 }
 

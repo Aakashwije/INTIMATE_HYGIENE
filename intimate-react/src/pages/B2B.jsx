@@ -379,9 +379,10 @@ export default function B2B() {
             className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:border-[#28a745] transition-colors"
           >
             <option value="">Select Product of Interest</option>
-            <option>Single Use Pack</option>
-            <option>Travel Pack (Waterproof)</option>
-            <option>Enterprise Pack (Flushable)</option>
+            <option>Non-Waterproof 5-Pack</option>
+            <option>Waterproof 5-Pack</option>
+            <option>Enterprise 10-Pack + Free Dispenser</option>
+            <option>Add-On Packs</option>
             <option>Mixed / All Products</option>
           </select>
           <select

@@ -4,72 +4,49 @@ import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import { useLang } from "../context/LangContext";
+import {
+  addOnProducts,
+  bundleProducts,
+  formatLkr,
+  shopProducts,
+} from "../data/catalog";
 import { createOrder } from "../lib/database";
 
-const products = [
-  {
-    id: 1,
-    name: "Single Use Pack",
-    price: 250,
-    img: "/normalnew.png",
-    minOrder: 10,
-    unit: "pack",
-  },
-  {
-    id: 2,
-    name: "Travel Pack (Waterproof)",
-    price: 350,
-    img: "/travelnew.png",
-    minOrder: 5,
-    unit: "10-pack",
-  },
-  {
-    id: 3,
-    name: "Enterprise Pack (Flushable)",
-    price: 750,
-    img: "/interprisenew.png",
-    minOrder: 100,
-    unit: "pack",
-  },
-];
+const products = shopProducts.map((product) => ({
+  id: product.slug,
+  name: product.name,
+  price: product.price,
+  img: product.image,
+}));
 
 const FREE_DELIVERY_THRESHOLD = 3000;
 
 const BUNDLES = [
   {
-    id: "starter",
-    name: "🌿 Starter Bundle",
-    desc: "Best for first-time buyers",
-    items: "10× Single Use + 5× Travel Pack",
-    originalPrice: 10 * 250 + 5 * 350,
-    salePrice: 3800,
-    badge: "Save LKR 450",
-    whatsapp:
-      "Hello! I'd like to order the Starter Bundle (10× Single Use Pack + 5× Travel Pack) for LKR 3,800. Please confirm availability.",
+    ...bundleProducts[0],
+    items: "5 x non-waterproof single-use packs",
+    originalPrice: 5 * addOnProducts[0].price,
   },
   {
-    id: "family",
-    name: "👨‍👩‍👧 Family Bundle",
-    desc: "Perfect for households",
-    items: "20× Single Use + 10× Travel Pack",
-    originalPrice: 20 * 250 + 10 * 350,
-    salePrice: 7200,
-    badge: "Save LKR 800",
-    whatsapp:
-      "Hello! I'd like to order the Family Bundle (20× Single Use Pack + 10× Travel Pack) for LKR 7,200. Please confirm availability.",
+    ...bundleProducts[1],
+    items: "5 x waterproof, anti-slip packs",
+    originalPrice: 5 * addOnProducts[1].price,
   },
   {
-    id: "hotel",
-    name: "🏨 Hotel / Office Bundle",
-    desc: "For businesses & bulk buyers",
-    items: "100× Enterprise + 10× Travel Pack",
-    originalPrice: 100 * 750 + 10 * 350,
-    salePrice: 77000,
-    badge: "Save LKR 3,000",
-    whatsapp:
-      "Hello! I'd like to order the Hotel Bundle (100× Enterprise Pack + 10× Travel Pack) for LKR 77,000. Please confirm availability and delivery.",
+    ...bundleProducts[2],
+    items: "10 x enterprise packs + free dispenser + instructions",
+    originalPrice: 10 * addOnProducts[2].price,
   },
-];
+].map((bundle) => ({
+  id: bundle.slug,
+  name: bundle.name,
+  desc: bundle.addOnNote,
+  items: bundle.items,
+  originalPrice: bundle.originalPrice,
+  salePrice: bundle.price,
+  badge: `Save ${formatLkr(bundle.originalPrice - bundle.price)}`,
+  whatsapp: bundle.whatsappMsg,
+}));
 
 const DISCOUNT_CODES = {
   INTIMATE10: 10,
@@ -93,7 +70,7 @@ function buildTemplate({
   discountCode,
   note,
 }) {
-  const p = products.find((p) => p.id === Number(product));
+  const p = products.find((p) => p.id === product);
   const subtotal = p ? p.price * qty : 0;
   const discountPct = DISCOUNT_CODES[discountCode?.trim().toUpperCase()] || 0;
   const discountAmt = Math.round((subtotal * discountPct) / 100);
@@ -118,8 +95,8 @@ function buildTemplate({
 🛒 ORDER DETAILS
 ─────────────────────
    Product : ${p ? p.name : "[Product Name]"}
-   Qty     : ${qty} ${p ? p.unit : "pack"}(s)
-   Unit Price: LKR ${p ? p.price.toLocaleString() : "—"} / ${p ? p.unit : "pack"}
+   Qty     : ${qty}
+   Unit Price: LKR ${p ? p.price.toLocaleString() : "—"}
 
 💵 PRICING BREAKDOWN
 ─────────────────────
@@ -149,7 +126,7 @@ export default function OrderTemplate() {
     phone: "",
     address: "",
     city: "",
-    product: "1",
+    product: bundleProducts[0].slug,
     qty: 1,
     payment: "Cash on Delivery",
     discountCode: "",
@@ -222,7 +199,7 @@ export default function OrderTemplate() {
     }
   };
 
-  const p = products.find((p) => p.id === Number(form.product));
+  const p = products.find((p) => p.id === form.product);
   const subtotal = p ? p.price * form.qty : 0;
   const discountPct =
     DISCOUNT_CODES[form.discountCode?.trim().toUpperCase()] || 0;
@@ -261,10 +238,10 @@ export default function OrderTemplate() {
         {/* Bundle Deals */}
         <section className="mb-10">
           <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
-            🎁 Bundle Deals
+            🎁 Bundle Offers
           </h2>
           <p className="text-center text-gray-500 text-sm mb-6">
-            Save more when you buy more — tap to order instantly via WhatsApp
+            Start with a bundle, then add extra packs if you need more
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {BUNDLES.map((b) => (
@@ -284,10 +261,10 @@ export default function OrderTemplate() {
                 </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-xl font-bold text-[#28a745]">
-                    LKR {b.salePrice.toLocaleString()}
+                    {formatLkr(b.salePrice)}
                   </span>
                   <span className="text-xs text-gray-400 line-through">
-                    LKR {b.originalPrice.toLocaleString()}
+                    {formatLkr(b.originalPrice)}
                   </span>
                 </div>
                 <a
@@ -405,24 +382,21 @@ export default function OrderTemplate() {
               >
                 {products.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name} — LKR {p.price} / {p.unit}
+                    {p.name} — {formatLkr(p.price)}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
-                {t.quantity} ({p?.unit}s){" "}
-                <span className="text-gray-400 font-normal ml-1">
-                  (min {p?.minOrder})
-                </span>
+                {t.quantity}
               </label>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() =>
                     setForm((f) => ({
                       ...f,
-                      qty: Math.max(p?.minOrder || 1, f.qty - 1),
+                      qty: Math.max(1, f.qty - 1),
                     }))
                   }
                   className="w-9 h-9 border border-gray-300 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors"

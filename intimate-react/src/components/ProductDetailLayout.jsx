@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 import { useLang } from "../context/LangContext";
+import { findCatalogProduct, formatLkr } from "../data/catalog";
 import {
   fetchProductBySlug,
   subscribeToProducts,
@@ -38,6 +39,7 @@ export default function ProductDetailLayout({
   const { t } = useLang();
   const [qty, setQty] = useState(1);
   const [catalogProduct, setCatalogProduct] = useState(null);
+  const fixedProduct = findCatalogProduct(slug);
 
   useEffect(() => {
     const loadProduct = () => {
@@ -59,13 +61,18 @@ export default function ProductDetailLayout({
     };
   }, [slug]);
 
-  const displayTitle = catalogProduct?.name || title;
-  const displaySubtitle = catalogProduct?.description || subtitle;
-  const displayImage = catalogProduct?.image_url || image;
-  const displayPrice = catalogProduct
-    ? `LKR ${Number(catalogProduct.price).toLocaleString()}`
-    : price;
-  const displayPriceNote = catalogProduct?.price_note || priceNote;
+  const displayTitle = fixedProduct?.name || catalogProduct?.name || title;
+  const displaySubtitle =
+    fixedProduct?.description || catalogProduct?.description || subtitle;
+  const displayImage = fixedProduct?.image || catalogProduct?.image_url || image;
+  const displayPrice = fixedProduct
+    ? formatLkr(fixedProduct.price)
+    : catalogProduct
+      ? formatLkr(catalogProduct.price)
+      : price;
+  const displayPriceNote =
+    fixedProduct?.priceNote || catalogProduct?.price_note || priceNote;
+  const unitPrice = fixedProduct?.price || Number(catalogProduct?.price || 0);
   const minQty = catalogProduct?.min_order || 1;
   const effectiveQty = Math.max(minQty, qty);
 
@@ -76,7 +83,7 @@ export default function ProductDetailLayout({
       metadata: { source: "product_detail", quantity: effectiveQty },
     });
     const msg = encodeURIComponent(
-      `${whatsappMsg || `Hello! I want to order ${displayTitle}.`}\n\nQuantity: ${effectiveQty} pack(s)\n\nPlease share availability and delivery details.`,
+      `${fixedProduct?.whatsappMsg || whatsappMsg || `Hello! I want to order ${displayTitle}.`}\n\nQuantity: ${effectiveQty}\n\nPlease share availability and delivery details.`,
     );
     window.open(`https://wa.me/94707018171?text=${msg}`, "_blank");
   };
@@ -216,7 +223,7 @@ export default function ProductDetailLayout({
           {/* Delivery progress */}
           {displayPrice && (
             <div className="mt-5">
-              <DeliveryProgressBar orderTotal={0} />
+              <DeliveryProgressBar orderTotal={unitPrice * effectiveQty} />
             </div>
           )}
         </div>

@@ -1,0 +1,80 @@
+-- Adds the three bundle products (5-pack, 5-pack, 10-pack) alongside the
+-- existing single-pack catalog. Idempotent: re-running updates by slug.
+
+insert into public.products
+  (slug, name, sku, description, price, cost, image_url, min_order, stock, sold, rating, reviews, category, price_note, badge, urgency, active)
+values
+  (
+    'non-waterproof-5-pack',
+    'Non-Waterproof 5-Pack',
+    'INE-001-5PK',
+    'Value bundle of 5 biodegradable single-use toilet seat cover packs. Eco-friendly, individually wrapped, and flushable — ready to ship.',
+    1099,
+    750,
+    '/normalnew.png',
+    1,
+    200,
+    60,
+    4.9,
+    42,
+    'Bundle',
+    '5-pack bundle',
+    'Bundle Deal',
+    'Selling Fast',
+    true
+  ),
+  (
+    'waterproof-5-pack',
+    'Waterproof 5-Pack',
+    'INE-002-5PK',
+    'Value bundle of 5 waterproof, anti-slip toilet seat cover packs. Perfect for families and frequent travellers.',
+    1499,
+    1100,
+    '/travelnew.png',
+    1,
+    160,
+    38,
+    4.8,
+    31,
+    'Bundle',
+    '5-pack waterproof bundle',
+    'Waterproof',
+    'Popular',
+    true
+  ),
+  (
+    'enterprise-10-pack',
+    'Enterprise 10-Pack + Free Dispenser',
+    'INE-003-10PK',
+    'Bundle of 10 flushable packs that ships with a FREE plastic dispenser and instructions. Ideal for offices, hotels, and businesses.',
+    8700,
+    6000,
+    '/interprisenew.png',
+    1,
+    80,
+    15,
+    4.9,
+    12,
+    'Bundle',
+    '10 packs + free dispenser & instructions',
+    'Free Dispenser',
+    null,
+    true
+  )
+on conflict (slug) do update set
+  name = excluded.name,
+  sku = excluded.sku,
+  description = excluded.description,
+  price = excluded.price,
+  cost = excluded.cost,
+  image_url = excluded.image_url,
+  min_order = excluded.min_order,
+  stock = excluded.stock,
+  sold = excluded.sold,
+  rating = excluded.rating,
+  reviews = excluded.reviews,
+  category = excluded.category,
+  price_note = excluded.price_note,
+  badge = excluded.badge,
+  urgency = excluded.urgency,
+  active = excluded.active;
