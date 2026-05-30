@@ -236,6 +236,15 @@ function monthKey(dateValue) {
   return new Date(dateValue).toLocaleString("en-US", { month: "short" });
 }
 
+function isSameLocalDay(dateValue, referenceDate = new Date()) {
+  const date = new Date(dateValue);
+  return (
+    date.getFullYear() === referenceDate.getFullYear() &&
+    date.getMonth() === referenceDate.getMonth() &&
+    date.getDate() === referenceDate.getDate()
+  );
+}
+
 function initials(name = "") {
   return name
     .split(" ")
@@ -247,6 +256,16 @@ function initials(name = "") {
 
 function buildDashboardData({ orders, products, subscribers, inquiries, events = [] }) {
   const liveOrders = orders.length > 0;
+  const todayEvents = events.filter((event) => isSameLocalDay(event.created_at));
+  const pageViewEvents = events.filter((event) => event.event_type === "page_view");
+  const todayPageViews = todayEvents.filter(
+    (event) => event.event_type === "page_view",
+  ).length;
+  const todayConversions = todayEvents.filter((event) =>
+    ["checkout_submit", "quiz_complete", "whatsapp_click"].includes(
+      event.event_type,
+    ),
+  ).length;
   const revenue = orders
     .filter((order) => order.status !== "cancelled")
     .reduce((sum, order) => sum + Number(order.total || 0), 0);
@@ -363,10 +382,9 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
             }))
         : topCities,
     lowStock: products.filter((product) => product.stock < 100).length,
-    pageViews: events.filter((event) => event.event_type === "page_view").length,
-    conversions: events.filter((event) =>
-      ["checkout_submit", "quiz_complete"].includes(event.event_type),
-    ).length,
+    pageViews: todayPageViews,
+    totalPageViews: pageViewEvents.length,
+    conversions: todayConversions,
     weeklyTraffic: events.length > 0 ? weeklyEventTraffic : weeklyTraffic,
   };
 }
@@ -534,10 +552,10 @@ export default function AdminDashboard() {
             pos: true,
           },
           {
-            label: "Page Views / Day",
+            label: "Page Views Today",
             value: dashboard.pageViews.toLocaleString(),
             icon: Eye,
-            delta: "tracked",
+            delta: "live today",
             pos: true,
           },
           {
