@@ -10,7 +10,12 @@ import SEO from "../components/SEO";
 import TrustBadges from "../components/TrustBadges";
 import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
-import { addOnProducts, bundleProducts, formatLkr } from "../data/catalog";
+import {
+  addOnProducts,
+  bundleProductIds,
+  bundleProducts,
+  formatLkr,
+} from "../data/catalog";
 import { trackSiteEvent } from "../lib/database";
 
 function productCardFromCatalog(product, rating = 4.9) {
@@ -43,14 +48,21 @@ export default function Products() {
   const { t } = useLang();
   const { add, items } = useCart();
   const [justAdded, setJustAdded] = useState(null);
+  const [lockedAddOn, setLockedAddOn] = useState(null);
+  const hasBundleInCart = items.some((item) => bundleProductIds.has(item.id));
 
   const handleAdd = (p) => {
-    add({
+    const added = add({
       id: p.id,
       name: p.title || t[p.titleKey],
       price: p.price,
       img: p.img,
     });
+    if (!added) {
+      setLockedAddOn(p.id);
+      setTimeout(() => setLockedAddOn(null), 2200);
+      return;
+    }
     setJustAdded(p.id);
     setTimeout(() => setJustAdded(null), 1800);
     trackSiteEvent({
@@ -246,7 +258,7 @@ export default function Products() {
               Need extra packs?
             </h3>
             <p className="text-gray-500 text-sm">
-              Add these only when you need more than the bundle quantity.
+              Add these only after adding a bundle package to your cart.
             </p>
           </div>
         </Reveal>
@@ -280,11 +292,25 @@ export default function Products() {
                   </span>
                   <button
                     onClick={() => handleAdd(p)}
-                    className="px-4 py-2 bg-[#28a745] text-white font-bold rounded-lg hover:bg-[#1e8c38] transition-colors text-xs"
+                    disabled={!hasBundleInCart}
+                    className={`px-4 py-2 font-bold rounded-lg transition-colors text-xs ${
+                      hasBundleInCart
+                        ? "bg-[#28a745] text-white hover:bg-[#1e8c38]"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    }`}
                   >
-                    {justAdded === p.id ? "Added" : "Add"}
+                    {!hasBundleInCart
+                      ? "Add bundle first"
+                      : justAdded === p.id
+                        ? "Added"
+                        : "Add"}
                   </button>
                 </div>
+                {lockedAddOn === p.id && (
+                  <p className="mt-3 text-xs text-red-500 text-left">
+                    Please add a bundle package before adding extra packs.
+                  </p>
+                )}
               </div>
             </Reveal>
           ))}

@@ -1,15 +1,25 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { addOnProductIds, bundleProductIds } from "../data/catalog";
 
 const CartContext = createContext();
 
 const STORAGE_KEY = "hygenc_cart_v1";
+
+function hasBundle(items) {
+  return items.some((item) => bundleProductIds.has(item.id));
+}
+
+function withoutOrphanAddOns(items) {
+  if (hasBundle(items)) return items;
+  return items.filter((item) => !addOnProductIds.has(item.id));
+}
 
 function readStored() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    return Array.isArray(parsed) ? withoutOrphanAddOns(parsed) : [];
   } catch {
     return [];
   }
@@ -28,6 +38,10 @@ export function CartProvider({ children }) {
   }, [items]);
 
   const add = (item) => {
+    if (addOnProductIds.has(item.id) && !hasBundle(items)) {
+      return false;
+    }
+
     setItems((prev) => {
       const existing = prev.find((p) => p.id === item.id);
       if (existing) {
@@ -38,6 +52,7 @@ export function CartProvider({ children }) {
       return [...prev, { ...item, qty: item.qty || 1 }];
     });
     setOpen(true);
+    return true;
   };
 
   const updateQty = (id, qty) => {
@@ -46,7 +61,7 @@ export function CartProvider({ children }) {
   };
 
   const remove = (id) => {
-    setItems((prev) => prev.filter((p) => p.id !== id));
+    setItems((prev) => withoutOrphanAddOns(prev.filter((p) => p.id !== id)));
   };
 
   const clear = () => setItems([]);

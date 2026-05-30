@@ -114,6 +114,14 @@ export const addOnProducts = [
 
 export const shopProducts = [...bundleProducts, ...addOnProducts];
 
+export const bundleProductIds = new Set(
+  bundleProducts.map((product) => product.slug),
+);
+
+export const addOnProductIds = new Set(
+  addOnProducts.map((product) => product.slug),
+);
+
 export const productLinks = Object.fromEntries(
   shopProducts.map((product) => [product.slug, product.link]),
 );

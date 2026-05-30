@@ -3,9 +3,12 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
+import { useCart } from "../context/CartContext";
 import { useLang } from "../context/LangContext";
 import {
+  addOnProductIds,
   addOnProducts,
+  bundleProductIds,
   bundleProducts,
   formatLkr,
   shopProducts,
@@ -121,6 +124,7 @@ Please confirm availability and estimated delivery date. Thank you! 🌿`;
 
 export default function OrderTemplate() {
   const { t } = useLang();
+  const { items } = useCart();
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -136,8 +140,17 @@ export default function OrderTemplate() {
   const [discountMsg, setDiscountMsg] = useState("");
   const [saving, setSaving] = useState(false);
   const [orderStatus, setOrderStatus] = useState("");
+  const hasBundleInCart = items.some((item) => bundleProductIds.has(item.id));
+  const productOptions = hasBundleInCart
+    ? products
+    : products.filter((product) => !addOnProductIds.has(product.id));
+  const selectedProduct =
+    !hasBundleInCart && addOnProductIds.has(form.product)
+      ? bundleProducts[0].slug
+      : form.product;
+  const safeForm = { ...form, product: selectedProduct };
 
-  const template = buildTemplate(form);
+  const template = buildTemplate(safeForm);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(template).then(() => {
@@ -154,7 +167,7 @@ export default function OrderTemplate() {
     setSaving(true);
     setOrderStatus("");
     const orderRef = makeOrderRef();
-    const message = buildTemplate({ ...form, orderRef });
+    const message = buildTemplate({ ...safeForm, orderRef });
     try {
       await createOrder({
         order: {
@@ -199,7 +212,7 @@ export default function OrderTemplate() {
     }
   };
 
-  const p = products.find((p) => p.id === form.product);
+  const p = products.find((p) => p.id === selectedProduct);
   const subtotal = p ? p.price * form.qty : 0;
   const discountPct =
     DISCOUNT_CODES[form.discountCode?.trim().toUpperCase()] || 0;
@@ -374,18 +387,23 @@ export default function OrderTemplate() {
                 {t.product} *
               </label>
               <select
-                value={form.product}
+                value={selectedProduct}
                 onChange={(e) =>
                   setForm({ ...form, product: e.target.value, qty: 1 })
                 }
                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745] bg-white"
               >
-                {products.map((p) => (
+                {productOptions.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.name} — {formatLkr(p.price)}
                   </option>
                 ))}
               </select>
+              {!hasBundleInCart && (
+                <p className="text-xs text-amber-600 mt-1">
+                  Add-ons unlock after a bundle package is in your cart.
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
