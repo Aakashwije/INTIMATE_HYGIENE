@@ -181,17 +181,19 @@ export default function OrderTemplate() {
     setOrderStatus("");
     const orderRef = makeOrderRef();
     const message = buildTemplate({ ...safeForm, ...customer, orderRef });
+    const whatsappUrl = `https://wa.me/94707018171?text=${encodeURIComponent(message)}`;
+    const whatsappWindow = window.open("", "_blank");
     try {
       if (isLoggedIn) {
-        await saveProfile({
+        saveProfile({
           name: customer.name,
           phone: customer.phone,
           address: customer.address,
           city: customer.city,
           preferred_payment_method: customer.payment,
-        });
+        }).catch(() => {});
       }
-      await createOrder({
+      const savedOrder = await createOrder({
         order: {
           order_ref: orderRef,
           customer_id: user?.id || null,
@@ -213,14 +215,19 @@ export default function OrderTemplate() {
           },
         ],
       });
-      setOrderStatus("Order saved. Opening WhatsApp now...");
+      setOrderStatus(
+        savedOrder.sync_status === "local"
+          ? "Order captured locally. Opening WhatsApp now..."
+          : "Order saved. Opening WhatsApp now...",
+      );
     } catch (err) {
       setOrderStatus(err.message || "Could not save order. Opening WhatsApp.");
     }
-    window.open(
-      `https://wa.me/94707018171?text=${encodeURIComponent(message)}`,
-      "_blank",
-    );
+    if (whatsappWindow) {
+      whatsappWindow.location.href = whatsappUrl;
+    } else {
+      window.location.assign(whatsappUrl);
+    }
     setSaving(false);
   };
 

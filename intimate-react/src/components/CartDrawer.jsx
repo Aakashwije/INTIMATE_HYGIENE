@@ -101,30 +101,54 @@ export default function CartDrawer() {
       payment_method: customer.paymentMethod,
       note: customer.note || null,
     };
+    const whatsappUrl = buildWhatsAppMessage(
+      items,
+      subtotal,
+      t,
+      customer,
+      orderRef,
+    );
+    const whatsappWindow = window.open("", "_blank");
 
     try {
       if (isLoggedIn) {
-        await saveProfile({
+        saveProfile({
           name: customer.name,
           phone: customer.phone,
           address: customer.address,
           city: customer.city,
           preferred_payment_method: customer.paymentMethod,
-        });
+        }).catch(() => {});
       }
-      await createOrder({
+      const savedOrder = await createOrder({
         order,
         items: orderItems,
       });
-      await trackSiteEvent({
+
+      if (savedOrder.sync_status === "local") {
+        console.warn(
+          `Order ${orderRef} saved locally: ${savedOrder.sync_error}`,
+        );
+      }
+
+      trackSiteEvent({
         event_type: "checkout_submit",
         label: "Cart checkout",
-        metadata: { order_ref: orderRef, total: subtotal, item_count: items.length },
-      });
+        metadata: {
+          order_ref: orderRef,
+          total: subtotal,
+          item_count: items.length,
+          sync_status: savedOrder.sync_status,
+        },
+      }).catch(() => {});
       sendOrderEmail({ order, items: orderItems }).catch((mailErr) => {
         console.warn(mailErr.message || "Order email could not be sent.");
       });
-      window.open(buildWhatsAppMessage(items, subtotal, t, customer, orderRef), "_blank");
+      if (whatsappWindow) {
+        whatsappWindow.location.href = whatsappUrl;
+      } else {
+        window.location.assign(whatsappUrl);
+      }
       clear();
       setOpen(false);
       setCheckout({
@@ -137,6 +161,7 @@ export default function CartDrawer() {
         paymentMethod: "Cash on Delivery",
       });
     } catch (err) {
+      if (whatsappWindow) whatsappWindow.close();
       setError(err.message || "Could not save order. Please try again.");
     } finally {
       setSaving(false);

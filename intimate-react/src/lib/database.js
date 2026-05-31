@@ -1,5 +1,8 @@
 import { supabase } from "./supabase";
 
+const REQUEST_TIMEOUT_MS = 4500;
+const LOCAL_PENDING_ORDERS_KEY = "hygenc_pending_orders_v1";
+
 function requireSupabase() {
   if (!supabase) {
     throw new Error("Supabase is not configured for this deployment.");
@@ -20,6 +23,56 @@ function makeId() {
         (15 >> (Number(c) / 4)))
     ).toString(16),
   );
+}
+
+function friendlySyncError(error) {
+  if (error?.name === "AbortError") {
+    return "Supabase request timed out.";
+  }
+  return error?.message || "Supabase request failed.";
+}
+
+async function runSupabaseRequest(requestBuilder, timeoutMs = REQUEST_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeout = globalThis.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await requestBuilder.abortSignal(controller.signal);
+  } finally {
+    globalThis.clearTimeout(timeout);
+  }
+}
+
+function readLocalPendingOrders() {
+  if (!globalThis.localStorage) return [];
+  try {
+    return JSON.parse(
+      globalThis.localStorage.getItem(LOCAL_PENDING_ORDERS_KEY) || "[]",
+    );
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalPendingOrder(orderRecord) {
+  if (!globalThis.localStorage) return orderRecord;
+  const current = readLocalPendingOrders();
+  const withoutDuplicate = current.filter(
+    (order) => order.order_ref !== orderRecord.order_ref,
+  );
+  const next = [orderRecord, ...withoutDuplicate].slice(0, 50);
+  globalThis.localStorage.setItem(
+    LOCAL_PENDING_ORDERS_KEY,
+    JSON.stringify(next),
+  );
+  return orderRecord;
+}
+
+export function fetchLocalPendingOrders(customerId, email) {
+  return readLocalPendingOrders().filter((order) => {
+    if (customerId && order.customer_id === customerId) return true;
+    return email && order.customer_email === email.trim().toLowerCase();
+  });
 }
 
 export async function subscribeToNewsletter(email) {
@@ -44,37 +97,82 @@ export async function createInquiry(inquiry) {
 }
 
 export async function createOrder({ order, items }) {
-  const client = requireSupabase();
   const orderId = order.id || makeId();
-  const nextOrder = { ...order, id: orderId };
-  const { error } = await client
-    .from("orders")
-    .insert(nextOrder);
-
-  if (error) throw error;
-
+  const nextOrder = {
+    ...order,
+    id: orderId,
+    customer_email: order.customer_email?.trim().toLowerCase() || null,
+    created_at: order.created_at || new Date().toISOString(),
+  };
   const orderItems = items.map((item) => ({
+    id: item.id || makeId(),
     order_id: orderId,
     product_name: item.product_name,
     quantity: item.quantity,
     price: item.price,
   }));
 
-  const { error: itemsError } = await client
-    .from("order_items")
-    .insert(orderItems);
+  if (!supabase) {
+    return saveLocalPendingOrder({
+      ...nextOrder,
+      order_items: orderItems,
+      sync_status: "local",
+      sync_error: "Supabase is not configured.",
+    });
+  }
 
-  if (itemsError) throw itemsError;
-  return nextOrder;
+  try {
+    const rpcResult = await runSupabaseRequest(
+      supabase.rpc("create_checkout_order", {
+        order_payload: nextOrder,
+        item_payloads: orderItems,
+      }),
+    );
+
+    if (!rpcResult.error) {
+      return {
+        ...nextOrder,
+        ...rpcResult.data,
+        order_items: orderItems,
+        sync_status: "cloud",
+      };
+    }
+
+    if (!String(rpcResult.error.message || "").includes("create_checkout_order")) {
+      throw rpcResult.error;
+    }
+
+    const { error } = await runSupabaseRequest(
+      supabase.from("orders").insert(nextOrder),
+    );
+
+    if (error) throw error;
+
+    const { error: itemsError } = await runSupabaseRequest(
+      supabase.from("order_items").insert(orderItems),
+    );
+
+    if (itemsError) throw itemsError;
+    return { ...nextOrder, order_items: orderItems, sync_status: "cloud" };
+  } catch (error) {
+    return saveLocalPendingOrder({
+      ...nextOrder,
+      order_items: orderItems,
+      sync_status: "local",
+      sync_error: friendlySyncError(error),
+    });
+  }
 }
 
 export async function fetchCustomerProfile(userId) {
   const client = requireSupabase();
-  const { data, error } = await client
-    .from("customer_profiles")
-    .select("*")
-    .eq("id", userId)
-    .single();
+  const { data, error } = await runSupabaseRequest(
+    client
+      .from("customer_profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle(),
+  );
 
   if (error) throw error;
   return data;
@@ -95,20 +193,23 @@ function buildCustomerProfilePayload(profile) {
   };
 }
 
-async function runProfileRequest(requestBuilder) {
-  const controller = new AbortController();
-  const timeout = globalThis.setTimeout(() => controller.abort(), 10000);
-
-  try {
-    return await requestBuilder.abortSignal(controller.signal);
-  } finally {
-    globalThis.clearTimeout(timeout);
-  }
-}
-
 export async function upsertCustomerProfile(profile) {
   const client = requireSupabase();
   const payload = buildCustomerProfilePayload(profile);
+
+  const rpcResult = await runSupabaseRequest(
+    client.rpc("save_customer_profile", {
+      profile_payload: payload,
+    }),
+  ).catch((error) => ({ error }));
+
+  if (!rpcResult.error) return rpcResult.data;
+
+  if (
+    !String(rpcResult.error.message || "").includes("save_customer_profile")
+  ) {
+    throw rpcResult.error;
+  }
 
   const updateRequest = client
     .from("customer_profiles")
@@ -117,7 +218,7 @@ export async function upsertCustomerProfile(profile) {
     .select()
     .maybeSingle();
 
-  const { data, error } = await runProfileRequest(updateRequest);
+  const { data, error } = await runSupabaseRequest(updateRequest);
 
   if (error) throw error;
   if (data) return data;
@@ -129,7 +230,7 @@ export async function upsertCustomerProfile(profile) {
     .single();
 
   const { data: inserted, error: insertError } =
-    await runProfileRequest(insertRequest);
+    await runSupabaseRequest(insertRequest);
 
   if (insertError) throw insertError;
   return inserted;
@@ -137,11 +238,13 @@ export async function upsertCustomerProfile(profile) {
 
 export async function fetchCustomerOrders(customerId) {
   const client = requireSupabase();
-  const { data, error } = await client
-    .from("orders")
-    .select("*, order_items(*)")
-    .eq("customer_id", customerId)
-    .order("created_at", { ascending: false });
+  const { data, error } = await runSupabaseRequest(
+    client
+      .from("orders")
+      .select("*, order_items(*)")
+      .eq("customer_id", customerId)
+      .order("created_at", { ascending: false }),
+  );
 
   if (error) throw error;
   return data;
@@ -287,14 +390,17 @@ export async function fetchQuizResponses() {
 
 export async function trackSiteEvent(event) {
   if (!supabase) return null;
-  const { error } = await supabase
-    .from("site_events")
-    .insert({
-      event_type: event.event_type,
-      path: event.path || window.location.pathname,
-      label: event.label || null,
-      metadata: event.metadata || {},
-    });
+  const { error } = await runSupabaseRequest(
+    supabase
+      .from("site_events")
+      .insert({
+        event_type: event.event_type,
+        path: event.path || window.location.pathname,
+        label: event.label || null,
+        metadata: event.metadata || {},
+      }),
+    4000,
+  ).catch(() => ({ error: true }));
 
   if (error) return null;
   return event;

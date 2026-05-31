@@ -6,7 +6,7 @@ import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import { useCart } from "../context/CartContext";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
-import { fetchCustomerOrders } from "../lib/database";
+import { fetchCustomerOrders, fetchLocalPendingOrders } from "../lib/database";
 import { bundleProductIds, shopProducts } from "../data/catalog";
 
 function productForOrderItem(item) {
@@ -40,8 +40,15 @@ export default function CustomerAccount() {
   useEffect(() => {
     if (!user) return;
     fetchCustomerOrders(user.id)
-      .then(setOrders)
-      .catch(() => setOrders([]));
+      .then((cloudOrders) => {
+        const localOrders = fetchLocalPendingOrders(user.id, user.email);
+        const cloudRefs = new Set(cloudOrders.map((order) => order.order_ref));
+        setOrders([
+          ...localOrders.filter((order) => !cloudRefs.has(order.order_ref)),
+          ...cloudOrders,
+        ]);
+      })
+      .catch(() => setOrders(fetchLocalPendingOrders(user.id, user.email)));
   }, [user]);
 
   const updateForm = (key, value) => {
@@ -222,6 +229,11 @@ export default function CustomerAccount() {
                           )}{" "}
                           · {order.status || "pending"}
                         </p>
+                        {order.sync_status === "local" && (
+                          <p className="mt-1 text-xs font-semibold text-amber-600">
+                            Saved on this browser
+                          </p>
+                        )}
                       </div>
                       <div className="text-left sm:text-right">
                         <p className="font-bold text-[#28a745]">
