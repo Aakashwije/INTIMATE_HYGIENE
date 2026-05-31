@@ -277,7 +277,7 @@ erDiagram
         jsonb app_metadata "role=admin gate"
     }
     CUSTOMER_PROFILES {
-        uuid id PK_FK
+        uuid id PK "= auth.users.id"
         text email
         text name
         text phone
