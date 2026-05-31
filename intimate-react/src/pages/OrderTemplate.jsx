@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import { useCart } from "../context/CartContext";
+import { useCustomerAuth } from "../context/CustomerAuthContext";
 import { useLang } from "../context/LangContext";
 import {
   addOnProductIds,
@@ -125,6 +126,7 @@ Please confirm availability and estimated delivery date. Thank you! 🌿`;
 export default function OrderTemplate() {
   const { t } = useLang();
   const { items } = useCart();
+  const { user, profile, isLoggedIn, saveProfile } = useCustomerAuth();
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -160,25 +162,46 @@ export default function OrderTemplate() {
   };
 
   const handleWhatsApp = async () => {
-    if (!form.name || !form.phone || !form.address || !form.city) {
+    const customer = {
+      name: form.name || profile?.name || "",
+      phone: form.phone || profile?.phone || "",
+      address: form.address || profile?.address || "",
+      city: form.city || profile?.city || "",
+      payment:
+        form.payment ||
+        profile?.preferred_payment_method ||
+        "Cash on Delivery",
+    };
+
+    if (!customer.name || !customer.phone || !customer.address || !customer.city) {
       setOrderStatus("Please fill name, phone, address, and city first.");
       return;
     }
     setSaving(true);
     setOrderStatus("");
     const orderRef = makeOrderRef();
-    const message = buildTemplate({ ...safeForm, orderRef });
+    const message = buildTemplate({ ...safeForm, ...customer, orderRef });
     try {
+      if (isLoggedIn) {
+        await saveProfile({
+          name: customer.name,
+          phone: customer.phone,
+          address: customer.address,
+          city: customer.city,
+          preferred_payment_method: customer.payment,
+        });
+      }
       await createOrder({
         order: {
           order_ref: orderRef,
-          customer_name: form.name,
-          customer_phone: form.phone,
-          address: form.address,
-          city: form.city,
+          customer_id: user?.id || null,
+          customer_name: customer.name,
+          customer_phone: customer.phone,
+          address: customer.address,
+          city: customer.city,
           total,
           status: "pending",
-          payment_method: form.payment,
+          payment_method: customer.payment,
           discount_code: form.discountCode.trim().toUpperCase() || null,
           note: form.note || null,
         },
@@ -309,7 +332,7 @@ export default function OrderTemplate() {
               </label>
               <input
                 type="text"
-                value={form.name}
+                value={form.name || profile?.name || ""}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="e.g. Dilshan Perera"
                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745]"
@@ -321,7 +344,7 @@ export default function OrderTemplate() {
               </label>
               <input
                 type="tel"
-                value={form.phone}
+                value={form.phone || profile?.phone || ""}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 placeholder="e.g. 0712 345 678"
                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745]"
@@ -332,7 +355,7 @@ export default function OrderTemplate() {
                 {t.address} *
               </label>
               <textarea
-                value={form.address}
+                value={form.address || profile?.address || ""}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 placeholder="e.g. 45/2 Galle Road, Colombo 3"
                 rows={2}
@@ -344,7 +367,7 @@ export default function OrderTemplate() {
                 City / District *
               </label>
               <select
-                value={form.city}
+                value={form.city || profile?.city || ""}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745] bg-white"
               >
@@ -437,7 +460,7 @@ export default function OrderTemplate() {
                 {t.payment} *
               </label>
               <select
-                value={form.payment}
+                value={form.payment || profile?.preferred_payment_method || "Cash on Delivery"}
                 onChange={(e) => setForm({ ...form, payment: e.target.value })}
                 className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#28a745] bg-white"
               >

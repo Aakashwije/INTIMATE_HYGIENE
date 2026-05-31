@@ -1,6 +1,7 @@
 import { Minus, PartyPopper, Plus, ShoppingBag, ShoppingCart, Truck, X } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
+import { useCustomerAuth } from "../context/CustomerAuthContext";
 import { useLang } from "../context/LangContext";
 import { createOrder, trackSiteEvent } from "../lib/database";
 
@@ -45,6 +46,7 @@ async function sendOrderEmail({ order, items }) {
 
 export default function CartDrawer() {
   const { items, updateQty, remove, subtotal, open, setOpen, clear } = useCart();
+  const { user, profile, isLoggedIn, saveProfile } = useCustomerAuth();
   const { t } = useLang();
   const [checkout, setCheckout] = useState({
     name: "",
@@ -69,6 +71,18 @@ export default function CartDrawer() {
     setSaving(true);
     setError("");
     const orderRef = buildOrderRef();
+    const customer = {
+      name: checkout.name || profile?.name || "",
+      email: checkout.email || profile?.email || user?.email || "",
+      phone: checkout.phone || profile?.phone || "",
+      city: checkout.city || profile?.city || "",
+      address: checkout.address || profile?.address || "",
+      note: checkout.note,
+      paymentMethod:
+        checkout.paymentMethod ||
+        profile?.preferred_payment_method ||
+        "Cash on Delivery",
+    };
     const orderItems = items.map((item) => ({
       product_name: item.name,
       quantity: item.qty,
@@ -76,18 +90,28 @@ export default function CartDrawer() {
     }));
     const order = {
       order_ref: orderRef,
-      customer_name: checkout.name,
-      customer_email: checkout.email.trim().toLowerCase(),
-      customer_phone: checkout.phone,
-      address: checkout.address,
-      city: checkout.city,
+      customer_id: user?.id || null,
+      customer_name: customer.name,
+      customer_email: customer.email.trim().toLowerCase(),
+      customer_phone: customer.phone,
+      address: customer.address,
+      city: customer.city,
       total: subtotal,
       status: "pending",
-      payment_method: checkout.paymentMethod,
-      note: checkout.note || null,
+      payment_method: customer.paymentMethod,
+      note: customer.note || null,
     };
 
     try {
+      if (isLoggedIn) {
+        await saveProfile({
+          name: customer.name,
+          phone: customer.phone,
+          address: customer.address,
+          city: customer.city,
+          preferred_payment_method: customer.paymentMethod,
+        });
+      }
       await createOrder({
         order,
         items: orderItems,
@@ -100,7 +124,7 @@ export default function CartDrawer() {
       sendOrderEmail({ order, items: orderItems }).catch((mailErr) => {
         console.warn(mailErr.message || "Order email could not be sent.");
       });
-      window.open(buildWhatsAppMessage(items, subtotal, t, checkout, orderRef), "_blank");
+      window.open(buildWhatsAppMessage(items, subtotal, t, customer, orderRef), "_blank");
       clear();
       setOpen(false);
       setCheckout({
@@ -231,14 +255,14 @@ export default function CartDrawer() {
             </div>
             <form onSubmit={handleCheckout} className="space-y-2.5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <input required value={checkout.name} onChange={(e) => setCheckout((f) => ({ ...f, name: e.target.value }))} placeholder="Name" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
-                <input required value={checkout.phone} onChange={(e) => setCheckout((f) => ({ ...f, phone: e.target.value }))} placeholder="Phone / WhatsApp" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+                <input required value={checkout.name || profile?.name || ""} onChange={(e) => setCheckout((f) => ({ ...f, name: e.target.value }))} placeholder="Name" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+                <input required value={checkout.phone || profile?.phone || ""} onChange={(e) => setCheckout((f) => ({ ...f, phone: e.target.value }))} placeholder="Phone / WhatsApp" className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
               </div>
-              <input required type="email" value={checkout.email} onChange={(e) => setCheckout((f) => ({ ...f, email: e.target.value }))} placeholder="Email for order confirmation" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
-              <input required value={checkout.city} onChange={(e) => setCheckout((f) => ({ ...f, city: e.target.value }))} placeholder="City / district" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
-              <textarea required rows={2} value={checkout.address} onChange={(e) => setCheckout((f) => ({ ...f, address: e.target.value }))} placeholder="Delivery address" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm resize-none" />
+              <input required type="email" value={checkout.email || profile?.email || user?.email || ""} onChange={(e) => setCheckout((f) => ({ ...f, email: e.target.value }))} placeholder="Email for order confirmation" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+              <input required value={checkout.city || profile?.city || ""} onChange={(e) => setCheckout((f) => ({ ...f, city: e.target.value }))} placeholder="City / district" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm" />
+              <textarea required rows={2} value={checkout.address || profile?.address || ""} onChange={(e) => setCheckout((f) => ({ ...f, address: e.target.value }))} placeholder="Delivery address" className="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm resize-none" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <select value={checkout.paymentMethod} onChange={(e) => setCheckout((f) => ({ ...f, paymentMethod: e.target.value }))} className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm bg-white">
+                <select value={checkout.paymentMethod || profile?.preferred_payment_method || "Cash on Delivery"} onChange={(e) => setCheckout((f) => ({ ...f, paymentMethod: e.target.value }))} className="px-3 py-2.5 rounded-lg border border-gray-200 text-sm bg-white">
                   <option>Cash on Delivery</option>
                   <option>Bank Transfer</option>
                   <option>eZ Cash / mCash</option>

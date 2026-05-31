@@ -11,6 +11,7 @@ import {
   faNewspaper,
   faQuestion,
   faTruck,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 import CartButton from "./CartButton";
 import LangToggle from "./LangToggle";
+import { useCustomerAuth } from "../context/CustomerAuthContext";
 
 const navItemDefs = [
   { to: "/home", key: "navHome", icon: faHouseChimney },
@@ -37,6 +39,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { t } = useLang();
+  const { isLoggedIn } = useCustomerAuth();
   const navItems = navItemDefs.map((item) => ({ ...item, label: t[item.key] }));
 
   useEffect(() => {
@@ -97,6 +100,17 @@ export default function Navbar() {
 
         {/* Right cluster */}
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          <Link
+            to={isLoggedIn ? "/account" : "/login"}
+            className={`hidden sm:flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-full transition-colors ${
+              location.pathname === "/account" || location.pathname === "/login"
+                ? "bg-[#28a745] text-white"
+                : "text-gray-700 hover:bg-green-50 hover:text-[#28a745]"
+            }`}
+          >
+            <FontAwesomeIcon icon={faUser} />
+            {isLoggedIn ? "Account" : "Login"}
+          </Link>
           <CartButton />
           <div className="hidden md:block">
             <LangToggle />
@@ -146,6 +160,14 @@ export default function Navbar() {
             })}
           </ul>
           <div className="mt-3 pt-3 border-t border-gray-100">
+            <Link
+              to={isLoggedIn ? "/account" : "/login"}
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-2.5 font-medium rounded-xl transition-all duration-300 text-sm text-gray-800 hover:bg-green-50 hover:text-[#28a745]"
+            >
+              <FontAwesomeIcon icon={faUser} className="w-4" />
+              {isLoggedIn ? "Account" : "Login"}
+            </Link>
             <LangToggle />
           </div>
         </div>

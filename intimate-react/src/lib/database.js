@@ -68,6 +68,56 @@ export async function createOrder({ order, items }) {
   return nextOrder;
 }
 
+export async function fetchCustomerProfile(userId) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("customer_profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function upsertCustomerProfile(profile) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("customer_profiles")
+    .upsert(
+      {
+        id: profile.id,
+        email: profile.email?.trim().toLowerCase() || null,
+        name: profile.name || "",
+        phone: profile.phone || "",
+        address: profile.address || "",
+        city: profile.city || "",
+        preferred_payment_method:
+          profile.preferred_payment_method ||
+          profile.preferredPaymentMethod ||
+          "Cash on Delivery",
+      },
+      { onConflict: "id" },
+    )
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchCustomerOrders(customerId) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("orders")
+    .select("*, order_items(*)")
+    .eq("customer_id", customerId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchSubscribers() {
   const client = requireSupabase();
   const { data, error } = await client

@@ -19,6 +19,7 @@ import StickyMobileCTA from "./components/StickyMobileCTA";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { AdminAuthProvider } from "./context/AdminAuthContext";
 import { CartProvider } from "./context/CartContext";
+import { CustomerAuthProvider } from "./context/CustomerAuthContext";
 import { LangProvider } from "./context/LangContext";
 import About from "./pages/About";
 import B2B from "./pages/B2B";
@@ -26,6 +27,8 @@ import Benefits from "./pages/Benefits";
 import Blog from "./pages/Blog";
 import Compare from "./pages/Compare";
 import Contact from "./pages/Contact";
+import CustomerAccount from "./pages/CustomerAccount";
+import CustomerAuth from "./pages/CustomerAuth";
 import Delivery from "./pages/Delivery";
 import FAQ from "./pages/FAQ";
 import Home from "./pages/Home";
@@ -68,6 +71,8 @@ function CustomerApp() {
         <Route path="/benefits" element={<Benefits />} />
         <Route path="/faq" element={<FAQ />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<CustomerAuth />} />
+        <Route path="/account" element={<CustomerAccount />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/b2b" element={<B2B />} />
         <Route path="/referral" element={<Referral />} />
@@ -109,15 +114,17 @@ function App() {
   return (
     <LangProvider>
       <CartProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* ── Admin routes (completely isolated, no customer overlays) ── */}
-            <Route path="/admin/*" element={<AdminRouter />} />
+        <CustomerAuthProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* ── Admin routes (completely isolated, no customer overlays) ── */}
+              <Route path="/admin/*" element={<AdminRouter />} />
 
-            {/* ── Customer-facing routes ── */}
-            <Route path="/*" element={<CustomerApp />} />
-          </Routes>
-        </BrowserRouter>
+              {/* ── Customer-facing routes ── */}
+              <Route path="/*" element={<CustomerApp />} />
+            </Routes>
+          </BrowserRouter>
+        </CustomerAuthProvider>
       </CartProvider>
     </LangProvider>
   );

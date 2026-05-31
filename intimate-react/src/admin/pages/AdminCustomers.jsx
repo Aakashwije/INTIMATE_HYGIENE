@@ -43,7 +43,7 @@ function segmentFor(customer) {
 function customersFromOrders(orders) {
   const map = new Map();
   orders.forEach((order) => {
-    const key = order.customer_email || order.customer_phone;
+    const key = order.customer_id || order.customer_email || order.customer_phone;
     if (!key) return;
     const existing =
       map.get(key) ||
@@ -52,6 +52,7 @@ function customersFromOrders(orders) {
         name: order.customer_name,
         phone: order.customer_phone,
         email: order.customer_email,
+        registered: Boolean(order.customer_id),
         city: order.city || "-",
         orders: 0,
         totalSpent: 0,
@@ -66,6 +67,7 @@ function customersFromOrders(orders) {
       existing.name = order.customer_name;
       existing.phone = order.customer_phone;
       existing.city = order.city || existing.city;
+      existing.registered = existing.registered || Boolean(order.customer_id);
     }
     map.set(key, existing);
   });
@@ -211,6 +213,11 @@ export default function AdminCustomers() {
                   <div className="text-gray-900 font-semibold text-sm">
                     {c.name}
                   </div>
+                  {c.registered && (
+                    <div className="text-green-primary text-[10px] font-bold">
+                      Registered account
+                    </div>
+                  )}
                   <div className="flex items-center gap-1 text-gray-500 text-xs">
                     <MapPin className="w-3 h-3" />
                     {c.city}

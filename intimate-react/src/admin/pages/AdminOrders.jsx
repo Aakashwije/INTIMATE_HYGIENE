@@ -75,6 +75,7 @@ export default function AdminOrders() {
             const firstItem = row.order_items?.[0];
             return {
               dbId: row.id,
+              customerId: row.customer_id,
               id: row.order_ref || `#ORD-${String(rows.length - idx).padStart(4, "0")}`,
               customer: row.customer_name,
               email: row.customer_email,
@@ -482,9 +483,14 @@ export default function AdminOrders() {
                           <Phone className="w-3 h-3" />
                           {selected.phone}
                         </div>
-                        {selected.email && (
+                      {selected.email && (
                           <div className="text-gray-500 text-xs">
                             {selected.email}
+                          </div>
+                        )}
+                        {selected.customerId && (
+                          <div className="text-green-primary text-xs font-semibold">
+                            Registered customer
                           </div>
                         )}
                         <div className="text-gray-500 text-xs flex items-center gap-1">
