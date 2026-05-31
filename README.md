@@ -743,7 +743,7 @@ flowchart LR
         Build --> Static[Static SPA<br/>intimate-react/dist]
         Func[Serverless<br/>/api/send-order-email]
     end
-    Static -->|rewrite /(.*) → /index.html| Client[Browser]
+    Static -->|"rewrite all routes → /index.html"| Client[Browser]
     Client --> Func
     Func --> SB[(Supabase)]
     Func --> RS[Resend]
