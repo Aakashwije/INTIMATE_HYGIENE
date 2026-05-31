@@ -19,7 +19,13 @@
       "Bash(/plugin marketplace *)",
       "Bash(npx eslint *)",
       "Bash(npx vite *)",
-      "Bash(grep -rni \"per pack\\\\|per 10-pack\\\\|/ pack\\\\|/ 10-pack\\\\|min order\\\\|minimum order\\\\|min [0-9]\\\\|minOrder\\\\|min_order\\\\|/ \\\\${.*unit\\\\|pack\\(s\\)\" src --include=\"*.jsx\" --include=\"*.js\")"
+      "Bash(grep -rni \"per pack\\\\|per 10-pack\\\\|/ pack\\\\|/ 10-pack\\\\|min order\\\\|minimum order\\\\|min [0-9]\\\\|minOrder\\\\|min_order\\\\|/ \\\\${.*unit\\\\|pack\\(s\\)\" src --include=\"*.jsx\" --include=\"*.js\")",
+      "Read(//tmp/**)",
+      "Bash(node /tmp/cdp.mjs '[[\"02-home\",\"/home\"],[\"03-products\",\"/products\"],[\"04-product1\",\"/products/1\"],[\"05-compare\",\"/compare\"],[\"06-benefits\",\"/benefits\"]]')",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(k, '| docW',v['diag']['docW'],'overflow',v['diag']['overflow'],'| offenders:', [ \\(o['tag'],o['cls'][:40],o['w']\\) for o in v['diag']['offenders']]\\) for k,v in d.items\\(\\)]\")",
+      "Bash(node /tmp/cdp2.mjs '[[\"fold-compare\",\"/compare\",0],[\"fold-benefits\",\"/benefits\",0],[\"fold-about\",\"/about\",0],[\"fold-faq\",\"/faq\",0],[\"fold-delivery\",\"/delivery\",0],[\"fold-login\",\"/login\",0]]')",
+      "Read(//private/tmp/**)",
+      "Bash(echo \"exit: $?\")"
     ],
     "additionalDirectories": [
       "/Users/aakash/Documents/GitHub/INTIMATE_HYGIENE/intimate-react/src"

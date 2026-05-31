@@ -46,7 +46,7 @@ export default function LivePurchaseNotification() {
   const p = recentPurchases[index];
 
   return (
-    <div className="fixed bottom-24 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-auto z-[90] sm:max-w-xs animate-toastIn">
+    <div className="fixed bottom-24 sm:bottom-6 left-3 sm:left-6 right-20 sm:right-auto z-[90] sm:max-w-xs animate-toastIn">
       <div className="glass rounded-2xl shadow-xl p-3.5 pr-8 flex items-center gap-3 border-l-4 border-[#28a745] relative">
         <button
           onClick={dismiss}
