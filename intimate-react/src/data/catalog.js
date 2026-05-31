@@ -12,6 +12,13 @@ export const bundleProducts = [
     price: 1099,
     cost: 750,
     image: "/normalnew.png",
+    galleryImages: [
+      {
+        src: "/normal_inside.png",
+        label: "Inside view",
+        alt: "Inside view of the non-waterproof toilet seat cover pack",
+      },
+    ],
     link: "/products/4",
     badge: "Bundle Deal",
     urgency: "Selling Fast",
@@ -30,6 +37,13 @@ export const bundleProducts = [
     price: 1499,
     cost: 1100,
     image: "/travelnew.png",
+    galleryImages: [
+      {
+        src: "/travel_inside.png",
+        label: "Inside view",
+        alt: "Inside view of the waterproof toilet seat cover pack",
+      },
+    ],
     link: "/products/5",
     badge: "Waterproof",
     urgency: "Popular",
@@ -69,6 +83,13 @@ export const addOnProducts = [
     price: 250,
     cost: 150,
     image: "/normalnew.png",
+    galleryImages: [
+      {
+        src: "/normal_inside.png",
+        label: "Inside view",
+        alt: "Inside view of the non-waterproof toilet seat cover pack",
+      },
+    ],
     link: "/products/1",
     badge: "Add-On",
     urgency: null,
@@ -86,6 +107,13 @@ export const addOnProducts = [
     price: 350,
     cost: 250,
     image: "/travelnew.png",
+    galleryImages: [
+      {
+        src: "/travel_inside.png",
+        label: "Inside view",
+        alt: "Inside view of the waterproof toilet seat cover pack",
+      },
+    ],
     link: "/products/2",
     badge: "Add-On",
     urgency: null,

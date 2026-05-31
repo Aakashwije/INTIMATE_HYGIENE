@@ -41,10 +41,12 @@ export default function ProductDetailLayout({
   priceNote,
   whatsappMsg,
   reviews = [],
+  galleryImages = [],
 }) {
   const { t } = useLang();
   const { items } = useCart();
   const [qty, setQty] = useState(1);
+  const [activeImage, setActiveImage] = useState(null);
   const [catalogProduct, setCatalogProduct] = useState(null);
   const fixedProduct = findCatalogProduct(slug);
   const hasBundleInCart = items.some((item) => bundleProductIds.has(item.id));
@@ -84,6 +86,17 @@ export default function ProductDetailLayout({
   const unitPrice = fixedProduct?.price || Number(catalogProduct?.price || 0);
   const minQty = catalogProduct?.min_order || 1;
   const effectiveQty = Math.max(minQty, qty);
+  const productImages = [
+    { src: displayImage, label: "Pack", alt: imageAlt || displayTitle },
+    ...(fixedProduct?.galleryImages || galleryImages),
+  ].filter(
+    (imageItem, index, images) =>
+      imageItem?.src &&
+      images.findIndex((item) => item?.src === imageItem.src) === index,
+  );
+  const selectedImage =
+    productImages.find((imageItem) => imageItem.src === activeImage) ||
+    productImages[0];
 
   const handleOrder = () => {
     if (isLockedAddOn) return;
@@ -124,11 +137,46 @@ export default function ProductDetailLayout({
 
       {/* Product Details */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 max-w-6xl mx-auto my-12 sm:my-20 px-4 sm:px-5 items-start">
-        <img
-          src={displayImage}
-          alt={imageAlt}
-          className="w-full rounded-xl shadow-lg object-cover"
-        />
+        <div className="space-y-3">
+          <div className="overflow-hidden rounded-xl bg-white shadow-lg">
+            <img
+              src={selectedImage?.src || displayImage}
+              alt={selectedImage?.alt || imageAlt || displayTitle}
+              className="w-full aspect-[4/5] max-h-[640px] object-contain bg-gray-50 p-3 sm:p-5"
+            />
+          </div>
+          {productImages.length > 1 && (
+            <div className="grid grid-cols-2 gap-3">
+              {productImages.map(({ src, label, alt }) => {
+                const isActive = (selectedImage?.src || displayImage) === src;
+                return (
+                  <button
+                    key={src}
+                    type="button"
+                    aria-label={`Show ${label}`}
+                    aria-pressed={isActive}
+                    onClick={() => setActiveImage(src)}
+                    className={`group overflow-hidden rounded-xl border bg-white text-left shadow-sm transition-all ${
+                      isActive
+                        ? "border-[#28a745] ring-2 ring-green-100"
+                        : "border-gray-100 hover:border-green-200 hover:shadow-md"
+                    }`}
+                  >
+                    <img
+                      src={src}
+                      alt={alt || label}
+                      loading="lazy"
+                      className="h-24 w-full object-cover bg-gray-50 transition-transform duration-300 group-hover:scale-105 sm:h-28"
+                    />
+                    <span className="block px-3 py-2 text-xs font-semibold text-gray-600">
+                      {label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
         <div className="bg-white p-5 sm:p-8 rounded-xl shadow-md">
           {sections
             .slice(0, 2)

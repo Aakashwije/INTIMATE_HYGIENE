@@ -117,6 +117,18 @@ export default function Home() {
     price: formatLkr(product.price),
   }));
 
+  const socialImages = [
+    { src: "/normalnew.png", alt: "Non-waterproof pack" },
+    {
+      src: "/normal_inside.png",
+      alt: "Inside view of the non-waterproof pack",
+    },
+    { src: "/travelnew.png", alt: "Waterproof pack" },
+    { src: "/travel_inside.png", alt: "Inside view of the waterproof pack" },
+    { src: "/interprisenew.png", alt: "Enterprise pack" },
+    { src: "/normalnew.png", alt: "Non-waterproof product pack" },
+  ];
+
   return (
     <>
       <SEO
@@ -479,20 +491,13 @@ export default function Home() {
           <p className="text-gray-500 mb-8">{t.followJourneySub}</p>
         </Reveal>
         <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto mb-8">
-          {[
-            "/normalnew.png",
-            "/travelnew.png",
-            "/interprisenew.png",
-            "/normalnew.png",
-            "/travelnew.png",
-            "/interprisenew.png",
-          ].map((img, i) => (
+          {socialImages.map(({ src, alt }, i) => (
             <Reveal key={i} delay={i * 50} variant="zoom">
               <div className="aspect-square overflow-hidden rounded-lg group cursor-pointer">
                 <img
-                  src={img}
+                  src={src}
                   loading="lazy"
-                  alt="Product"
+                  alt={alt}
                   className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-500"
                 />
               </div>
