@@ -32,6 +32,15 @@ function friendlySyncError(error) {
   return error?.message || "Supabase request failed.";
 }
 
+function isDuplicateOrderError(error) {
+  const message = String(error?.message || "").toLowerCase();
+  return (
+    error?.code === "23505" ||
+    (message.includes("duplicate") &&
+      (message.includes("orders_pkey") || message.includes("order_ref")))
+  );
+}
+
 async function runSupabaseRequest(requestBuilder, timeoutMs = REQUEST_TIMEOUT_MS) {
   const controller = new AbortController();
   const timeout = globalThis.setTimeout(() => controller.abort(), timeoutMs);
@@ -68,11 +77,132 @@ function saveLocalPendingOrder(orderRecord) {
   return orderRecord;
 }
 
+function removeLocalPendingOrder(orderRef) {
+  if (!globalThis.localStorage) return;
+  const next = readLocalPendingOrders().filter(
+    (order) => order.order_ref !== orderRef,
+  );
+  globalThis.localStorage.setItem(
+    LOCAL_PENDING_ORDERS_KEY,
+    JSON.stringify(next),
+  );
+}
+
 export function fetchLocalPendingOrders(customerId, email) {
   return readLocalPendingOrders().filter((order) => {
     if (customerId && order.customer_id === customerId) return true;
     return email && order.customer_email === email.trim().toLowerCase();
   });
+}
+
+function buildOrderRecord({ order, items }) {
+  const orderId = order.id || makeId();
+  const nextOrder = {
+    ...order,
+    id: orderId,
+    customer_email: order.customer_email?.trim().toLowerCase() || null,
+    created_at: order.created_at || new Date().toISOString(),
+  };
+  const orderItems = items.map((item) => ({
+    id: item.id || makeId(),
+    order_id: orderId,
+    product_name: item.product_name,
+    quantity: item.quantity,
+    price: item.price,
+  }));
+
+  return { ...nextOrder, order_items: orderItems };
+}
+
+function orderPayloadForCloud(orderRecord) {
+  const orderPayload = { ...orderRecord };
+  delete orderPayload.order_items;
+  delete orderPayload.sync_status;
+  delete orderPayload.sync_error;
+
+  return orderPayload;
+}
+
+export function captureLocalOrder({ order, items }) {
+  return saveLocalPendingOrder({
+    ...buildOrderRecord({ order, items }),
+    sync_status: "local",
+    sync_error: "Waiting for cloud sync.",
+  });
+}
+
+async function pushOrderToCloud(orderRecord) {
+  const orderPayload = orderPayloadForCloud(orderRecord);
+  const orderItems = orderRecord.order_items || [];
+
+  const rpcResult = await runSupabaseRequest(
+    supabase.rpc("create_checkout_order", {
+      order_payload: orderPayload,
+      item_payloads: orderItems,
+    }),
+  );
+
+  if (!rpcResult.error) {
+    return {
+      ...orderRecord,
+      ...rpcResult.data,
+      sync_status: "cloud",
+      sync_error: null,
+    };
+  }
+
+  if (!String(rpcResult.error.message || "").includes("create_checkout_order")) {
+    throw rpcResult.error;
+  }
+
+  const { error } = await runSupabaseRequest(
+    supabase.from("orders").insert(orderPayload),
+  );
+
+  if (error) throw error;
+
+  const { error: itemsError } = await runSupabaseRequest(
+    supabase.from("order_items").insert(orderItems),
+  );
+
+  if (itemsError) throw itemsError;
+
+  return {
+    ...orderRecord,
+    sync_status: "cloud",
+    sync_error: null,
+  };
+}
+
+export async function syncOrderToCloud(orderRecord) {
+  if (!supabase) {
+    return saveLocalPendingOrder({
+      ...orderRecord,
+      sync_status: "local",
+      sync_error: "Supabase is not configured.",
+    });
+  }
+
+  try {
+    const syncedOrder = await pushOrderToCloud(orderRecord);
+    removeLocalPendingOrder(orderRecord.order_ref);
+    return syncedOrder;
+  } catch (error) {
+    if (isDuplicateOrderError(error)) {
+      removeLocalPendingOrder(orderRecord.order_ref);
+      return {
+        ...orderRecord,
+        sync_status: "cloud",
+        sync_error: null,
+      };
+    }
+
+    return saveLocalPendingOrder({
+      ...orderRecord,
+      sync_status: "local",
+      sync_error: friendlySyncError(error),
+    });
+  }
 }
 
 export async function subscribeToNewsletter(email) {
@@ -97,71 +227,8 @@ export async function createInquiry(inquiry) {
 }
 
 export async function createOrder({ order, items }) {
-  const orderId = order.id || makeId();
-  const nextOrder = {
-    ...order,
-    id: orderId,
-    customer_email: order.customer_email?.trim().toLowerCase() || null,
-    created_at: order.created_at || new Date().toISOString(),
-  };
-  const orderItems = items.map((item) => ({
-    id: item.id || makeId(),
-    order_id: orderId,
-    product_name: item.product_name,
-    quantity: item.quantity,
-    price: item.price,
-  }));
-
-  if (!supabase) {
-    return saveLocalPendingOrder({
-      ...nextOrder,
-      order_items: orderItems,
-      sync_status: "local",
-      sync_error: "Supabase is not configured.",
-    });
-  }
-
-  try {
-    const rpcResult = await runSupabaseRequest(
-      supabase.rpc("create_checkout_order", {
-        order_payload: nextOrder,
-        item_payloads: orderItems,
-      }),
-    );
-
-    if (!rpcResult.error) {
-      return {
-        ...nextOrder,
-        ...rpcResult.data,
-        order_items: orderItems,
-        sync_status: "cloud",
-      };
-    }
-
-    if (!String(rpcResult.error.message || "").includes("create_checkout_order")) {
-      throw rpcResult.error;
-    }
-
-    const { error } = await runSupabaseRequest(
-      supabase.from("orders").insert(nextOrder),
-    );
-
-    if (error) throw error;
-
-    const { error: itemsError } = await runSupabaseRequest(
-      supabase.from("order_items").insert(orderItems),
-    );
-
-    if (itemsError) throw itemsError;
-    return { ...nextOrder, order_items: orderItems, sync_status: "cloud" };
-  } catch (error) {
-    return saveLocalPendingOrder({
-      ...nextOrder,
-      order_items: orderItems,
-      sync_status: "local",
-      sync_error: friendlySyncError(error),
-    });
-  }
+  const localOrder = captureLocalOrder({ order, items });
+  return syncOrderToCloud(localOrder);
 }
 
 export async function fetchCustomerProfile(userId) {

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
 import { useLang } from "../context/LangContext";
-import { createOrder, trackSiteEvent } from "../lib/database";
+import { captureLocalOrder, syncOrderToCloud, trackSiteEvent } from "../lib/database";
 import { sendOrderConfirmationEmail } from "../lib/orderEmail";
 
 const PHONE = "94707018171";
@@ -108,16 +108,10 @@ export default function CartDrawer() {
           preferred_payment_method: customer.paymentMethod,
         }).catch(() => {});
       }
-      const savedOrder = await createOrder({
+      const capturedOrder = captureLocalOrder({
         order,
         items: orderItems,
       });
-
-      if (savedOrder.sync_status === "local") {
-        console.warn(
-          `Order ${orderRef} saved locally: ${savedOrder.sync_error}`,
-        );
-      }
 
       trackSiteEvent({
         event_type: "checkout_submit",
@@ -126,12 +120,29 @@ export default function CartDrawer() {
           order_ref: orderRef,
           total: subtotal,
           item_count: items.length,
-          sync_status: savedOrder.sync_status,
+          sync_status: "local",
         },
       }).catch(() => {});
-      sendOrderConfirmationEmail({ order, items: orderItems }).catch((mailErr) => {
+      sendOrderConfirmationEmail({
+        order: capturedOrder,
+        items: capturedOrder.order_items,
+      }).catch((mailErr) => {
         console.warn(mailErr.message || "Order confirmation email could not be sent.");
       });
+      const syncCapturedOrder = () =>
+        syncOrderToCloud(capturedOrder).then((syncedOrder) => {
+          if (syncedOrder.sync_status !== "cloud") {
+            console.warn(
+              `Order ${orderRef} saved locally: ${syncedOrder.sync_error}`,
+            );
+          }
+        });
+      syncCapturedOrder().catch((syncErr) => {
+        console.warn(syncErr.message || "Order cloud sync failed.");
+      });
+      window.setTimeout(() => {
+        syncCapturedOrder().catch(() => {});
+      }, 15000);
       if (whatsappWindow) {
         whatsappWindow.location.href = whatsappUrl;
       } else {
@@ -148,10 +159,10 @@ export default function CartDrawer() {
         note: "",
         paymentMethod: "Cash on Delivery",
       });
+      setSaving(false);
     } catch (err) {
       if (whatsappWindow) whatsappWindow.close();
       setError(err.message || "Could not save order. Please try again.");
-    } finally {
       setSaving(false);
     }
   };

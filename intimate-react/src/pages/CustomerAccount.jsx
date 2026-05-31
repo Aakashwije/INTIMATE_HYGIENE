@@ -6,7 +6,11 @@ import ScrollToTop from "../components/ScrollToTop";
 import SEO from "../components/SEO";
 import { useCart } from "../context/CartContext";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
-import { fetchCustomerOrders, fetchLocalPendingOrders } from "../lib/database";
+import {
+  fetchCustomerOrders,
+  fetchLocalPendingOrders,
+  syncOrderToCloud,
+} from "../lib/database";
 import { bundleProductIds, shopProducts } from "../data/catalog";
 
 function productForOrderItem(item) {
@@ -47,8 +51,17 @@ export default function CustomerAccount() {
           ...localOrders.filter((order) => !cloudRefs.has(order.order_ref)),
           ...cloudOrders,
         ]);
+        localOrders.forEach((order) => {
+          syncOrderToCloud(order).catch(() => {});
+        });
       })
-      .catch(() => setOrders(fetchLocalPendingOrders(user.id, user.email)));
+      .catch(() => {
+        const localOrders = fetchLocalPendingOrders(user.id, user.email);
+        setOrders(localOrders);
+        localOrders.forEach((order) => {
+          syncOrderToCloud(order).catch(() => {});
+        });
+      });
   }, [user]);
 
   const updateForm = (key, value) => {

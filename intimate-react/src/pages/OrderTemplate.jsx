@@ -14,7 +14,7 @@ import {
   formatLkr,
   shopProducts,
 } from "../data/catalog";
-import { createOrder } from "../lib/database";
+import { captureLocalOrder, syncOrderToCloud } from "../lib/database";
 import { sendOrderConfirmationEmail } from "../lib/orderEmail";
 
 const products = shopProducts.map((product) => ({
@@ -194,20 +194,22 @@ export default function OrderTemplate() {
           preferred_payment_method: customer.payment,
         }).catch(() => {});
       }
-      const savedOrder = await createOrder({
-        order: {
-          order_ref: orderRef,
-          customer_id: user?.id || null,
-          customer_name: customer.name,
-          customer_phone: customer.phone,
-          address: customer.address,
-          city: customer.city,
-          total,
-          status: "pending",
-          payment_method: customer.payment,
-          discount_code: form.discountCode.trim().toUpperCase() || null,
-          note: form.note || null,
-        },
+      const order = {
+        order_ref: orderRef,
+        customer_id: user?.id || null,
+        customer_name: customer.name,
+        customer_email: user?.email || profile?.email || "",
+        customer_phone: customer.phone,
+        address: customer.address,
+        city: customer.city,
+        total,
+        status: "pending",
+        payment_method: customer.payment,
+        discount_code: form.discountCode.trim().toUpperCase() || null,
+        note: form.note || null,
+      };
+      const capturedOrder = captureLocalOrder({
+        order,
         items: [
           {
             product_name: p.name,
@@ -217,34 +219,20 @@ export default function OrderTemplate() {
         ],
       });
       sendOrderConfirmationEmail({
-        order: {
-          order_ref: orderRef,
-          customer_id: user?.id || null,
-          customer_name: customer.name,
-          customer_email: user?.email || profile?.email || "",
-          customer_phone: customer.phone,
-          address: customer.address,
-          city: customer.city,
-          total,
-          status: "pending",
-          payment_method: customer.payment,
-          discount_code: form.discountCode.trim().toUpperCase() || null,
-          note: form.note || null,
-        },
-        items: [
-          {
-            product_name: p.name,
-            quantity: form.qty,
-            price: p.price,
-          },
-        ],
+        order: capturedOrder,
+        items: capturedOrder.order_items,
       }).catch((mailErr) => {
         console.warn(mailErr.message || "Order confirmation email could not be sent.");
       });
+      const syncCapturedOrder = () => syncOrderToCloud(capturedOrder);
+      syncCapturedOrder().catch((syncErr) => {
+        console.warn(syncErr.message || "Order cloud sync failed.");
+      });
+      window.setTimeout(() => {
+        syncCapturedOrder().catch(() => {});
+      }, 15000);
       setOrderStatus(
-        savedOrder.sync_status === "local"
-          ? "Order captured locally. Opening WhatsApp now..."
-          : "Order saved. Opening WhatsApp now...",
+        "Order captured. Opening WhatsApp now...",
       );
     } catch (err) {
       setOrderStatus(err.message || "Could not save order. Opening WhatsApp.");
