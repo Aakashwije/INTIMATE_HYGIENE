@@ -4,6 +4,7 @@ import { useCart } from "../context/CartContext";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
 import { useLang } from "../context/LangContext";
 import { createOrder, trackSiteEvent } from "../lib/database";
+import { sendOrderConfirmationEmail } from "../lib/orderEmail";
 
 const PHONE = "94707018171";
 
@@ -29,19 +30,6 @@ function buildWhatsAppMessage(items, subtotal, t, customer, orderRef) {
     `${t.cartSubtotal || "Subtotal"}%3A LKR ${subtotal.toLocaleString()}%0A%0A` +
     `Please confirm availability and delivery%2C thank you%21`;
   return `https://wa.me/${PHONE}?text=${txt}`;
-}
-
-async function sendOrderEmail({ order, items }) {
-  const response = await fetch("/api/send-order-email", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ order, items }),
-  });
-
-  if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error(data.error || "Order email could not be sent.");
-  }
 }
 
 export default function CartDrawer() {
@@ -141,8 +129,8 @@ export default function CartDrawer() {
           sync_status: savedOrder.sync_status,
         },
       }).catch(() => {});
-      sendOrderEmail({ order, items: orderItems }).catch((mailErr) => {
-        console.warn(mailErr.message || "Order email could not be sent.");
+      sendOrderConfirmationEmail({ order, items: orderItems }).catch((mailErr) => {
+        console.warn(mailErr.message || "Order confirmation email could not be sent.");
       });
       if (whatsappWindow) {
         whatsappWindow.location.href = whatsappUrl;

@@ -1,11 +1,12 @@
 const BRAND = {
-  name: "Hygenc Covers",
+  name: "Intimate Hygiene",
   company: "Intimate Hygiene Enterprises",
   phone: "+94 70 701 8171",
   email: "intimatehygiene@gmail.com",
   green: "#28a745",
   olive: "#7CB342",
 };
+const RESEND_FALLBACK_FROM = "Intimate Hygiene <onboarding@resend.dev>";
 
 function escapeHtml(value = "") {
   return String(value)
@@ -146,28 +147,53 @@ async function handler(req, res) {
 
   const baseUrl = getBaseUrl(req);
   const logoUrl = `${baseUrl}/fulllogo.png`;
-  const from = process.env.ORDER_EMAIL_FROM || "Hygenc Covers <onboarding@resend.dev>";
+  const from = process.env.ORDER_EMAIL_FROM || RESEND_FALLBACK_FROM;
   const replyTo = process.env.ORDER_EMAIL_REPLY_TO || BRAND.email;
+  const bcc = process.env.ORDER_EMAIL_BCC || BRAND.email;
 
-  const response = await fetch("https://api.resend.com/emails", {
+  const payload = {
+    from,
+    to: [order.customer_email],
+    bcc: bcc ? [bcc] : undefined,
+    reply_to: replyTo,
+    subject: `We received your order ${order.order_ref}`,
+    html: buildEmailHtml({ order, items, logoUrl }),
+  };
+
+  let response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      from,
-      to: [order.customer_email],
-      reply_to: replyTo,
-      subject: `We received your order ${order.order_ref}`,
-      html: buildEmailHtml({ order, items, logoUrl }),
-    }),
+    body: JSON.stringify(payload),
   });
 
-  const data = await response.json().catch(() => ({}));
+  let data = await response.json().catch(() => ({}));
+  const errorMessage = data.message || data.error || "";
+
+  if (
+    !response.ok &&
+    from !== RESEND_FALLBACK_FROM &&
+    /domain|verify|verified|sender/i.test(errorMessage)
+  ) {
+    response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...payload,
+        from: RESEND_FALLBACK_FROM,
+      }),
+    });
+    data = await response.json().catch(() => ({}));
+  }
+
   if (!response.ok) {
     return res.status(response.status).json({
-      error: data.message || "Could not send order email.",
+      error: data.message || data.error || "Could not send order email.",
     });
   }
 

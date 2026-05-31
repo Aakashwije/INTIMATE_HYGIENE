@@ -15,6 +15,7 @@ import {
   shopProducts,
 } from "../data/catalog";
 import { createOrder } from "../lib/database";
+import { sendOrderConfirmationEmail } from "../lib/orderEmail";
 
 const products = shopProducts.map((product) => ({
   id: product.slug,
@@ -214,6 +215,31 @@ export default function OrderTemplate() {
             price: p.price,
           },
         ],
+      });
+      sendOrderConfirmationEmail({
+        order: {
+          order_ref: orderRef,
+          customer_id: user?.id || null,
+          customer_name: customer.name,
+          customer_email: user?.email || profile?.email || "",
+          customer_phone: customer.phone,
+          address: customer.address,
+          city: customer.city,
+          total,
+          status: "pending",
+          payment_method: customer.payment,
+          discount_code: form.discountCode.trim().toUpperCase() || null,
+          note: form.note || null,
+        },
+        items: [
+          {
+            product_name: p.name,
+            quantity: form.qty,
+            price: p.price,
+          },
+        ],
+      }).catch((mailErr) => {
+        console.warn(mailErr.message || "Order confirmation email could not be sent.");
       });
       setOrderStatus(
         savedOrder.sync_status === "local"
