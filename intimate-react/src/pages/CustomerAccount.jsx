@@ -26,6 +26,12 @@ export default function CustomerAccount() {
   const [form, setForm] = useState({});
   const [status, setStatus] = useState("");
   const [saving, setSaving] = useState(false);
+  const needsDatabaseSetup = status
+    .toLowerCase()
+    .includes("database setup");
+  const savedLocally = status
+    .toLowerCase()
+    .includes("cloud sync");
 
   useEffect(() => {
     if (!loading && !user) navigate("/login");
@@ -46,9 +52,17 @@ export default function CustomerAccount() {
     event.preventDefault();
     setSaving(true);
     setStatus("");
-    const result = await saveProfile({ ...profile, ...form });
-    setSaving(false);
-    setStatus(result.ok ? "Saved details." : result.error);
+    try {
+      const result = await saveProfile({ ...profile, ...form });
+      setStatus(result.warning || (result.ok ? "Saved details." : result.error));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login", { replace: true });
   };
 
   const reorder = (order) => {
@@ -99,7 +113,7 @@ export default function CustomerAccount() {
             <p className="text-gray-500 text-sm mt-1">{user.email}</p>
           </div>
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="self-start px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-semibold"
           >
             Logout
@@ -152,7 +166,17 @@ export default function CustomerAccount() {
                 <option>Bank Transfer</option>
                 <option>eZ Cash / mCash</option>
               </select>
-              {status && <p className="text-xs text-gray-500">{status}</p>}
+              {status && (
+                <div
+                  className={`rounded-xl border px-3 py-2 text-xs leading-relaxed ${
+                    needsDatabaseSetup || savedLocally
+                      ? "border-amber-200 bg-amber-50 text-amber-700"
+                      : "border-emerald-100 bg-emerald-50 text-emerald-700"
+                  }`}
+                >
+                  {status}
+                </div>
+              )}
               <button
                 disabled={saving}
                 className="w-full py-3 rounded-xl bg-[#28a745] text-white font-bold hover:bg-[#218838] disabled:opacity-70"

@@ -80,30 +80,59 @@ export async function fetchCustomerProfile(userId) {
   return data;
 }
 
+function buildCustomerProfilePayload(profile) {
+  return {
+    id: profile.id,
+    email: profile.email?.trim().toLowerCase() || null,
+    name: profile.name || "",
+    phone: profile.phone || "",
+    address: profile.address || "",
+    city: profile.city || "",
+    preferred_payment_method:
+      profile.preferred_payment_method ||
+      profile.preferredPaymentMethod ||
+      "Cash on Delivery",
+  };
+}
+
+async function runProfileRequest(requestBuilder) {
+  const controller = new AbortController();
+  const timeout = globalThis.setTimeout(() => controller.abort(), 10000);
+
+  try {
+    return await requestBuilder.abortSignal(controller.signal);
+  } finally {
+    globalThis.clearTimeout(timeout);
+  }
+}
+
 export async function upsertCustomerProfile(profile) {
   const client = requireSupabase();
-  const { data, error } = await client
+  const payload = buildCustomerProfilePayload(profile);
+
+  const updateRequest = client
     .from("customer_profiles")
-    .upsert(
-      {
-        id: profile.id,
-        email: profile.email?.trim().toLowerCase() || null,
-        name: profile.name || "",
-        phone: profile.phone || "",
-        address: profile.address || "",
-        city: profile.city || "",
-        preferred_payment_method:
-          profile.preferred_payment_method ||
-          profile.preferredPaymentMethod ||
-          "Cash on Delivery",
-      },
-      { onConflict: "id" },
-    )
+    .update(payload)
+    .eq("id", profile.id)
+    .select()
+    .maybeSingle();
+
+  const { data, error } = await runProfileRequest(updateRequest);
+
+  if (error) throw error;
+  if (data) return data;
+
+  const insertRequest = client
+    .from("customer_profiles")
+    .insert(payload)
     .select()
     .single();
 
-  if (error) throw error;
-  return data;
+  const { data: inserted, error: insertError } =
+    await runProfileRequest(insertRequest);
+
+  if (insertError) throw insertError;
+  return inserted;
 }
 
 export async function fetchCustomerOrders(customerId) {

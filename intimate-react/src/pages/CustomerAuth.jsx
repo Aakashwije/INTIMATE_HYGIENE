@@ -10,9 +10,15 @@ export default function CustomerAuth() {
   const navigate = useNavigate();
   const { login, signUp, resetPassword, isLoggedIn } = useCustomerAuth();
   const [mode, setMode] = useState("login");
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [message, setMessage] = useState("");
   const [saving, setSaving] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   if (isLoggedIn) return <Navigate to="/account" replace />;
 
@@ -20,6 +26,12 @@ export default function CustomerAuth() {
     event.preventDefault();
     setSaving(true);
     setMessage("");
+
+    if (mode === "signup" && form.password !== form.confirmPassword) {
+      setSaving(false);
+      setMessage("Passwords do not match. Please re-enter the same password.");
+      return;
+    }
 
     const result =
       mode === "signup"
@@ -96,17 +108,45 @@ export default function CustomerAuth() {
               placeholder="Email"
               className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28a745]"
             />
-            <input
-              required
-              type="password"
-              minLength={6}
-              value={form.password}
-              onChange={(e) =>
-                setForm((current) => ({ ...current, password: e.target.value }))
-              }
-              placeholder="Password"
-              className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28a745]"
-            />
+            <div className="relative">
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                minLength={6}
+                value={form.password}
+                onChange={(e) =>
+                  setForm((current) => ({
+                    ...current,
+                    password: e.target.value,
+                  }))
+                }
+                placeholder="Password"
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-20 text-sm focus:outline-none focus:border-[#28a745]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((current) => !current)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#28a745] hover:text-[#218838]"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+            {mode === "signup" && (
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                minLength={6}
+                value={form.confirmPassword}
+                onChange={(e) =>
+                  setForm((current) => ({
+                    ...current,
+                    confirmPassword: e.target.value,
+                  }))
+                }
+                placeholder="Re-enter password"
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#28a745]"
+              />
+            )}
 
             {message && (
               <p className="text-sm text-center text-gray-500">{message}</p>
@@ -132,6 +172,12 @@ export default function CustomerAuth() {
                   current === "signup" ? "login" : "signup",
                 );
                 setMessage("");
+                setShowPassword(false);
+                setForm((current) => ({
+                  ...current,
+                  password: "",
+                  confirmPassword: "",
+                }));
               }}
               className="text-[#28a745] font-semibold hover:underline"
             >
