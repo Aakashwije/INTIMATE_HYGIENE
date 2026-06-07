@@ -465,6 +465,19 @@ export async function deleteOrder(orderId) {
   return orderId;
 }
 
+export async function updateOrder(orderId, updates) {
+  const client = requireFirestore();
+  const orderRef = doc(client, "orders", orderId);
+  const payload = stripUndefined({
+    ...updates,
+    updated_at: nowIso(),
+  });
+
+  await setDoc(orderRef, payload, { merge: true });
+  const saved = await getDoc(orderRef);
+  return normalizeDoc(saved);
+}
+
 export async function createQuizResponse(response) {
   const client = requireFirestore();
   const payload = stripUndefined({

@@ -166,6 +166,9 @@ export default function AdminProducts() {
 
   const totalRevenue = products.reduce((s, p) => s + p.sold * p.price, 0);
   const totalUnits = products.reduce((s, p) => s + p.sold, 0);
+  const lowStockProducts = products
+    .filter((p) => p.active !== false && p.stock < 100)
+    .sort((a, b) => a.stock - b.stock);
 
   return (
     <div className="p-6 space-y-5 max-w-[1600px] mx-auto">
@@ -190,7 +193,7 @@ export default function AdminProducts() {
       </motion.div>
 
       {/* Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
         {[
           {
             label: "Total Products",
@@ -209,6 +212,12 @@ export default function AdminProducts() {
             value: `LKR ${(totalRevenue / 1000000).toFixed(1)}M`,
             icon: Star,
             sub: "From product sales",
+          },
+          {
+            label: "Low Stock",
+            value: lowStockProducts.length,
+            icon: AlertTriangle,
+            sub: "Below 100 units",
           },
         ].map(({ label, value, icon: Icon, sub }, i) => (
           <motion.div
@@ -229,6 +238,38 @@ export default function AdminProducts() {
           </motion.div>
         ))}
       </div>
+
+      {lowStockProducts.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border border-amber-200 bg-amber-50 p-4"
+        >
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-amber-600 ring-1 ring-amber-200">
+              <AlertTriangle className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="font-bold text-amber-900">Low-stock alerts</h2>
+              <p className="text-sm text-amber-700">
+                Reorder or update inventory for these products.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {lowStockProducts.map((product) => (
+                  <button
+                    key={product.id}
+                    type="button"
+                    onClick={() => startEdit(product)}
+                    className="rounded-xl bg-white px-3 py-2 text-xs font-semibold text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100"
+                  >
+                    {product.name}: {product.stock.toLocaleString()} left
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Product cards */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">

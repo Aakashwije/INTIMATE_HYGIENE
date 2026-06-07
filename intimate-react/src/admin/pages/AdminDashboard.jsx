@@ -1,5 +1,6 @@
 import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import {
+    AlertTriangle,
     ArrowDownRight,
     ArrowUpRight,
     CheckCircle,
@@ -45,7 +46,7 @@ import {
 } from "../../lib/database";
 import { exportOrders } from "../../lib/adminExport";
 
-const STATUS_KEYS = ["delivered", "shipped", "processing", "cancelled"];
+const STATUS_KEYS = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 function toExportOrder(row, idx, total) {
   const firstItem = row.order_items?.[0];
@@ -192,15 +193,17 @@ function KpiCard({
 // ─── Status badge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }) {
   const map = {
-    delivered: "bg-green-100 text-green-primary border-green-200",
-    shipped: "bg-blue-50 text-blue-600 border-blue-200",
+    pending: "bg-gray-100 text-gray-600 border-gray-200",
     processing: "bg-amber-50 text-amber-600 border-amber-200",
+    shipped: "bg-blue-50 text-blue-600 border-blue-200",
+    delivered: "bg-green-100 text-green-primary border-green-200",
     cancelled: "bg-red-50 text-red-600 border-red-200",
   };
   const icons = {
-    delivered: CheckCircle,
-    shipped: Truck,
+    pending: Clock,
     processing: Clock,
+    shipped: Truck,
+    delivered: CheckCircle,
     cancelled: RotateCcw,
   };
   const Icon = icons[status];
@@ -257,6 +260,11 @@ function initials(name = "") {
 
 function buildDashboardData({ orders, products, subscribers, inquiries, events = [] }) {
   const liveOrders = orders.length > 0;
+  const todayOrders = orders.filter((order) => isSameLocalDay(order.created_at));
+  const billableOrders = orders.filter((order) => order.status !== "cancelled");
+  const billableTodayOrders = todayOrders.filter(
+    (order) => order.status !== "cancelled",
+  );
   const todayEvents = events.filter((event) => isSameLocalDay(event.created_at));
   const pageViewEvents = events.filter((event) => event.event_type === "page_view");
   const todayPageViews = todayEvents.filter(
@@ -267,9 +275,23 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
       event.event_type,
     ),
   ).length;
-  const revenue = orders
-    .filter((order) => order.status !== "cancelled")
-    .reduce((sum, order) => sum + Number(order.total || 0), 0);
+  const revenue = billableOrders.reduce(
+    (sum, order) => sum + Number(order.total || 0),
+    0,
+  );
+  const todayRevenue = billableTodayOrders.reduce(
+    (sum, order) => sum + Number(order.total || 0),
+    0,
+  );
+  const todayUnits = billableTodayOrders.reduce(
+    (sum, order) =>
+      sum +
+      (order.order_items?.reduce(
+        (itemSum, item) => itemSum + Number(item.quantity || 0),
+        0,
+      ) || 0),
+    0,
+  );
   const avgOrder = orders.length ? Math.round(revenue / orders.length) : 0;
   const customers = new Set(
     orders.map((order) => order.customer_phone || order.customer_email),
@@ -293,20 +315,33 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
     }
   });
 
-  const statuses = ["delivered", "shipped", "processing", "cancelled"];
+  const statuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
   const statusCounts = statuses.map((status) => ({
     name: status.charAt(0).toUpperCase() + status.slice(1),
     value: orders.filter((order) => order.status === status).length,
     fill:
-      status === "delivered"
-        ? "#28a745"
-        : status === "shipped"
-          ? "#0ea5e9"
-          : status === "processing"
-            ? "#f59e0b"
-            : "#ef4444",
+      status === "pending"
+        ? "#6b7280"
+        : status === "processing"
+          ? "#f59e0b"
+          : status === "shipped"
+            ? "#0ea5e9"
+            : status === "delivered"
+              ? "#28a745"
+              : "#ef4444",
   }));
   const statusTotal = statusCounts.reduce((sum, item) => sum + item.value, 0);
+  const allLowStockProducts = products
+    .filter((product) => product.active !== false && Number(product.stock || 0) < 100)
+    .sort((a, b) => Number(a.stock || 0) - Number(b.stock || 0));
+  const lowStockProducts = allLowStockProducts
+    .slice(0, 6)
+    .map((product) => ({
+      id: product.id,
+      name: findCatalogProduct(product.slug)?.name || product.name || product.slug,
+      stock: Number(product.stock || 0),
+      slug: product.slug,
+    }));
 
   const cityCounts = orders.reduce((acc, order) => {
     const city = order.city || "Unknown";
@@ -338,6 +373,10 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
       orders: orders.length,
       customers: customers.size,
       avgOrder,
+      todayRevenue,
+      todayOrders: todayOrders.length,
+      todayUnits,
+      pendingOrders: orders.filter((order) => order.status === "pending").length,
     },
     revenueData: liveOrders ? revenueByMonth : revenueData,
     productSales:
@@ -364,9 +403,9 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
               order.order_items?.map((item) => `${item.product_name} x ${item.quantity}`).join(", ") ||
               "Order",
             amount: `LKR ${Number(order.total || 0).toLocaleString()}`,
-            status: ["delivered", "shipped", "processing", "cancelled"].includes(order.status)
+            status: STATUS_KEYS.includes(order.status)
               ? order.status
-              : "processing",
+              : "pending",
             time: new Date(order.created_at).toLocaleDateString("en-LK"),
             avatar: initials(order.customer_name),
           }))
@@ -382,7 +421,8 @@ function buildDashboardData({ orders, products, subscribers, inquiries, events =
               pct: Math.round((count / maxCity) * 100),
             }))
         : topCities,
-    lowStock: products.filter((product) => product.stock < 100).length,
+    lowStock: allLowStockProducts.length,
+    lowStockProducts,
     pageViews: todayPageViews,
     totalPageViews: pageViewEvents.length,
     conversions: todayConversions,
@@ -526,8 +566,63 @@ export default function AdminDashboard() {
         />
       </div>
 
+      {/* Daily sales cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {[
+          {
+            label: "Today Revenue",
+            value: `LKR ${dashboard.kpis.todayRevenue.toLocaleString()}`,
+            sub: "From orders placed today",
+            icon: DollarSign,
+            tone: "bg-green-50 text-green-primary border-green-200",
+          },
+          {
+            label: "Today Orders",
+            value: dashboard.kpis.todayOrders.toLocaleString(),
+            sub: "Live Firestore orders",
+            icon: ShoppingCart,
+            tone: "bg-blue-50 text-blue-600 border-blue-200",
+          },
+          {
+            label: "Units Today",
+            value: dashboard.kpis.todayUnits.toLocaleString(),
+            sub: "Items sold today",
+            icon: TrendingUp,
+            tone: "bg-violet-50 text-violet-600 border-violet-200",
+          },
+          {
+            label: "Pending Orders",
+            value: dashboard.kpis.pendingOrders.toLocaleString(),
+            sub: "Needs admin action",
+            icon: Clock,
+            tone: "bg-amber-50 text-amber-600 border-amber-200",
+          },
+        ].map(({ label, value, sub, icon: Icon, tone }, i) => (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 + i * 0.05 }}
+            className="rounded-2xl border border-gray-200 bg-white p-4"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-xl font-bold text-gray-900">{value}</div>
+                <div className="text-xs font-semibold text-gray-600">{label}</div>
+                <div className="mt-1 text-xs text-gray-400">{sub}</div>
+              </div>
+              <div
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${tone}`}
+              >
+                <Icon className="h-5 w-5" />
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
       {/* Secondary KPIs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-4">
         {[
           {
             label: "Conversion Rate",
@@ -589,6 +684,39 @@ export default function AdminDashboard() {
           </motion.div>
         ))}
       </div>
+
+      {dashboard.lowStockProducts.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border border-amber-200 bg-amber-50 p-4"
+        >
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-amber-600 ring-1 ring-amber-200">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="font-bold text-amber-900">Low-stock alerts</h2>
+                <p className="text-sm text-amber-700">
+                  {dashboard.lowStock} product{dashboard.lowStock === 1 ? "" : "s"} below 100 units.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {dashboard.lowStockProducts.map((product) => (
+                <Link
+                  key={product.id || product.slug}
+                  to="/admin/products"
+                  className="rounded-xl bg-white px-3 py-2 text-xs font-semibold text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100"
+                >
+                  {product.name}: {product.stock} left
+                </Link>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Main charts row */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
