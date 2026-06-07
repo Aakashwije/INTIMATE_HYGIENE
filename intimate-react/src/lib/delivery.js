@@ -52,5 +52,29 @@ export function getDeliveryQuote(city = "") {
   };
 }
 
+export function getDeliveryQuoteByArea(area = "") {
+  if (area === "colombo") {
+    return {
+      fee: 0,
+      area: "Colombo area",
+      label: "FREE (Colombo area)",
+    };
+  }
+
+  if (area === "outside") {
+    return {
+      fee: OUTSIDE_COLOMBO_DELIVERY_FEE,
+      area: "Outside Colombo",
+      label: `LKR ${OUTSIDE_COLOMBO_DELIVERY_FEE.toLocaleString()} (outside Colombo)`,
+    };
+  }
+
+  return {
+    fee: 0,
+    area: "",
+    label: "Select delivery area",
+  };
+}
+
 export const DELIVERY_POLICY_TEXT =
   "Delivery: Colombo area free · Outside Colombo LKR 350";
