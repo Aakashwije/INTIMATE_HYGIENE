@@ -7,7 +7,6 @@ const BRAND = {
   olive: "#7CB342",
 };
 const RESEND_FALLBACK_FROM = "Intimate Hygiene <onboarding@resend.dev>";
-const SUPABASE_TIMEOUT_MS = 9000;
 
 function escapeHtml(value = "") {
   return String(value)
@@ -131,155 +130,6 @@ function parseBody(req) {
   }
 }
 
-function getSupabaseConfig() {
-  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const key =
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.SUPABASE_ANON_KEY ||
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-  if (!url || !key) return null;
-  return {
-    key,
-    url: url.replace(/\/$/, ""),
-  };
-}
-
-function isDuplicateOrderError(error) {
-  const message = String(error?.message || error?.error || "").toLowerCase();
-  return (
-    error?.code === "23505" ||
-    (message.includes("duplicate") &&
-      (message.includes("orders_pkey") || message.includes("order_ref")))
-  );
-}
-
-function cleanOrderPayload(order) {
-  const {
-    order_items: _orderItems,
-    sync_status: _syncStatus,
-    sync_error: _syncError,
-    ...payload
-  } = order;
-
-  return {
-    ...payload,
-    customer_email: payload.customer_email?.trim().toLowerCase() || null,
-    status: payload.status || "pending",
-  };
-}
-
-function cleanItemPayloads(items, orderId) {
-  return items.map((item) => ({
-    id: item.id,
-    order_id: item.order_id || orderId,
-    product_name: item.product_name || item.name || "Product",
-    quantity: Number(item.quantity || item.qty || 1),
-    price: Number(item.price || 0),
-  }));
-}
-
-async function supabaseFetch(path, { token, ...options } = {}) {
-  const config = getSupabaseConfig();
-  if (!config) {
-    return {
-      ok: false,
-      skipped: true,
-      error: "Supabase API is not configured for the email function.",
-    };
-  }
-
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), SUPABASE_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(`${config.url}${path}`, {
-      ...options,
-      signal: controller.signal,
-      headers: {
-        apikey: config.key,
-        Authorization: `Bearer ${token || config.key}`,
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
-    });
-    const data = await response.json().catch(() => null);
-
-    return {
-      ok: response.ok,
-      status: response.status,
-      data,
-      error: response.ok
-        ? null
-        : data?.message || data?.error || "Supabase order save failed.",
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      error:
-        error.name === "AbortError"
-          ? "Supabase order save timed out."
-          : error.message || "Supabase order save failed.",
-    };
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-async function saveOrderToSupabase({ order, items, customerAccessToken }) {
-  const orderPayload = cleanOrderPayload(order);
-  const itemPayloads = cleanItemPayloads(items, orderPayload.id);
-
-  const rpcResult = await supabaseFetch("/rest/v1/rpc/create_checkout_order", {
-    method: "POST",
-    token: customerAccessToken,
-    body: JSON.stringify({
-      order_payload: orderPayload,
-      item_payloads: itemPayloads,
-    }),
-  });
-
-  if (rpcResult.ok) {
-    return { ok: true, via: "rpc", data: rpcResult.data };
-  }
-
-  if (isDuplicateOrderError(rpcResult.data || rpcResult)) {
-    return { ok: true, via: "duplicate", data: rpcResult.data };
-  }
-
-  const orderInsert = await supabaseFetch("/rest/v1/orders", {
-    method: "POST",
-    token: customerAccessToken,
-    headers: { Prefer: "return=representation" },
-    body: JSON.stringify(orderPayload),
-  });
-
-  if (!orderInsert.ok && !isDuplicateOrderError(orderInsert.data || orderInsert)) {
-    return {
-      ok: false,
-      via: "direct",
-      error: orderInsert.error,
-    };
-  }
-
-  const itemInsert = await supabaseFetch("/rest/v1/order_items", {
-    method: "POST",
-    token: customerAccessToken,
-    headers: { Prefer: "return=representation" },
-    body: JSON.stringify(itemPayloads),
-  });
-
-  if (!itemInsert.ok && !isDuplicateOrderError(itemInsert.data || itemInsert)) {
-    return {
-      ok: false,
-      via: "direct-items",
-      error: itemInsert.error,
-    };
-  }
-
-  return { ok: true, via: "direct", data: orderInsert.data };
-}
-
 async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -294,13 +144,6 @@ async function handler(req, res) {
   if (!order?.customer_email || !order?.order_ref || !items.length) {
     return res.status(400).json({ error: "Order email, reference, and items are required." });
   }
-
-  const customerAccessToken = req.headers["x-customer-access-token"];
-  const orderSyncPromise = saveOrderToSupabase({
-    order,
-    items,
-    customerAccessToken,
-  });
 
   const baseUrl = getBaseUrl(req);
   const logoUrl = `${baseUrl}/fulllogo.png`;
@@ -354,14 +197,9 @@ async function handler(req, res) {
     });
   }
 
-  const orderSync = await orderSyncPromise;
-
   return res.status(200).json({
     ok: true,
     id: data.id,
-    order_saved: orderSync.ok,
-    order_save_via: orderSync.via,
-    order_save_error: orderSync.ok ? null : orderSync.error,
   });
 }
 

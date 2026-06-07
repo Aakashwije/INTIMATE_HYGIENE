@@ -32,14 +32,14 @@ const zones = [
       "Gampaha, Kalutara, Horana, Panadura, Negombo, Ja-Ela, Kelaniya, Ragama",
     time: "1–2 business days",
     fee: "LKR 250",
-    free: "LKR 3,000+",
+    free: "LKR 2,000+",
   },
   {
     zone: "Zone 3 — Central & Southern",
     areas: "Kandy, Galle, Matara, Kurunegala, Ratnapura, Badulla, Nuwara Eliya",
     time: "2–3 business days",
     fee: "LKR 350",
-    free: "LKR 4,000+",
+    free: "LKR 2,000+",
   },
   {
     zone: "Zone 4 — North & East",
@@ -47,7 +47,7 @@ const zones = [
       "Jaffna, Vavuniya, Trincomalee, Batticaloa, Anuradhapura, Polonnaruwa",
     time: "3–5 business days",
     fee: "LKR 450",
-    free: "LKR 5,000+",
+    free: "LKR 2,000+",
   },
 ];
 
@@ -121,7 +121,7 @@ export default function Delivery() {
     <>
       <SEO
         title="Delivery Info"
-        description="Fast islandwide delivery across Sri Lanka. Free delivery on orders above LKR 3,000. Same-day delivery available in Colombo area."
+        description="Fast islandwide delivery across Sri Lanka. Free delivery on orders LKR 2,000 and up. Same-day delivery available in Colombo area."
         path="/delivery"
       />
       <Navbar />

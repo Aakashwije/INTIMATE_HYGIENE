@@ -1,7 +1,7 @@
 import { PartyPopper } from "lucide-react";
 import { useLang } from "../context/LangContext";
 
-const FREE_THRESHOLD = 3000;
+const FREE_THRESHOLD = 2000;
 
 export default function DeliveryProgressBar({ orderTotal = 0 }) {
   const { t } = useLang();

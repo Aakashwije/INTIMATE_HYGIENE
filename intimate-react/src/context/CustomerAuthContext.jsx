@@ -1,10 +1,21 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+} from "firebase/auth";
 import { fetchCustomerProfile, upsertCustomerProfile } from "../lib/database";
-import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { auth, isFirebaseConfigured } from "../lib/firebase";
 
 const CustomerAuthContext = createContext();
 const DEFAULT_CUSTOMER_AUTH_URL = "https://hygenc.lk/account";
 const LOCAL_PROFILE_KEY = "hygenc_customer_profiles_v1";
+const ADMIN_EMAIL = (
+  import.meta.env.VITE_FIREBASE_ADMIN_EMAIL || "aakashwije92@gmail.com"
+).toLowerCase();
 
 function normalizeRedirectUrl(url) {
   if (!url) return DEFAULT_CUSTOMER_AUTH_URL;
@@ -19,41 +30,45 @@ const customerAuthRedirectUrl = normalizeRedirectUrl(
 
 function getCustomerAuthErrorMessage(error) {
   const message = error?.message || "Something went wrong. Please try again.";
+  const code = error?.code || "";
   const normalized = message.toLowerCase();
 
-  if (error?.name === "AbortError" || normalized.includes("timed out")) {
-    return "Saved on this browser. Cloud sync took too long, so please check the Supabase project connection before relying on this across devices.";
+  if (normalized.includes("timed out")) {
+    return "Saved on this browser. Cloud sync took too long, so please check the Firebase project connection before relying on this across devices.";
   }
 
-  if (
-    normalized.includes("customer_profiles") ||
-    normalized.includes("schema cache")
-  ) {
-    return "Customer accounts are almost ready. Please run the customer account database setup in Supabase, then try again.";
-  }
-
-  if (normalized.includes("email rate limit")) {
-    return "Email confirmations are temporarily blocked by Supabase's default sender. Please try login if this account was already created, or enable custom SMTP in Supabase.";
-  }
-
-  if (normalized.includes("already registered") || normalized.includes("already exists")) {
+  if (code === "auth/email-already-in-use") {
     return "This email already has an account. Please login or use forgot password.";
   }
 
-  if (normalized.includes("invalid login credentials")) {
+  if (
+    code === "auth/invalid-credential" ||
+    code === "auth/user-not-found" ||
+    code === "auth/wrong-password"
+  ) {
     return "The email or password is incorrect. Please check and try again.";
   }
 
-  return message;
+  if (code === "auth/weak-password") {
+    return "Please use a stronger password with at least 6 characters.";
+  }
+
+  if (code === "auth/too-many-requests") {
+    return "Too many attempts. Please wait a moment and try again.";
+  }
+
+  return message.replace(/^Firebase:\s*/i, "").replace(/\s*\(auth\/[^)]+\)\.?$/, "");
 }
 
 function withTimeout(promise, milliseconds, message) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => {
-      window.setTimeout(() => reject(new Error(message)), milliseconds);
-    }),
-  ]);
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error(message)), milliseconds);
+  });
+
+  return Promise.race([promise, timeout]).finally(() => {
+    window.clearTimeout(timeoutId);
+  });
 }
 
 function readLocalProfiles() {
@@ -74,22 +89,33 @@ function saveLocalProfile(profile) {
   localStorage.setItem(LOCAL_PROFILE_KEY, JSON.stringify(profiles));
 }
 
+function isAdminEmail(email) {
+  return email?.trim().toLowerCase() === ADMIN_EMAIL;
+}
+
+function customerFromFirebaseUser(firebaseUser) {
+  if (!firebaseUser || isAdminEmail(firebaseUser.email)) return null;
+  return {
+    id: firebaseUser.uid,
+    uid: firebaseUser.uid,
+    email: firebaseUser.email,
+    displayName: firebaseUser.displayName || "",
+    metadata: firebaseUser.metadata,
+  };
+}
+
 async function signOutCustomerSession() {
-  if (!isSupabaseConfigured) return;
-  await withTimeout(
-    supabase.auth.signOut({ scope: "local" }),
-    5000,
-    "Customer logout timed out.",
-  );
+  if (!isFirebaseConfigured || !auth) return;
+  await withTimeout(signOut(auth), 5000, "Customer logout timed out.");
 }
 
 export function CustomerAuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(isSupabaseConfigured);
+  const [loading, setLoading] = useState(isFirebaseConfigured);
 
   const loadProfile = async (nextUser) => {
-    if (!nextUser || nextUser.app_metadata?.role === "admin") {
+    if (!nextUser) {
       setProfile(null);
       return;
     }
@@ -97,7 +123,7 @@ export function CustomerAuthProvider({ children }) {
     const fallbackProfile = getLocalProfile(nextUser.id) || {
       id: nextUser.id,
       email: nextUser.email,
-      name: nextUser.user_metadata?.name || "",
+      name: nextUser.displayName || "",
       phone: "",
       address: "",
       city: "",
@@ -107,90 +133,110 @@ export function CustomerAuthProvider({ children }) {
 
     try {
       const existing = await fetchCustomerProfile(nextUser.id);
-      setProfile(existing);
+      setProfile(existing || fallbackProfile);
+      if (!existing) saveLocalProfile(fallbackProfile);
     } catch {
       saveLocalProfile(fallbackProfile);
     }
   };
 
   useEffect(() => {
-    if (!isSupabaseConfigured) return undefined;
+    if (!isFirebaseConfigured || !auth) return undefined;
 
     let mounted = true;
-
-    supabase.auth.getSession().then(async ({ data }) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!mounted) return;
-      const sessionUser = data.session?.user || null;
-      setUser(sessionUser?.app_metadata?.role === "admin" ? null : sessionUser);
-      await loadProfile(sessionUser);
-      setLoading(false);
+      const nextUser = customerFromFirebaseUser(firebaseUser);
+      setUser(nextUser);
+      await loadProfile(nextUser);
+      if (mounted) setLoading(false);
     });
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        const sessionUser = session?.user || null;
-        setUser(sessionUser?.app_metadata?.role === "admin" ? null : sessionUser);
-        await loadProfile(sessionUser);
-        setLoading(false);
-      },
-    );
 
     return () => {
       mounted = false;
-      listener.subscription.unsubscribe();
+      unsubscribe();
     };
   }, []);
 
   const signUp = async ({ email, password, name }) => {
-    if (!isSupabaseConfigured) {
-      return { ok: false, error: "Supabase Auth is not configured." };
+    if (!isFirebaseConfigured || !auth) {
+      return { ok: false, error: "Firebase Auth is not configured." };
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email: email.trim().toLowerCase(),
-      password,
-      options: {
-        data: { name },
-        emailRedirectTo: customerAuthRedirectUrl,
-      },
-    });
+    const cleanEmail = email.trim().toLowerCase();
+    if (isAdminEmail(cleanEmail)) {
+      return { ok: false, error: "Please use the admin login page." };
+    }
 
-    if (error) return { ok: false, error: getCustomerAuthErrorMessage(error) };
-    if (data.session && data.user) await loadProfile(data.user);
-    return { ok: true, needsConfirmation: !data.session };
+    try {
+      const credential = await createUserWithEmailAndPassword(
+        auth,
+        cleanEmail,
+        password,
+      );
+      if (name) {
+        await updateProfile(credential.user, { displayName: name });
+      }
+      const nextUser = customerFromFirebaseUser({
+        ...credential.user,
+        displayName: name || credential.user.displayName,
+      });
+      const nextProfile = await upsertCustomerProfile({
+        id: nextUser.id,
+        email: nextUser.email,
+        name,
+        phone: "",
+        address: "",
+        city: "",
+        preferred_payment_method: "Cash on Delivery",
+      });
+      setUser(nextUser);
+      setProfile(nextProfile);
+      saveLocalProfile(nextProfile);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getCustomerAuthErrorMessage(error) };
+    }
   };
 
   const login = async ({ email, password }) => {
-    if (!isSupabaseConfigured) {
-      return { ok: false, error: "Supabase Auth is not configured." };
+    if (!isFirebaseConfigured || !auth) {
+      return { ok: false, error: "Firebase Auth is not configured." };
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
-
-    if (error) return { ok: false, error: getCustomerAuthErrorMessage(error) };
-    if (data.user?.app_metadata?.role === "admin") {
-      await supabase.auth.signOut();
+    const cleanEmail = email.trim().toLowerCase();
+    if (isAdminEmail(cleanEmail)) {
       return { ok: false, error: "Please use the admin login page." };
     }
-    setUser(data.user);
-    await loadProfile(data.user);
-    return { ok: true };
+
+    try {
+      const credential = await signInWithEmailAndPassword(
+        auth,
+        cleanEmail,
+        password,
+      );
+      const nextUser = customerFromFirebaseUser(credential.user);
+      setUser(nextUser);
+      await loadProfile(nextUser);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getCustomerAuthErrorMessage(error) };
+    }
   };
 
   const resetPassword = async (email) => {
-    if (!isSupabaseConfigured) {
-      return { ok: false, error: "Supabase Auth is not configured." };
+    if (!isFirebaseConfigured || !auth) {
+      return { ok: false, error: "Firebase Auth is not configured." };
     }
 
-    const { error } = await supabase.auth.resetPasswordForEmail(
-      email.trim().toLowerCase(),
-      { redirectTo: customerAuthRedirectUrl },
-    );
-    if (error) return { ok: false, error: getCustomerAuthErrorMessage(error) };
-    return { ok: true };
+    try {
+      await sendPasswordResetEmail(auth, email.trim().toLowerCase(), {
+        url: customerAuthRedirectUrl,
+      });
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: getCustomerAuthErrorMessage(error) };
+    }
   };
 
   const saveProfile = async (updates) => {

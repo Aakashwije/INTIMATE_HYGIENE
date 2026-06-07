@@ -83,11 +83,6 @@ export default defineConfig(({ mode }) => {
     "ORDER_EMAIL_REPLY_TO",
     "ORDER_EMAIL_BCC",
     "SITE_URL",
-    "SUPABASE_URL",
-    "SUPABASE_ANON_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "VITE_SUPABASE_URL",
-    "VITE_SUPABASE_PUBLISHABLE_KEY",
   ].forEach((key) => {
     if (env[key] && !process.env[key]) {
       process.env[key] = env[key];

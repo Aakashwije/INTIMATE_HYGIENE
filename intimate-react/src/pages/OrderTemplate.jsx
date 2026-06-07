@@ -24,7 +24,7 @@ const products = shopProducts.map((product) => ({
   img: product.image,
 }));
 
-const FREE_DELIVERY_THRESHOLD = 3000;
+const FREE_DELIVERY_THRESHOLD = 2000;
 
 const BUNDLES = [
   {
@@ -218,21 +218,26 @@ export default function OrderTemplate() {
           },
         ],
       });
+      const syncedOrder = await syncOrderToCloud(capturedOrder);
+      const orderForNotification = syncedOrder.order_items
+        ? syncedOrder
+        : capturedOrder;
       sendOrderConfirmationEmail({
-        order: capturedOrder,
-        items: capturedOrder.order_items,
+        order: orderForNotification,
+        items: orderForNotification.order_items,
       }).catch((mailErr) => {
         console.warn(mailErr.message || "Order confirmation email could not be sent.");
       });
-      const syncCapturedOrder = () => syncOrderToCloud(capturedOrder);
-      syncCapturedOrder().catch((syncErr) => {
-        console.warn(syncErr.message || "Order cloud sync failed.");
-      });
-      window.setTimeout(() => {
-        syncCapturedOrder().catch(() => {});
-      }, 15000);
+      if (syncedOrder.sync_status !== "cloud") {
+        console.warn(`Order ${orderRef} saved locally: ${syncedOrder.sync_error}`);
+        window.setTimeout(() => {
+          syncOrderToCloud(capturedOrder).catch(() => {});
+        }, 15000);
+      }
       setOrderStatus(
-        "Order captured. Opening WhatsApp now...",
+        syncedOrder.sync_status === "cloud"
+          ? "Order saved. Opening WhatsApp now..."
+          : "Order captured locally. Opening WhatsApp now...",
       );
     } catch (err) {
       setOrderStatus(err.message || "Could not save order. Opening WhatsApp.");

@@ -1,0 +1,208 @@
+[debug] [2026-06-07T14:25:40.314Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:25:40.316Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase login:add aakashwije92@gmail.com
+[debug] [2026-06-07T14:25:40.316Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:25:40.316Z] Platform:      darwin
+[debug] [2026-06-07T14:25:40.316Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:25:40.316Z] Time:          Sun Jun 07 2026 19:55:40 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:25:40.316Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-07T14:25:40.317Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=392579334&redirect_uri=http%3A%2F%2Flocalhost%3A9005&login_hint=aakashwije92%40gmail.com
+[info] 
+[info] Waiting for authentication...
+[debug] [2026-06-07T14:25:41.001Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-06-07T14:25:41.002Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-06-07T14:26:06.594Z] >>> [apiv2][query] POST https://accounts.google.com/o/oauth2/token [none]
+[debug] [2026-06-07T14:26:06.594Z] >>> [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[debug] [2026-06-07T14:26:06.995Z] <<< [apiv2][status] POST https://accounts.google.com/o/oauth2/token 200
+[debug] [2026-06-07T14:26:38.973Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:26:38.974Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase projects:list --project intimate-hygiene
+[debug] [2026-06-07T14:26:38.974Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:26:38.975Z] Platform:      darwin
+[debug] [2026-06-07T14:26:38.975Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:26:38.975Z] Time:          Sun Jun 07 2026 19:56:38 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:26:38.975Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-07T14:26:39.060Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-07T14:26:39.061Z] > authorizing via signed-in user (aakashwije92@gmail.com)
+[debug] [2026-06-07T14:26:39.062Z] No OAuth tokens found
+[debug] [2026-06-07T14:26:39.063Z] No OAuth tokens found
+[debug] [2026-06-07T14:26:39.063Z] > refreshing access token with scopes: []
+[debug] [2026-06-07T14:26:39.064Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-07T14:26:39.064Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:26:39.445Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-06-07T14:26:39.446Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:26:39.452Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-06-07T14:26:40.455Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-06-07T14:27:37.322Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:27:37.323Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase login:add intimatehygiene@gmail.com
+[debug] [2026-06-07T14:27:37.324Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:27:37.324Z] Platform:      darwin
+[debug] [2026-06-07T14:27:37.324Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:27:37.324Z] Time:          Sun Jun 07 2026 19:57:37 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:27:37.324Z] ----------------------------------------------------------------------
+[debug] 
+[info] 
+[info] Visit this URL on this device to log in:
+[info] https://accounts.google.com/o/oauth2/auth?client_id=563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com&scope=email%20openid%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloudplatformprojects.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Ffirebase%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcloud-platform&response_type=code&state=402120901&redirect_uri=http%3A%2F%2Flocalhost%3A9005&login_hint=intimatehygiene%40gmail.com
+[info] 
+[info] Waiting for authentication...
+[debug] [2026-06-07T14:27:45.058Z] >>> [apiv2][query] POST https://accounts.google.com/o/oauth2/token [none]
+[debug] [2026-06-07T14:27:45.058Z] >>> [apiv2][body] POST https://accounts.google.com/o/oauth2/token [omitted]
+[debug] [2026-06-07T14:27:45.399Z] <<< [apiv2][status] POST https://accounts.google.com/o/oauth2/token 200
+[debug] [2026-06-07T14:27:54.098Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:27:54.100Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase projects:list --project intimate-hygiene
+[debug] [2026-06-07T14:27:54.100Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:27:54.100Z] Platform:      darwin
+[debug] [2026-06-07T14:27:54.100Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:27:54.100Z] Time:          Sun Jun 07 2026 19:57:54 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:27:54.100Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-07T14:27:54.188Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-07T14:27:54.189Z] > authorizing via signed-in user (aakashwije92@gmail.com)
+[debug] [2026-06-07T14:27:54.191Z] No OAuth tokens found
+[debug] [2026-06-07T14:27:54.191Z] No OAuth tokens found
+[debug] [2026-06-07T14:27:54.191Z] > refreshing access token with scopes: []
+[debug] [2026-06-07T14:27:54.192Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-07T14:27:54.192Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:27:54.452Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-06-07T14:27:54.452Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:27:54.460Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-06-07T14:27:55.222Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-06-07T14:28:08.771Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:28:08.774Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase projects:list
+[debug] [2026-06-07T14:28:08.774Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:28:08.774Z] Platform:      darwin
+[debug] [2026-06-07T14:28:08.774Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:28:08.774Z] Time:          Sun Jun 07 2026 19:58:08 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:28:08.774Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-07T14:28:08.873Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-07T14:28:08.874Z] > authorizing via signed-in user (intimatehygiene@gmail.com)
+[debug] [2026-06-07T14:28:08.875Z] No OAuth tokens found
+[debug] [2026-06-07T14:28:08.876Z] No OAuth tokens found
+[debug] [2026-06-07T14:28:08.876Z] > refreshing access token with scopes: []
+[debug] [2026-06-07T14:28:08.877Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-07T14:28:08.877Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:28:09.167Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-06-07T14:28:09.167Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:28:09.172Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-06-07T14:28:09.966Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-06-07T14:28:29.675Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:28:29.676Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase use intimate-hygiene
+[debug] [2026-06-07T14:28:29.677Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:28:29.677Z] Platform:      darwin
+[debug] [2026-06-07T14:28:29.677Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:28:29.677Z] Time:          Sun Jun 07 2026 19:58:29 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:28:29.677Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-07T14:28:29.764Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-07T14:28:29.764Z] > authorizing via signed-in user (intimatehygiene@gmail.com)
+[debug] [2026-06-07T14:28:29.765Z] No OAuth tokens found
+[debug] [2026-06-07T14:28:29.765Z] No OAuth tokens found
+[debug] [2026-06-07T14:28:29.765Z] > refreshing access token with scopes: []
+[debug] [2026-06-07T14:28:29.766Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-07T14:28:29.766Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:28:29.941Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-06-07T14:28:29.941Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:28:29.948Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/cloudresourcemanager.googleapis.com [none]
+[debug] [2026-06-07T14:28:29.948Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/cloudresourcemanager.googleapis.com  x-goog-user-project=intimate-hygiene
+[debug] [2026-06-07T14:28:29.677Z] ----------------------------------------------------------------------
+[debug] [2026-06-07T14:28:29.678Z] Command:       /Users/aakash/.nvm/versions/node/v24.11.1/bin/node /Users/aakash/.nvm/versions/node/v24.11.1/bin/firebase deploy --only firestore:rules,firestore:indexes --project intimate-hygiene
+[debug] [2026-06-07T14:28:29.679Z] CLI Version:   15.7.0
+[debug] [2026-06-07T14:28:29.679Z] Platform:      darwin
+[debug] [2026-06-07T14:28:29.679Z] Node Version:  v24.11.1
+[debug] [2026-06-07T14:28:29.679Z] Time:          Sun Jun 07 2026 19:58:29 GMT+0530 (India Standard Time)
+[debug] [2026-06-07T14:28:29.679Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-06-07T14:28:30.596Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-06-07T14:28:30.596Z] > authorizing via signed-in user (intimatehygiene@gmail.com)
+[debug] [2026-06-07T14:28:30.596Z] [iam] checking project intimate-hygiene for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2026-06-07T14:28:30.597Z] No OAuth tokens found
+[debug] [2026-06-07T14:28:30.597Z] No OAuth tokens found
+[debug] [2026-06-07T14:28:30.597Z] > refreshing access token with scopes: []
+[debug] [2026-06-07T14:28:30.599Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-06-07T14:28:30.599Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:28:30.851Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-06-07T14:28:30.851Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-06-07T14:28:30.862Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene:testIamPermissions [none]
+[debug] [2026-06-07T14:28:30.863Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene:testIamPermissions  x-goog-user-project=intimate-hygiene
+[debug] [2026-06-07T14:28:30.863Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2026-06-07T14:28:31.663Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/cloudresourcemanager.googleapis.com 200
+[debug] [2026-06-07T14:28:31.663Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/cloudresourcemanager.googleapis.com [omitted]
+[debug] [2026-06-07T14:28:31.671Z] Checked if tokens are valid: true, expires at: 1780846108941
+[debug] [2026-06-07T14:28:31.672Z] Checked if tokens are valid: true, expires at: 1780846108941
+[debug] [2026-06-07T14:28:31.672Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene [none]
+[debug] [2026-06-07T14:28:32.171Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene:testIamPermissions 200
+[debug] [2026-06-07T14:28:32.172Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'intimate-hygiene'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-06-07T14:28:32.179Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:32.179Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:32.179Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/firestore.googleapis.com [none]
+[debug] [2026-06-07T14:28:32.179Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/firestore.googleapis.com  x-goog-user-project=intimate-hygiene
+[debug] [2026-06-07T14:28:32.974Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/intimate-hygiene 200
+[debug] [2026-06-07T14:28:33.848Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/firestore.googleapis.com 200
+[debug] [2026-06-07T14:28:33.848Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/intimate-hygiene/services/firestore.googleapis.com [omitted]
+[info] ✔  firestore: required API firestore.googleapis.com is enabled 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-06-07T14:28:33.856Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:33.856Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:33.856Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default) [none]
+[debug] [2026-06-07T14:28:34.545Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default) 200
+[debug] [2026-06-07T14:28:34.546Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default) {"name":"projects/intimate-hygiene/databases/(default)","uid":"6a66d376-0c91-4be6-94fc-b32b34d2ee07","createTime":"2026-06-07T08:05:19.824680Z","updateTime":"2026-06-07T08:05:19.824680Z","locationId":"asia-south1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-06-07T13:28:34.539072Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"j","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"INq/66ur9ZQDMMfLtfrV9JQD"}
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-06-07T14:28:34.548Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:34.548Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:34.548Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene:test [none]
+[debug] [2026-06-07T14:28:34.548Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene:test [omitted]
+[debug] [2026-06-07T14:28:36.153Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene:test 200
+[debug] [2026-06-07T14:28:36.154Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene:test {}
+[info] ✔  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-06-07T14:28:36.159Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:36.159Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:36.160Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/releases pageSize=10&pageToken=
+[debug] [2026-06-07T14:28:37.573Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/releases 200
+[debug] [2026-06-07T14:28:37.573Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/releases {"releases":[{"name":"projects/intimate-hygiene/releases/cloud.firestore","rulesetName":"projects/intimate-hygiene/rulesets/39fa04c7-ad58-49ae-800f-d3a518ebc17b","createTime":"2026-06-07T08:05:26.104158Z","updateTime":"2026-06-07T08:05:26.104158Z"}]}
+[debug] [2026-06-07T14:28:37.574Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:37.574Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:37.574Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets/39fa04c7-ad58-49ae-800f-d3a518ebc17b [none]
+[debug] [2026-06-07T14:28:39.007Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets/39fa04c7-ad58-49ae-800f-d3a518ebc17b 200
+[debug] [2026-06-07T14:28:39.007Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets/39fa04c7-ad58-49ae-800f-d3a518ebc17b [omitted]
+[info] i  firestore: uploading rules firestore.rules... 
+[debug] [2026-06-07T14:28:39.010Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:39.010Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:39.010Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets [none]
+[debug] [2026-06-07T14:28:39.010Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets [omitted]
+[debug] [2026-06-07T14:28:40.976Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets 200
+[debug] [2026-06-07T14:28:40.977Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/rulesets {"name":"projects/intimate-hygiene/rulesets/287b4d67-efb6-4ed1-9c92-535e39f4c598","source":{"files":[{"content":"rules_version = '2';\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    function signedIn() {\n      return request.auth != null;\n    }\n\n    function isOwnerAdmin() {\n      return signedIn()\n        && (\n          request.auth.uid == \"q4VIHjWchpdb3FzB0ZKoV5zSsi83\"\n          || request.auth.token.email == \"aakashwije92@gmail.com\"\n        );\n    }\n\n    function isAdmin() {\n      return isOwnerAdmin()\n        || (\n          signedIn()\n          && exists(/databases/$(database)/documents/admins/$(request.auth.uid))\n        );\n    }\n\n    function isOrderOwner() {\n      return signedIn()\n        && (\n          resource.data.customer_id == request.auth.uid\n          || resource.data.customer_email == request.auth.token.email\n        );\n    }\n\n    match /admins/{adminId} {\n      allow read: if isAdmin();\n      allow write: if isOwnerAdmin();\n    }\n\n    match /orders/{orderId} {\n      allow create: if true;\n      allow read: if isAdmin() || isOrderOwner();\n      allow update, delete: if isAdmin();\n    }\n\n    match /customer_profiles/{profileId} {\n      allow read, write: if isAdmin() || (signedIn() && request.auth.uid == profileId);\n    }\n\n    match /products/{productId} {\n      allow read: if true;\n      allow write: if isAdmin();\n    }\n\n    match /newsletter_subscribers/{subscriberId} {\n      allow create, update: if request.resource.data.keys().hasOnly([\n        \"id\",\n        \"email\",\n        \"created_at\",\n        \"updated_at\"\n      ]) && request.resource.data.email is string;\n      allow read, delete: if isAdmin();\n    }\n\n    match /inquiries/{inquiryId} {\n      allow create: if true;\n      allow read, update, delete: if isAdmin();\n    }\n\n    match /quiz_responses/{responseId} {\n      allow create: if true;\n      allow read, update, delete: if isAdmin();\n    }\n\n    match /site_events/{eventId} {\n      allow create: if true;\n      allow read, update, delete: if isAdmin();\n    }\n  }\n}\n","name":"firestore.rules"}]},"createTime":"2026-06-07T14:28:40.436431Z","metadata":{"services":["cloud.firestore"]}}
+[debug] [2026-06-07T14:28:40.977Z] [rules] created ruleset projects/intimate-hygiene/rulesets/287b4d67-efb6-4ed1-9c92-535e39f4c598
+[info] i  firestore: deploying indexes... 
+[debug] [2026-06-07T14:28:40.977Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:40.977Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:40.978Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2026-06-07T14:28:41.642Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2026-06-07T14:28:41.643Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default)/collectionGroups/-/indexes {}
+[debug] [2026-06-07T14:28:41.644Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:41.644Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:41.644Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2026-06-07T14:28:41.815Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2026-06-07T14:28:41.815Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/intimate-hygiene/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[debug] [2026-06-07T14:28:41.816Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:41.816Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:41.816Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default) [none]
+[debug] [2026-06-07T14:28:42.011Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default) 200
+[debug] [2026-06-07T14:28:42.011Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/intimate-hygiene/databases/(default) {"name":"projects/intimate-hygiene/databases/(default)","uid":"6a66d376-0c91-4be6-94fc-b32b34d2ee07","createTime":"2026-06-07T08:05:19.824680Z","updateTime":"2026-06-07T08:05:19.824680Z","locationId":"asia-south1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-06-07T13:28:41.984114Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"j","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"IIDzsa+r9ZQDMMfLtfrV9JQD"}
+[info] ✔  firestore: deployed indexes in firestore.indexes.json successfully for (default) database 
+[debug] [2026-06-07T14:28:42.012Z] [rules] releasing cloud.firestore/(default) with ruleset projects/intimate-hygiene/rulesets/287b4d67-efb6-4ed1-9c92-535e39f4c598
+[debug] [2026-06-07T14:28:42.013Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:42.014Z] Checked if tokens are valid: true, expires at: 1780846109852
+[debug] [2026-06-07T14:28:42.014Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/releases/cloud.firestore/(default) [none]
+[debug] [2026-06-07T14:28:42.014Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/releases/cloud.firestore/(default) {"release":{"name":"projects/intimate-hygiene/releases/cloud.firestore/(default)","rulesetName":"projects/intimate-hygiene/rulesets/287b4d67-efb6-4ed1-9c92-535e39f4c598"}}
+[debug] [2026-06-07T14:28:42.660Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/intimate-hygiene/releases/cloud.firestore/(default) 200

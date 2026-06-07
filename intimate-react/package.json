@@ -8,15 +8,16 @@
     "build": "vite build",
     "build:github": "VITE_SITE_BASE=/INTIMATE_HYGIENE/ vite build && cp dist/index.html dist/404.html",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seed:firestore": "node scripts/seed-firestore.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
-    "@supabase/supabase-js": "^2.106.2",
     "date-fns": "^4.1.0",
+    "firebase": "^12.14.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.14.0",
     "react": "^19.2.5",

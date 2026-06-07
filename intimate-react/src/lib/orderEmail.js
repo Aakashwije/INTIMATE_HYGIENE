@@ -1,5 +1,3 @@
-import { supabase } from "./supabase";
-
 const EMAIL_TIMEOUT_MS = 8000;
 
 function buildEmailApiUrl() {
@@ -15,15 +13,6 @@ export async function sendOrderConfirmationEmail({ order, items }) {
   const controller = new AbortController();
   const timeout = globalThis.setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
   const headers = { "Content-Type": "application/json" };
-
-  const session = await supabase?.auth
-    .getSession()
-    .then(({ data }) => data.session)
-    .catch(() => null);
-
-  if (session?.access_token) {
-    headers["X-Customer-Access-Token"] = session.access_token;
-  }
 
   try {
     const response = await fetch(buildEmailApiUrl(), {

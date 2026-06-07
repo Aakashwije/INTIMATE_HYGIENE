@@ -1,0 +1,78 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnerAdmin() {
+      return signedIn()
+        && (
+          request.auth.uid == "q4VIHjWchpdb3FzB0ZKoV5zSsi83"
+          || request.auth.token.email == "aakashwije92@gmail.com"
+        );
+    }
+
+    function isAdmin() {
+      return isOwnerAdmin()
+        || (
+          signedIn()
+          && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        );
+    }
+
+    function isOrderOwner() {
+      return signedIn()
+        && (
+          resource.data.customer_id == request.auth.uid
+          || resource.data.customer_email == request.auth.token.email
+        );
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isOwnerAdmin();
+    }
+
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read: if isAdmin() || isOrderOwner();
+      allow update, delete: if isAdmin();
+    }
+
+    match /customer_profiles/{profileId} {
+      allow read, write: if isAdmin() || (signedIn() && request.auth.uid == profileId);
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /newsletter_subscribers/{subscriberId} {
+      allow create, update: if request.resource.data.keys().hasOnly([
+        "id",
+        "email",
+        "created_at",
+        "updated_at"
+      ]) && request.resource.data.email is string;
+      allow read, delete: if isAdmin();
+    }
+
+    match /inquiries/{inquiryId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /quiz_responses/{responseId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /site_events/{eventId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}
