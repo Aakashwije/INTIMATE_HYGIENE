@@ -32,7 +32,6 @@ export default function Product4() {
         highlight="★ Bundle of 5 packs — add more single-use packs for LKR 250 each"
         price="LKR 1,099"
         priceNote="5-pack bundle"
-        whatsappMsg="Hello! I want to order the Non-Waterproof 5-Pack bundle (LKR 1,099). Please share availability and delivery details."
         reviews={reviews}
         sections={[bundleSection, ...singleUseSections]}
       />

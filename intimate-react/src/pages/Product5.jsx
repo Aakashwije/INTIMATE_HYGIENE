@@ -32,7 +32,6 @@ export default function Product5() {
         highlight="★ Bundle of 5 waterproof packs — add more waterproof packs for LKR 350 each"
         price="LKR 1,499"
         priceNote="5-pack waterproof bundle"
-        whatsappMsg="Hello! I want to order the Waterproof 5-Pack bundle (LKR 1,499). Please share availability and delivery details."
         reviews={reviews}
         sections={[bundleSection, ...travelSections]}
       />

@@ -62,8 +62,8 @@ export default function AdminSettings() {
     greeting: "Hello! Welcome to Intimate Hygiene. How can we help you today?",
   });
   const [delivery, setDelivery] = useState({
-    freeThreshold: "2000",
-    standardFee: "350",
+    colomboFee: "0",
+    outsideColomboFee: "350",
     expressAvail: true,
     codAvail: true,
   });
@@ -158,19 +158,22 @@ export default function AdminSettings() {
         <SectionCard icon={Truck} title="Delivery Settings">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <Field
-              label="Free Delivery Threshold (LKR)"
+              label="Colombo Area Fee (LKR)"
               type="number"
-              value={delivery.freeThreshold}
+              value={delivery.colomboFee}
               onChange={(e) =>
-                setDelivery((s) => ({ ...s, freeThreshold: e.target.value }))
+                setDelivery((s) => ({ ...s, colomboFee: e.target.value }))
               }
             />
             <Field
-              label="Standard Delivery Fee (LKR)"
+              label="Outside Colombo Fee (LKR)"
               type="number"
-              value={delivery.standardFee}
+              value={delivery.outsideColomboFee}
               onChange={(e) =>
-                setDelivery((s) => ({ ...s, standardFee: e.target.value }))
+                setDelivery((s) => ({
+                  ...s,
+                  outsideColomboFee: e.target.value,
+                }))
               }
             />
           </div>

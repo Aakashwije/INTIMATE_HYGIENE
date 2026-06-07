@@ -33,7 +33,6 @@ export default function Product6() {
         highlight="★ Includes a FREE plastic dispenser with instructions — add more enterprise packs for LKR 950 each"
         price="LKR 8,700"
         priceNote="10 packs + free dispenser & instructions"
-        whatsappMsg="Hello! I want to order the Enterprise 10-Pack bundle with the free dispenser (LKR 8,700). Please share availability and delivery details."
         reviews={reviews}
         sections={[bundleSection, ...enterpriseSections]}
       />

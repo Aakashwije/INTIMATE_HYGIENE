@@ -40,7 +40,7 @@ const tiers = [
     highlight: true,
     features: [
       "Custom branded packaging",
-      "Free delivery island-wide",
+      "Colombo delivery included",
       "1 free wall-mount dispenser",
       "Priority WhatsApp support",
     ],
@@ -54,7 +54,7 @@ const tiers = [
     badge: "bg-purple-100 text-purple-700",
     features: [
       "Custom branded packaging",
-      "Free delivery island-wide",
+      "Colombo delivery included",
       "5 free wall-mount dispensers",
       "Dedicated account manager",
     ],

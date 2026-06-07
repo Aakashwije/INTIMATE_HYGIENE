@@ -1,35 +1,25 @@
-import { PartyPopper } from "lucide-react";
-import { useLang } from "../context/LangContext";
+import { MapPin, Truck } from "lucide-react";
+import { DELIVERY_POLICY_TEXT } from "../lib/delivery";
 
-const FREE_THRESHOLD = 2000;
-
-export default function DeliveryProgressBar({ orderTotal = 0 }) {
-  const { t } = useLang();
-  const pct = Math.min(100, Math.round((orderTotal / FREE_THRESHOLD) * 100));
-  const remaining = FREE_THRESHOLD - orderTotal;
-  const achieved = orderTotal >= FREE_THRESHOLD;
-
+export default function DeliveryProgressBar() {
   return (
     <div className="bg-green-50 border border-green-200 rounded-xl px-5 py-3">
-      <div className="flex items-center justify-between mb-1.5">
-        <p className="text-sm font-semibold text-gray-700 flex items-center gap-1.5">
-          {achieved ? (
-            <>
-              <PartyPopper className="w-4 h-4 text-[#28a745]" />
-              <span className="text-[#28a745]">{t.deliveryProgressUnlocked}</span>
-            </>
-          ) : (
-            <>
-              {t.deliveryProgressAdd?.split("{0}")[0] || "Add "}
-              <span className="text-[#28a745] font-bold">LKR {remaining.toLocaleString()}</span>
-              {t.deliveryProgressAdd?.split("{0}")[1] || " more for free delivery"}
-            </>
-          )}
-        </p>
-        <span className="text-xs text-gray-400 font-semibold">{pct}%</span>
-      </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
-        <div className="h-2 rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: achieved ? "#28a745" : "linear-gradient(to right, #5cd65c, #28a745)" }} />
+      <div className="flex items-start gap-3">
+        <Truck className="mt-0.5 h-5 w-5 shrink-0 text-[#28a745]" />
+        <div>
+          <p className="text-sm font-semibold text-gray-800">
+            {DELIVERY_POLICY_TEXT}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2 text-xs font-semibold">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[#28a745] ring-1 ring-green-200">
+              <MapPin className="h-3.5 w-3.5" />
+              Colombo area: FREE
+            </span>
+            <span className="rounded-full bg-white px-3 py-1 text-gray-700 ring-1 ring-green-200">
+              Outside Colombo: LKR 350
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

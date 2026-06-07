@@ -200,7 +200,7 @@ export default function Products() {
             Pick your perfect pack
           </h2>
           <p className="text-gray-500 text-lg mb-6">
-            Loved by 10,000+ Sri Lankans · Free delivery on orders LKR 2,000+
+            Loved by 10,000+ Sri Lankans · Colombo delivery free · Outside Colombo LKR 350
           </p>
         </Reveal>
 

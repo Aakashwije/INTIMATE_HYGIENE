@@ -15,6 +15,7 @@ import {
   shopProducts,
 } from "../data/catalog";
 import { captureLocalOrder, syncOrderToCloud } from "../lib/database";
+import { getDeliveryQuote } from "../lib/delivery";
 import { sendOrderConfirmationEmail } from "../lib/orderEmail";
 
 const products = shopProducts.map((product) => ({
@@ -23,8 +24,6 @@ const products = shopProducts.map((product) => ({
   price: product.price,
   img: product.image,
 }));
-
-const FREE_DELIVERY_THRESHOLD = 2000;
 
 const BUNDLES = [
   {
@@ -80,7 +79,8 @@ function buildTemplate({
   const discountPct = DISCOUNT_CODES[discountCode?.trim().toUpperCase()] || 0;
   const discountAmt = Math.round((subtotal * discountPct) / 100);
   const discountedSubtotal = subtotal - discountAmt;
-  const deliveryFee = discountedSubtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 250;
+  const deliveryQuote = getDeliveryQuote(city);
+  const deliveryFee = deliveryQuote.fee;
   const total = discountedSubtotal + deliveryFee;
   const ref = orderRef || makeOrderRef();
 
@@ -112,7 +112,7 @@ function buildTemplate({
    After Disc: LKR ${discountedSubtotal.toLocaleString()}`
        : ""
    }
-   Delivery  : ${deliveryFee === 0 ? "FREE 🎉" : `LKR ${deliveryFee.toLocaleString()}`}
+   Delivery  : ${deliveryQuote.label}
 ━━━━━━━━━━━━━━━━━━━━━━━
    TOTAL     : LKR ${total.toLocaleString()}
 ━━━━━━━━━━━━━━━━━━━━━━━
@@ -202,6 +202,11 @@ export default function OrderTemplate() {
         customer_phone: customer.phone,
         address: customer.address,
         city: customer.city,
+        subtotal,
+        discount_amount: discountAmt,
+        discounted_subtotal: discountedSubtotal,
+        delivery_fee: deliveryFee,
+        delivery_area: deliveryQuote.area,
         total,
         status: "pending",
         payment_method: customer.payment,
@@ -267,7 +272,8 @@ export default function OrderTemplate() {
     DISCOUNT_CODES[form.discountCode?.trim().toUpperCase()] || 0;
   const discountAmt = Math.round((subtotal * discountPct) / 100);
   const discountedSubtotal = subtotal - discountAmt;
-  const deliveryFee = discountedSubtotal >= FREE_DELIVERY_THRESHOLD ? 0 : 250;
+  const deliveryQuote = getDeliveryQuote(form.city || profile?.city || "");
+  const deliveryFee = deliveryQuote.fee;
   const total = discountedSubtotal + deliveryFee;
 
   return (
@@ -558,21 +564,12 @@ export default function OrderTemplate() {
                     deliveryFee === 0 ? "text-[#28a745] font-semibold" : ""
                   }
                 >
-                  {deliveryFee === 0
-                    ? "FREE 🎉"
-                    : `LKR ${deliveryFee.toLocaleString()}`}
+                  {deliveryQuote.label}
                 </span>
               </div>
-              {discountedSubtotal > 0 &&
-                discountedSubtotal < FREE_DELIVERY_THRESHOLD && (
-                  <p className="text-xs text-orange-500">
-                    Add LKR{" "}
-                    {(
-                      FREE_DELIVERY_THRESHOLD - discountedSubtotal
-                    ).toLocaleString()}{" "}
-                    more for free delivery
-                  </p>
-                )}
+              <p className="text-xs text-gray-500">
+                Colombo area delivery is free. Outside Colombo is LKR 350.
+              </p>
               <div className="flex justify-between font-bold text-gray-800 pt-1 border-t border-green-200">
                 <span>Total</span>
                 <span>LKR {total.toLocaleString()}</span>

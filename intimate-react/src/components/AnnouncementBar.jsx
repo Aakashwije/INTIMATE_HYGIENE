@@ -31,7 +31,7 @@ export default function AnnouncementBar() {
     <div className="bg-gradient-to-r from-[#0d3f1a] via-[#1d7a34] to-[#28a745] text-white text-[11px] sm:text-sm py-2 pl-3 pr-9 sm:px-4 flex items-center justify-center gap-2 sm:gap-3 relative animate-gradientShift">
       <Gift className="hidden sm:block w-4 h-4 shrink-0" />
       <span className="font-semibold text-center leading-snug">
-        {t.announcement || "Limited time: 5% off + free island-wide delivery on orders LKR 2,000 and up"}
+        {t.announcement || "Limited time: 5% off + Colombo delivery free · Outside Colombo LKR 350"}
       </span>
       <span className="hidden md:inline-flex items-center gap-1.5 font-mono bg-black/25 px-2 py-0.5 rounded-md">
         <Timer className="w-3.5 h-3.5" />

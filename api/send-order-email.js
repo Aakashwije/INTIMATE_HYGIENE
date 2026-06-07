@@ -30,6 +30,14 @@ function getBaseUrl(req) {
 }
 
 function buildEmailHtml({ order, items, logoUrl }) {
+  const itemSubtotal = items.reduce(
+    (sum, item) =>
+      sum + Number(item.price || 0) * Number(item.quantity || item.qty || 1),
+    0,
+  );
+  const subtotal = Number(order.subtotal ?? itemSubtotal);
+  const discountAmount = Number(order.discount_amount || 0);
+  const deliveryFee = Number(order.delivery_fee || 0);
   const itemRows = items
     .map(
       (item) => `
@@ -81,8 +89,26 @@ function buildEmailHtml({ order, items, logoUrl }) {
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                     ${itemRows}
                     <tr>
-                      <td style="padding:16px 0;font-size:16px;font-weight:800;">Subtotal</td>
-                      <td align="right" style="padding:16px 0;font-size:18px;font-weight:800;color:${BRAND.green};">${money(order.total)}</td>
+                      <td style="padding:16px 0 8px;font-size:15px;font-weight:700;">Subtotal</td>
+                      <td align="right" style="padding:16px 0 8px;font-size:15px;font-weight:700;color:#1f2937;">${money(subtotal)}</td>
+                    </tr>
+                    ${
+                      discountAmount > 0
+                        ? `<tr>
+                            <td style="padding:8px 0;font-size:15px;font-weight:700;color:${BRAND.green};">Discount</td>
+                            <td align="right" style="padding:8px 0;font-size:15px;font-weight:700;color:${BRAND.green};">-${money(discountAmount)}</td>
+                          </tr>`
+                        : ""
+                    }
+                    <tr>
+                      <td style="padding:8px 0;font-size:15px;font-weight:700;">Delivery</td>
+                      <td align="right" style="padding:8px 0;font-size:15px;font-weight:700;color:#1f2937;">
+                        ${deliveryFee === 0 ? "FREE (Colombo area)" : money(deliveryFee)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:14px 0 16px;font-size:16px;font-weight:800;border-top:1px solid #edf2ef;">Total</td>
+                      <td align="right" style="padding:14px 0 16px;font-size:18px;font-weight:800;color:${BRAND.green};border-top:1px solid #edf2ef;">${money(order.total)}</td>
                     </tr>
                   </table>
 

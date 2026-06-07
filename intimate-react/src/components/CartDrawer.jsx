@@ -1,9 +1,10 @@
-import { Minus, PartyPopper, Plus, ShoppingBag, ShoppingCart, Truck, X } from "lucide-react";
+import { MapPin, Minus, Plus, ShoppingBag, ShoppingCart, Truck, X } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useCustomerAuth } from "../context/CustomerAuthContext";
 import { useLang } from "../context/LangContext";
 import { captureLocalOrder, syncOrderToCloud, trackSiteEvent } from "../lib/database";
+import { getDeliveryQuote } from "../lib/delivery";
 import { sendOrderConfirmationEmail } from "../lib/orderEmail";
 
 const PHONE = "94707018171";
@@ -12,7 +13,8 @@ function buildOrderRef() {
   return `IHE-${new Date().getTime().toString(36).toUpperCase().slice(-6)}`;
 }
 
-function buildWhatsAppMessage(items, subtotal, t, customer, orderRef) {
+function buildWhatsAppMessage(items, subtotal, t, customer, orderRef, deliveryQuote) {
+  const total = subtotal + deliveryQuote.fee;
   const lines = items
     .map((i, idx) => `${idx + 1}. ${i.name} × ${i.qty} — LKR ${(i.price * i.qty).toLocaleString()}`)
     .join("%0A");
@@ -27,7 +29,9 @@ function buildWhatsAppMessage(items, subtotal, t, customer, orderRef) {
     `Payment%3A ${encodeURIComponent(customer.paymentMethod)}%0A` +
     `${customer.note ? `Note%3A ${encodeURIComponent(customer.note)}%0A` : ""}%0A` +
     `${lines}%0A%0A` +
-    `${t.cartSubtotal || "Subtotal"}%3A LKR ${subtotal.toLocaleString()}%0A%0A` +
+    `${t.cartSubtotal || "Subtotal"}%3A LKR ${subtotal.toLocaleString()}%0A` +
+    `Delivery%3A ${encodeURIComponent(deliveryQuote.label)}%0A` +
+    `Total%3A LKR ${total.toLocaleString()}%0A%0A` +
     `Please confirm availability and delivery%2C thank you%21`;
   return `https://wa.me/${PHONE}?text=${txt}`;
 }
@@ -49,10 +53,6 @@ export default function CartDrawer() {
   const [error, setError] = useState("");
 
   if (!open) return null;
-
-  const freeDeliveryThreshold = 2000;
-  const remaining = Math.max(0, freeDeliveryThreshold - subtotal);
-  const progress = Math.min(100, (subtotal / freeDeliveryThreshold) * 100);
 
   const handleCheckout = async (e) => {
     e.preventDefault();
@@ -76,6 +76,8 @@ export default function CartDrawer() {
       quantity: item.qty,
       price: item.price,
     }));
+    const deliveryQuote = getDeliveryQuote(customer.city);
+    const total = subtotal + deliveryQuote.fee;
     const order = {
       order_ref: orderRef,
       customer_id: user?.id || null,
@@ -84,7 +86,10 @@ export default function CartDrawer() {
       customer_phone: customer.phone,
       address: customer.address,
       city: customer.city,
-      total: subtotal,
+      subtotal,
+      delivery_fee: deliveryQuote.fee,
+      delivery_area: deliveryQuote.area,
+      total,
       status: "pending",
       payment_method: customer.paymentMethod,
       note: customer.note || null,
@@ -95,6 +100,7 @@ export default function CartDrawer() {
       t,
       customer,
       orderRef,
+      deliveryQuote,
     );
     const whatsappWindow = window.open("", "_blank");
 
@@ -122,7 +128,8 @@ export default function CartDrawer() {
         label: "Cart checkout",
         metadata: {
           order_ref: orderRef,
-          total: subtotal,
+          total,
+          delivery_fee: deliveryQuote.fee,
           item_count: items.length,
           sync_status: syncedOrder.sync_status,
         },
@@ -191,27 +198,21 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {/* Free delivery progress */}
+        {/* Delivery policy */}
         {items.length > 0 && (
           <div className="px-5 py-3 bg-green-50 border-b border-green-100">
-            <p className="text-xs font-semibold text-gray-700 mb-1.5 flex items-center gap-1.5">
-              {remaining > 0 ? (
-                <>
-                  <Truck className="w-3.5 h-3.5 text-[#28a745]" />
-                  {t.cartAddMore || "Add"} LKR {remaining.toLocaleString()} {t.cartForFreeDelivery || "more for free delivery"}
-                </>
-              ) : (
-                <>
-                  <PartyPopper className="w-3.5 h-3.5 text-[#28a745]" />
-                  {t.cartFreeUnlocked || "You unlocked free delivery!"}
-                </>
-              )}
+            <p className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+              <Truck className="w-3.5 h-3.5 text-[#28a745]" />
+              Colombo area delivery is free. Outside Colombo is LKR 350.
             </p>
-            <div className="h-2 rounded-full bg-green-100 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#28a745] to-[#5cd65c] transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
+            <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-semibold">
+              <span className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[#28a745] ring-1 ring-green-200">
+                <MapPin className="h-3 w-3" />
+                Colombo: FREE
+              </span>
+              <span className="rounded-full bg-white px-2.5 py-1 text-gray-700 ring-1 ring-green-200">
+                Outside Colombo: LKR 350
+              </span>
             </div>
           </div>
         )}

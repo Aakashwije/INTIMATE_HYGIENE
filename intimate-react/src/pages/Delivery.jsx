@@ -2,7 +2,6 @@ import {
     Banknote,
     CheckCircle,
     Clock,
-    Gift,
     HelpCircle,
     Landmark,
     MessageCircle,
@@ -19,35 +18,18 @@ import { useLang } from "../context/LangContext";
 
 const zones = [
   {
-    zone: "Zone 1 — Colombo District",
+    zone: "Colombo Area",
     areas:
-      "Colombo city, Dehiwala, Moratuwa, Kotte, Maharagama, Nugegoda, Battaramulla",
+      "Colombo city, Dehiwala, Mount Lavinia, Moratuwa, Kotte, Nugegoda, Maharagama, Battaramulla, Rajagiriya",
     time: "Same day / Next day",
-    fee: "LKR 150",
-    free: "LKR 2,000+",
+    fee: "FREE",
   },
   {
-    zone: "Zone 2 — Western Province",
+    zone: "Outside Colombo",
     areas:
-      "Gampaha, Kalutara, Horana, Panadura, Negombo, Ja-Ela, Kelaniya, Ragama",
-    time: "1–2 business days",
-    fee: "LKR 250",
-    free: "LKR 2,000+",
-  },
-  {
-    zone: "Zone 3 — Central & Southern",
-    areas: "Kandy, Galle, Matara, Kurunegala, Ratnapura, Badulla, Nuwara Eliya",
-    time: "2–3 business days",
+      "Gampaha, Kalutara, Kandy, Galle, Matara, Kurunegala, Jaffna and all other Sri Lankan areas",
+    time: "2–5 business days",
     fee: "LKR 350",
-    free: "LKR 2,000+",
-  },
-  {
-    zone: "Zone 4 — North & East",
-    areas:
-      "Jaffna, Vavuniya, Trincomalee, Batticaloa, Anuradhapura, Polonnaruwa",
-    time: "3–5 business days",
-    fee: "LKR 450",
-    free: "LKR 2,000+",
   },
 ];
 
@@ -111,7 +93,7 @@ const deliveryFaqs = [
   },
   {
     q: "What is the minimum order for delivery?",
-    a: "There is no strict minimum, but delivery fee applies per order. Larger orders get free delivery.",
+    a: "There is no strict minimum. Delivery is free in the Colombo area and LKR 350 outside Colombo.",
   },
 ];
 
@@ -121,7 +103,7 @@ export default function Delivery() {
     <>
       <SEO
         title="Delivery Info"
-        description="Fast islandwide delivery across Sri Lanka. Free delivery on orders LKR 2,000 and up. Same-day delivery available in Colombo area."
+        description="Fast delivery across Sri Lanka. Colombo area delivery is free. Outside Colombo delivery is LKR 350."
         path="/delivery"
       />
       <Navbar />
@@ -149,7 +131,7 @@ export default function Delivery() {
             <Truck className="w-6 h-6 text-[#28a745]" /> {t.deliveryZones}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {zones.map(({ zone, areas, time, fee, free }) => (
+            {zones.map(({ zone, areas, time, fee }) => (
               <div
                 key={zone}
                 className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-[#28a745]"
@@ -162,9 +144,6 @@ export default function Delivery() {
                   </span>
                   <span className="flex items-center gap-1.5 bg-orange-50 text-orange-700 px-3 py-1 rounded-full font-semibold">
                     <Package className="w-3.5 h-3.5" /> {t.deliveryFee}: {fee}
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1 rounded-full font-semibold">
-                    <Gift className="w-3.5 h-3.5" /> {t.freeFrom} {free}
                   </span>
                 </div>
               </div>
