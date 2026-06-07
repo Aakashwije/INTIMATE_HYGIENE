@@ -15,23 +15,32 @@ import {
     X
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { deleteOrder, fetchOrders } from "../../lib/database";
+import {
+  deleteOrder,
+  fetchOrders,
+  subscribeToAdminData,
+  updateOrder,
+} from "../../lib/database";
 import { exportOrders } from "../../lib/adminExport";
 
 const ALL_ORDERS = [];
 
 const STATUS_META = {
-  delivered: {
-    icon: CheckCircle,
-    classes: "bg-green-100 text-green-primary border-green-200",
+  pending: {
+    icon: Clock,
+    classes: "bg-gray-100 text-gray-600 border-gray-200",
+  },
+  processing: {
+    icon: Clock,
+    classes: "bg-amber-50 text-amber-600 border-amber-200",
   },
   shipped: {
     icon: Truck,
     classes: "bg-blue-50 text-blue-600 border-blue-200",
   },
-  processing: {
-    icon: Clock,
-    classes: "bg-amber-50 text-amber-600 border-amber-200",
+  delivered: {
+    icon: CheckCircle,
+    classes: "bg-green-100 text-green-primary border-green-200",
   },
   cancelled: {
     icon: RotateCcw,
@@ -39,7 +48,18 @@ const STATUS_META = {
   },
 };
 
-const STATUSES = ["all", "delivered", "shipped", "processing", "cancelled"];
+const ORDER_STATUS_OPTIONS = [
+  "pending",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+];
+const STATUSES = ["all", ...ORDER_STATUS_OPTIONS];
+
+function statusLabel(status) {
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
 
 function StatusBadge({ status }) {
   const meta = STATUS_META[status] || {};
@@ -49,9 +69,64 @@ function StatusBadge({ status }) {
       className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg border font-medium ${meta.classes}`}
     >
       <Icon className="w-3 h-3" />
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {statusLabel(status)}
     </span>
   );
+}
+
+function normalizePhoneForWhatsApp(phone = "") {
+  const digits = String(phone).replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("94")) return digits;
+  if (digits.startsWith("0")) return `94${digits.slice(1)}`;
+  if (digits.length === 9) return `94${digits}`;
+  return digits;
+}
+
+function buildWhatsAppUrl(order) {
+  const phone = normalizePhoneForWhatsApp(order.phone);
+  if (!phone) return "";
+  const text = encodeURIComponent(
+    `Hi ${order.customer || "there"}, this is Intimate Hygiene about your order ${order.id}. Current status: ${statusLabel(order.status)}.`,
+  );
+  return `https://wa.me/${phone}?text=${text}`;
+}
+
+function orderFromRow(row, idx, total) {
+  const firstItem = row.order_items?.[0];
+  const customer = row.customer_name || "Customer";
+  const status = STATUS_META[row.status] ? row.status : "pending";
+  return {
+    dbId: row.id,
+    customerId: row.customer_id,
+    id: row.order_ref || `#ORD-${String(total - idx).padStart(4, "0")}`,
+    customer,
+    email: row.customer_email || "",
+    phone: row.customer_phone || "",
+    city: row.city || "-",
+    address: row.address || "-",
+    product: firstItem?.product_name || "Order",
+    items: row.order_items || [],
+    qty:
+      row.order_items?.reduce((sum, item) => sum + item.quantity, 0) ||
+      1,
+    amount: Number(row.total || 0),
+    subtotal: Number(row.subtotal || 0),
+    deliveryFee: Number(row.delivery_fee || 0),
+    status,
+    date: row.created_at
+      ? new Date(row.created_at).toISOString().slice(0, 10)
+      : "-",
+    avatar: customer
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase(),
+    payMethod: row.payment_method || "WhatsApp",
+    customerNote: row.note || "",
+    adminNote: row.admin_note || "",
+  };
 }
 
 export default function AdminOrders() {
@@ -60,6 +135,8 @@ export default function AdminOrders() {
   const [deletingId, setDeletingId] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [updateError, setUpdateError] = useState("");
+  const [updatingField, setUpdatingField] = useState("");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selected, setSelected] = useState(null);
@@ -70,36 +147,7 @@ export default function AdminOrders() {
     return fetchOrders()
       .then((rows) => {
         if (!mounted) return;
-        setOrders(
-          rows.map((row, idx) => {
-            const firstItem = row.order_items?.[0];
-            return {
-              dbId: row.id,
-              customerId: row.customer_id,
-              id: row.order_ref || `#ORD-${String(rows.length - idx).padStart(4, "0")}`,
-              customer: row.customer_name,
-              email: row.customer_email,
-              phone: row.customer_phone,
-              city: row.city || "-",
-              address: row.address || "-",
-              product: firstItem?.product_name || "Order",
-              items: row.order_items || [],
-              qty:
-                row.order_items?.reduce((sum, item) => sum + item.quantity, 0) ||
-                1,
-              amount: Number(row.total),
-              status: STATUS_META[row.status] ? row.status : "processing",
-              date: new Date(row.created_at).toISOString().slice(0, 10),
-              avatar: row.customer_name
-                .split(" ")
-                .map((part) => part[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase(),
-              payMethod: row.payment_method || "WhatsApp",
-            };
-          }),
-        );
+        setOrders(rows.map((row, idx) => orderFromRow(row, idx, rows.length)));
       })
       .catch(() => {
         if (mounted) setOrders(ALL_ORDERS);
@@ -112,14 +160,58 @@ export default function AdminOrders() {
   useEffect(() => {
     let mounted = true;
     loadOrders(mounted);
+    const channel = subscribeToAdminData(() => {
+      if (mounted) loadOrders(true);
+    });
     return () => {
       mounted = false;
+      channel.unsubscribe();
     };
   }, [loadOrders]);
 
   const requestDeleteOrder = (order) => {
     setDeleteError("");
     setDeleteTarget(order);
+  };
+
+  const mergeOrderUpdate = (orderId, updates) => {
+    setOrders((current) =>
+      current.map((order) =>
+        order.dbId === orderId ? { ...order, ...updates } : order,
+      ),
+    );
+    setSelected((current) =>
+      current?.dbId === orderId ? { ...current, ...updates } : current,
+    );
+  };
+
+  const saveOrderStatus = async (order, status) => {
+    if (!order?.dbId || status === order.status) return;
+    setUpdatingField(`${order.dbId}:status`);
+    setUpdateError("");
+    try {
+      await updateOrder(order.dbId, { status });
+      mergeOrderUpdate(order.dbId, { status });
+    } catch (err) {
+      setUpdateError(err.message || "Could not update order status.");
+    } finally {
+      setUpdatingField("");
+    }
+  };
+
+  const saveAdminNote = async () => {
+    if (!selected?.dbId) return;
+    setUpdatingField(`${selected.dbId}:note`);
+    setUpdateError("");
+    try {
+      const adminNote = selected.adminNote || "";
+      await updateOrder(selected.dbId, { admin_note: adminNote });
+      mergeOrderUpdate(selected.dbId, { adminNote });
+    } catch (err) {
+      setUpdateError(err.message || "Could not save admin note.");
+    } finally {
+      setUpdatingField("");
+    }
   };
 
   const confirmDeleteOrder = async () => {
@@ -150,9 +242,11 @@ export default function AdminOrders() {
   };
 
   const filtered = orders.filter((o) => {
+    const searchText = search.toLowerCase();
     const matchSearch =
-      o.customer.toLowerCase().includes(search.toLowerCase()) ||
-      o.id.toLowerCase().includes(search.toLowerCase());
+      o.customer.toLowerCase().includes(searchText) ||
+      o.id.toLowerCase().includes(searchText) ||
+      o.phone.includes(searchText);
     const matchStatus = statusFilter === "all" || o.status === statusFilter;
     return matchSearch && matchStatus;
   });
@@ -163,6 +257,7 @@ export default function AdminOrders() {
 
   const stats = {
     total: orders.length,
+    pending: orders.filter((o) => o.status === "pending").length,
     delivered: orders.filter((o) => o.status === "delivered").length,
     processing: orders.filter((o) => o.status === "processing").length,
     revenue: orders.filter((o) => o.status !== "cancelled").reduce(
@@ -207,9 +302,9 @@ export default function AdminOrders() {
             color: "blue",
           },
           {
-            label: "Delivered",
-            value: stats.delivered,
-            icon: CheckCircle,
+            label: "Pending",
+            value: stats.pending,
+            icon: Clock,
             color: "emerald",
           },
           {
@@ -250,6 +345,12 @@ export default function AdminOrders() {
         <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <span>{deleteError}</span>
+        </div>
+      )}
+      {updateError && (
+        <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{updateError}</span>
         </div>
       )}
 
@@ -321,7 +422,9 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody>
-              {paged.map((order, i) => (
+              {paged.map((order, i) => {
+                const whatsappUrl = buildWhatsAppUrl(order);
+                return (
                 <motion.tr
                   key={order.id}
                   initial={{ opacity: 0, x: -10 }}
@@ -367,7 +470,22 @@ export default function AdminOrders() {
                     </div>
                   </td>
                   <td className="px-5 py-4">
-                    <StatusBadge status={order.status} />
+                    <div className="space-y-2">
+                      <StatusBadge status={order.status} />
+                      <select
+                        value={order.status}
+                        onChange={(e) => saveOrderStatus(order, e.target.value)}
+                        disabled={updatingField === `${order.dbId}:status`}
+                        className="block w-32 rounded-lg border border-gray-200 bg-white px-2 py-1 text-xs text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-primary/30 disabled:opacity-60"
+                        aria-label={`Update status for ${order.id}`}
+                      >
+                        {ORDER_STATUS_OPTIONS.map((status) => (
+                          <option key={status} value={status}>
+                            {statusLabel(status)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </td>
                   <td className="px-5 py-4 text-gray-500 text-xs">
                     {order.date}
@@ -380,6 +498,19 @@ export default function AdminOrders() {
                       >
                         <Eye className="w-3.5 h-3.5" /> View
                       </button>
+                      <a
+                        href={whatsappUrl || undefined}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-disabled={!whatsappUrl}
+                        className={`flex items-center gap-1 text-xs transition-colors px-2 py-1 rounded-lg ${
+                          whatsappUrl
+                            ? "text-gray-500 hover:text-green-primary hover:bg-green-50"
+                            : "pointer-events-none text-gray-300"
+                        }`}
+                      >
+                        <Phone className="w-3.5 h-3.5" /> WhatsApp
+                      </a>
                       <button
                         onClick={() => requestDeleteOrder(order)}
                         disabled={deletingId === order.dbId}
@@ -391,7 +522,8 @@ export default function AdminOrders() {
                     </div>
                   </td>
                 </motion.tr>
-              ))}
+                );
+              })}
               {paged.length === 0 && (
                 <tr>
                   <td
@@ -523,6 +655,18 @@ export default function AdminOrders() {
                         {selected.payMethod}
                       </span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 text-sm">Subtotal</span>
+                      <span className="text-gray-900 text-sm font-medium">
+                        LKR {selected.subtotal.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-500 text-sm">Delivery</span>
+                      <span className="text-gray-900 text-sm font-medium">
+                        LKR {selected.deliveryFee.toLocaleString()}
+                      </span>
+                    </div>
                     <div className="border-t border-gray-200 pt-2 flex justify-between">
                       <span className="text-gray-700 font-semibold">
                         Total
@@ -533,22 +677,91 @@ export default function AdminOrders() {
                     </div>
                   </div>
 
-                  <div className="bg-gray-50 rounded-2xl p-4">
+                  {selected.customerNote && (
+                    <div className="bg-gray-50 rounded-2xl p-4">
+                      <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">
+                        Customer note
+                      </h3>
+                      <p className="text-sm leading-relaxed text-gray-700">
+                        {selected.customerNote}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
                     <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-3">
                       Status
                     </h3>
                     <StatusBadge status={selected.status} />
+                    <select
+                      value={selected.status}
+                      onChange={(e) => saveOrderStatus(selected, e.target.value)}
+                      disabled={updatingField === `${selected.dbId}:status`}
+                      className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-primary/30 disabled:opacity-60"
+                    >
+                      {ORDER_STATUS_OPTIONS.map((status) => (
+                        <option key={status} value={status}>
+                          {statusLabel(status)}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
-                  <a
-                    href={`https://wa.me/${selected.phone?.replace(/\D/g, "")}?text=Hi%20${encodeURIComponent(selected.customer)}%2C%20your%20order%20${selected.id}%20update`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-green-500/15 border border-green-500/20 text-green-400 rounded-xl hover:bg-green-500/25 transition-all font-medium text-sm"
-                  >
-                    <Phone className="w-4 h-4" />
-                    Contact via WhatsApp
-                  </a>
+                  <div className="bg-gray-50 rounded-2xl p-4 space-y-3">
+                    <h3 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
+                      Admin notes
+                    </h3>
+                    <textarea
+                      rows={4}
+                      value={selected.adminNote}
+                      onChange={(e) =>
+                        setSelected((current) => ({
+                          ...current,
+                          adminNote: e.target.value,
+                        }))
+                      }
+                      placeholder="Internal note for this order"
+                      className="w-full resize-none rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-primary/30"
+                    />
+                    <button
+                      type="button"
+                      onClick={saveAdminNote}
+                      disabled={updatingField === `${selected.dbId}:note`}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-3 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-800 disabled:opacity-60"
+                    >
+                      {updatingField === `${selected.dbId}:note`
+                        ? "Saving note..."
+                        : "Save admin note"}
+                    </button>
+                  </div>
+
+                  {updateError && (
+                    <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                      <span>{updateError}</span>
+                    </div>
+                  )}
+
+                  {buildWhatsAppUrl(selected) ? (
+                    <a
+                      href={buildWhatsAppUrl(selected)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-green-500/15 border border-green-500/20 text-green-600 rounded-xl hover:bg-green-500/25 transition-all font-medium text-sm"
+                    >
+                      <Phone className="w-4 h-4" />
+                      WhatsApp customer
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-gray-50 border border-gray-200 text-gray-300 rounded-xl font-medium text-sm"
+                    >
+                      <Phone className="w-4 h-4" />
+                      No phone number
+                    </button>
+                  )}
                   <button
                     onClick={() => requestDeleteOrder(selected)}
                     disabled={deletingId === selected.dbId}
