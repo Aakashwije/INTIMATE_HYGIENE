@@ -16,6 +16,7 @@ import {
     Zap
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
     Area,
     AreaChart,
@@ -849,12 +850,12 @@ export default function AdminDashboard() {
         >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-gray-900 font-semibold">Recent Orders</h2>
-            <a
-              href="/admin/orders"
+            <Link
+              to="/admin/orders"
               className="text-green-primary text-xs hover:text-green-dark transition-colors font-medium"
             >
               View all →
-            </a>
+            </Link>
           </div>
           <div className="space-y-2">
             {dashboard.recentOrders.length === 0 && (
@@ -951,8 +952,8 @@ export default function AdminDashboard() {
             </p>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: "Add Product", href: "/admin/products" },
-                { label: "View Orders", href: "/admin/orders" },
+                { label: "Add Product", to: "/admin/products" },
+                { label: "View Orders", to: "/admin/orders" },
                 {
                   label: "Export CSV",
                   onClick: () => {
@@ -964,8 +965,8 @@ export default function AdminDashboard() {
                   },
                   disabled: rawOrders.length === 0,
                 },
-                { label: "Send Newsletter", href: "/admin/newsletter" },
-              ].map(({ label, href, onClick, disabled }) => {
+                { label: "Send Newsletter", to: "/admin/newsletter" },
+              ].map(({ label, to, onClick, disabled }) => {
                 const className =
                   "flex items-center justify-center gap-1 px-2 py-2 bg-gray-50 hover:bg-gray-200/80 border border-gray-200 rounded-xl text-gray-700 hover:text-gray-900 text-xs font-medium transition-all disabled:opacity-50 disabled:hover:bg-gray-50";
                 if (onClick) {
@@ -983,10 +984,10 @@ export default function AdminDashboard() {
                   );
                 }
                 return (
-                  <a key={label} href={href} className={className}>
+                  <Link key={label} to={to} className={className}>
                     <Zap className="w-3 h-3 text-green-primary" />
                     {label}
-                  </a>
+                  </Link>
                 );
               })}
             </div>

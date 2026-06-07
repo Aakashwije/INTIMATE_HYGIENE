@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
+import AdminLoadingScreen from "./AdminLoadingScreen";
 import { useAdminAuth } from "../context/AdminAuthContext";
 
 const navItems = [
@@ -31,23 +32,15 @@ const navItems = [
   { to: "/admin/quiz", icon: HelpCircle, label: "Quiz Responses" },
   { to: "/admin/settings", icon: Settings, label: "Settings" },
 ];
+const assetBase = import.meta.env.BASE_URL;
 
-export default function AdminLayout() {
-  const { admin, logout, isLoggedIn, loading } = useAdminAuth();
-  const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [notifications] = useState(3);
-
-  if (loading) return null;
-  if (!isLoggedIn) return <Navigate to="/admin" replace />;
-
-  const handleLogout = async () => {
-    await logout();
-    navigate("/admin", { replace: true });
-  };
-
-  const SidebarContent = () => (
+function SidebarContent({
+  admin,
+  handleLogout,
+  sidebarOpen,
+  setMobileOpen,
+}) {
+  return (
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div
@@ -55,13 +48,13 @@ export default function AdminLayout() {
       >
         {sidebarOpen ? (
           <img
-            src="/fulllogo.png"
+            src={`${assetBase}fulllogo.png`}
             alt="Hygenc Covers"
             className="h-10 w-auto"
           />
         ) : (
           <img
-            src="/shortlogo.png"
+            src={`${assetBase}shortlogo.png`}
             alt="Hygenc"
             className="h-9 w-9 object-contain"
           />
@@ -143,7 +136,7 @@ export default function AdminLayout() {
       </nav>
 
       {/* User card */}
-      <div className={`p-3 border-t border-gray-100`}>
+      <div className="p-3 border-t border-gray-100">
         <div
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50 ${!sidebarOpen && "justify-center"}`}
         >
@@ -192,6 +185,22 @@ export default function AdminLayout() {
       </div>
     </div>
   );
+}
+
+export default function AdminLayout() {
+  const { admin, logout, isLoggedIn, loading } = useAdminAuth();
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [notifications] = useState(3);
+
+  if (loading) return <AdminLoadingScreen />;
+  if (!isLoggedIn) return <Navigate to="/admin" replace />;
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/admin", { replace: true });
+  };
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -201,7 +210,12 @@ export default function AdminLayout() {
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="hidden md:flex flex-col bg-white border-r border-gray-200 shrink-0 overflow-hidden"
       >
-        <SidebarContent />
+        <SidebarContent
+          admin={admin}
+          handleLogout={handleLogout}
+          sidebarOpen={sidebarOpen}
+          setMobileOpen={setMobileOpen}
+        />
       </motion.aside>
 
       {/* Mobile sidebar overlay */}
@@ -222,7 +236,12 @@ export default function AdminLayout() {
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
               className="fixed left-0 top-0 bottom-0 w-64 bg-white border-r border-gray-200 z-50 flex flex-col md:hidden shadow-xl"
             >
-              <SidebarContent />
+              <SidebarContent
+                admin={admin}
+                handleLogout={handleLogout}
+                sidebarOpen={sidebarOpen}
+                setMobileOpen={setMobileOpen}
+              />
             </motion.aside>
           </>
         )}

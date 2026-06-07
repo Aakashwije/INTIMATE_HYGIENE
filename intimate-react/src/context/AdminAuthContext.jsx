@@ -2,10 +2,23 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 
 const AdminAuthContext = createContext();
+const ADMIN_AUTH_TIMEOUT_MS = 7000;
+const ADMIN_LOGIN_TIMEOUT_MS = 12000;
 
 const ADMIN_USERS = {
   owner: "owner@intimatehygiene.lk",
 };
+
+function withTimeout(promise, milliseconds, message) {
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = globalThis.setTimeout(() => reject(new Error(message)), milliseconds);
+  });
+
+  return Promise.race([promise, timeout]).finally(() => {
+    globalThis.clearTimeout(timeoutId);
+  });
+}
 
 function adminFromUser(user) {
   if (!user || user.app_metadata?.role !== "admin") return null;
@@ -30,13 +43,25 @@ export function AdminAuthProvider({ children }) {
 
     let mounted = true;
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (!mounted) return;
-      const sessionUser = data.session?.user || null;
-      setUser(sessionUser);
-      setAdmin(adminFromUser(sessionUser));
-      setLoading(false);
-    });
+    withTimeout(
+      supabase.auth.getSession(),
+      ADMIN_AUTH_TIMEOUT_MS,
+      "Admin session check timed out.",
+    )
+      .then(({ data }) => {
+        if (!mounted) return;
+        const sessionUser = data.session?.user || null;
+        setUser(sessionUser);
+        setAdmin(adminFromUser(sessionUser));
+      })
+      .catch(() => {
+        if (!mounted) return;
+        setUser(null);
+        setAdmin(null);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -61,12 +86,25 @@ export function AdminAuthProvider({ children }) {
     const email = ADMIN_USERS[username.toLowerCase()];
     if (!email) return { ok: false, error: "Invalid credentials." };
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error } = await withTimeout(
+      supabase.auth.signInWithPassword({
+        email,
+        password,
+      }),
+      ADMIN_LOGIN_TIMEOUT_MS,
+      "Admin login timed out. Please check the Supabase connection.",
+    ).catch((err) => ({ data: null, error: err }));
 
-    if (error) return { ok: false, error: "Invalid credentials." };
+    if (error) {
+      return {
+        ok: false,
+        error:
+          error.message?.includes("timed out")
+            ? error.message
+            : "Invalid credentials.",
+      };
+    }
+
     const nextAdmin = adminFromUser(data.user);
     if (!nextAdmin) {
       await supabase.auth.signOut();
@@ -79,7 +117,11 @@ export function AdminAuthProvider({ children }) {
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // Clear local admin UI state even if the network sign-out fails.
+    }
     setUser(null);
     setAdmin(null);
   };

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
+import AdminLoadingScreen from "./AdminLoadingScreen";
 import { useAdminAuth } from "../context/AdminAuthContext";
 
 const particles = Array.from({ length: 12 }, (_, i) => ({
@@ -17,6 +18,7 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
   duration: 3 + (i % 5),
   delay: (i % 4) * 0.45,
 }));
+const assetBase = import.meta.env.BASE_URL;
 
 export default function AdminLogin() {
   const { login, isLoggedIn, loading: authLoading } = useAdminAuth();
@@ -27,7 +29,7 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [shake, setShake] = useState(false);
 
-  if (authLoading) return null;
+  if (authLoading) return <AdminLoadingScreen />;
   if (isLoggedIn) return <Navigate to="/admin/dashboard" replace />;
 
   const handleSubmit = async (e) => {
@@ -113,7 +115,7 @@ export default function AdminLogin() {
               className="inline-flex items-center justify-center mb-3"
             >
               <img
-                src="/fulllogo.png"
+                src={`${assetBase}fulllogo.png`}
                 alt="Hygenc Covers"
                 className="h-14 w-auto"
               />

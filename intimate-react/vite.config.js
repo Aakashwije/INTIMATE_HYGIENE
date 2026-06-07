@@ -76,6 +76,7 @@ function orderEmailDevApi() {
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
+  const siteBase = env.VITE_SITE_BASE || "/";
   [
     "RESEND_API_KEY",
     "ORDER_EMAIL_FROM",
@@ -94,6 +95,7 @@ export default defineConfig(({ mode }) => {
   });
 
   return {
+    base: siteBase,
     plugins: [orderEmailDevApi(), react(), tailwindcss()],
   };
 });

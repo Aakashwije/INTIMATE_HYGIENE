@@ -45,6 +45,11 @@ import Quiz from "./pages/Quiz";
 import Referral from "./pages/Referral";
 import Splash from "./pages/Splash";
 
+const routerBasename =
+  import.meta.env.BASE_URL === "/"
+    ? undefined
+    : import.meta.env.BASE_URL.replace(/\/$/, "");
+
 function CustomerApp() {
   return (
     <>
@@ -115,7 +120,7 @@ function App() {
     <LangProvider>
       <CartProvider>
         <CustomerAuthProvider>
-          <BrowserRouter>
+          <BrowserRouter basename={routerBasename}>
             <Routes>
               {/* ── Admin routes (completely isolated, no customer overlays) ── */}
               <Route path="/admin/*" element={<AdminRouter />} />
