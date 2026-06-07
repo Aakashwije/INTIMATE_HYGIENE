@@ -363,6 +363,18 @@ export async function updateProduct(id, product) {
   return data;
 }
 
+export async function saveProductBySlug(slug, product) {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("products")
+    .upsert({ ...product, slug }, { onConflict: "slug" })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 export function subscribeToProducts(onChange) {
   if (!supabase) return emptySubscription();
   return supabase

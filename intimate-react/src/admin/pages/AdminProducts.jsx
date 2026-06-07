@@ -12,8 +12,8 @@ import {
 import { useEffect, useState } from "react";
 import {
     fetchProducts,
+    saveProductBySlug,
     subscribeToProducts,
-    updateProduct,
 } from "../../lib/database";
 import {
     findCatalogProduct,
@@ -49,26 +49,27 @@ function productFromRow(row) {
   const catalogProduct = findCatalogProduct(row.slug);
   return {
     id: row.id,
-    name: catalogProduct?.name || row.name,
+    name: row.name || catalogProduct?.name,
     slug: row.slug,
     sku: row.sku || "-",
-    price: catalogProduct?.price ?? Number(row.price),
-    cost: catalogProduct?.cost ?? Number(row.cost || 0),
+    price: Number(row.price ?? catalogProduct?.price ?? 0),
+    cost: Number(row.cost ?? catalogProduct?.cost ?? 0),
     stock: row.stock || 0,
     sold: row.sold || 0,
     rating: Number(row.rating || 4.9),
     reviews: row.reviews || 0,
     status: row.active ? (row.stock < 100 ? "low_stock" : "active") : "inactive",
-    image: catalogProduct?.image || row.image_url || "/normalnew.png",
+    image: row.image_url || catalogProduct?.image || "/normalnew.png",
     minOrder: row.min_order || 1,
-    description: catalogProduct?.description || row.description || "",
-    priceNote: catalogProduct?.priceNote || row.price_note || "",
+    description: row.description || catalogProduct?.description || "",
+    priceNote: row.price_note || catalogProduct?.priceNote || "",
     category:
-      catalogProduct?.badge === "Add-On"
+      row.category ||
+      (catalogProduct?.badge === "Add-On"
         ? "Add-On"
         : catalogProduct
           ? "Bundle"
-          : row.category || "Retail",
+          : "Retail"),
     active: row.active,
   };
 }
@@ -139,11 +140,14 @@ export default function AdminProducts() {
     setSaving(true);
     setError("");
     try {
-      const updated = await updateProduct(editing, {
+      const updated = await saveProductBySlug(form.slug, {
         name: form.name,
+        sku: form.sku,
         description: form.description,
         price: Number(form.price),
         cost: Number(form.cost),
+        image_url: form.image,
+        category: form.category,
         stock: Number(form.stock),
         min_order: Number(form.minOrder),
         price_note: form.priceNote,

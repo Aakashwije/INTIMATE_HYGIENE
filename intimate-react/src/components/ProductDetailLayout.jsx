@@ -72,18 +72,20 @@ export default function ProductDetailLayout({
     };
   }, [slug]);
 
-  const displayTitle = fixedProduct?.name || catalogProduct?.name || title;
+  const displayTitle = catalogProduct?.name || fixedProduct?.name || title;
   const displaySubtitle =
-    fixedProduct?.description || catalogProduct?.description || subtitle;
-  const displayImage = fixedProduct?.image || catalogProduct?.image_url || image;
-  const displayPrice = fixedProduct
-    ? formatLkr(fixedProduct.price)
-    : catalogProduct
-      ? formatLkr(catalogProduct.price)
+    catalogProduct?.description || fixedProduct?.description || subtitle;
+  const displayImage = catalogProduct?.image_url || fixedProduct?.image || image;
+  const displayPrice = catalogProduct?.price != null
+    ? formatLkr(catalogProduct.price)
+    : fixedProduct
+      ? formatLkr(fixedProduct.price)
       : price;
   const displayPriceNote =
-    fixedProduct?.priceNote || catalogProduct?.price_note || priceNote;
-  const unitPrice = fixedProduct?.price || Number(catalogProduct?.price || 0);
+    catalogProduct?.price_note || fixedProduct?.priceNote || priceNote;
+  const unitPrice = Number(
+    catalogProduct?.price ?? fixedProduct?.price ?? 0,
+  );
   const minQty = catalogProduct?.min_order || 1;
   const effectiveQty = Math.max(minQty, qty);
   const productImages = [

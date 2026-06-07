@@ -1,5 +1,5 @@
 import { Building2, Check, ShoppingCart, Star } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import DeliveryProgressBar from "../components/DeliveryProgressBar";
 import Footer from "../components/Footer";
@@ -16,7 +16,11 @@ import {
   bundleProducts,
   formatLkr,
 } from "../data/catalog";
-import { trackSiteEvent } from "../lib/database";
+import {
+  fetchProducts,
+  subscribeToProducts,
+  trackSiteEvent,
+} from "../lib/database";
 
 function productCardFromCatalog(product, rating = 4.9) {
   return {
@@ -36,20 +40,76 @@ function productCardFromCatalog(product, rating = 4.9) {
   };
 }
 
-const bundleCards = bundleProducts.map((product, index) =>
-  productCardFromCatalog(product, [4.9, 4.8, 4.9][index]),
-);
+const bundleRatings = [4.9, 4.8, 4.9];
+const addOnRatings = [4.9, 4.8, 4.9];
 
-const addOnCards = addOnProducts.map((product, index) =>
-  productCardFromCatalog(product, [4.9, 4.8, 4.9][index]),
-);
+function productCardFromRow(row, product, rating = 4.9) {
+  const price = Number(row.price ?? product.price);
+
+  return {
+    ...productCardFromCatalog(product, rating),
+    img: row.image_url || product.image,
+    title: row.name || product.name,
+    desc: row.description || product.description,
+    badge: row.badge || product.badge,
+    urgency: row.urgency ?? product.urgency,
+    price,
+    priceLabel: formatLkr(price),
+    priceNote: row.price_note || product.priceNote,
+    rating: Number(row.rating ?? rating),
+  };
+}
+
+function buildProductCards(rows = []) {
+  const rowsBySlug = new Map(rows.map((row) => [row.slug, row]));
+
+  return {
+    bundles: bundleProducts.map((product, index) => {
+      const row = rowsBySlug.get(product.slug);
+      return row
+        ? productCardFromRow(row, product, bundleRatings[index])
+        : productCardFromCatalog(product, bundleRatings[index]);
+    }),
+    addOns: addOnProducts.map((product, index) => {
+      const row = rowsBySlug.get(product.slug);
+      return row
+        ? productCardFromRow(row, product, addOnRatings[index])
+        : productCardFromCatalog(product, addOnRatings[index]);
+    }),
+  };
+}
+
+const initialProductCards = buildProductCards();
 
 export default function Products() {
   const { t } = useLang();
   const { add, items } = useCart();
+  const [productCards, setProductCards] = useState(initialProductCards);
   const [justAdded, setJustAdded] = useState(null);
   const [lockedAddOn, setLockedAddOn] = useState(null);
   const hasBundleInCart = items.some((item) => bundleProductIds.has(item.id));
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadProductCards = () => {
+      fetchProducts({ activeOnly: true })
+        .then((rows) => {
+          if (mounted) setProductCards(buildProductCards(rows));
+        })
+        .catch(() => {
+          if (mounted) setProductCards(initialProductCards);
+        });
+    };
+
+    loadProductCards();
+    const channel = subscribeToProducts(() => loadProductCards());
+
+    return () => {
+      mounted = false;
+      channel.unsubscribe();
+    };
+  }, []);
 
   const handleAdd = (p) => {
     const added = add({
@@ -149,7 +209,7 @@ export default function Products() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {bundleCards.map((p, i) => (
+          {productCards.bundles.map((p, i) => (
             <Reveal key={p.id || p.titleKey} delay={i * 120}>
               <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition-all duration-500 group h-full flex flex-col border border-gray-100">
                 <div className="relative overflow-hidden">
@@ -264,7 +324,7 @@ export default function Products() {
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {addOnCards.map((p, i) => (
+          {productCards.addOns.map((p, i) => (
             <Reveal key={p.id} delay={i * 90}>
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col h-full">
                 <div className="flex items-center gap-4 text-left">
